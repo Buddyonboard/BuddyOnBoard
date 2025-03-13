@@ -2,6 +2,7 @@ import BuddyCarousel from './BuddyCarousel';
 import FeaturesLayout from './FeaturesLayout';
 import HeroSection from './HeroSection';
 import HowItWorksLayout from './HowItWorksLayout';
+import MissionFaqLayout from './MissionFaqLayout';
 
 export default function LandingContainer() {
 	return (
@@ -16,6 +17,8 @@ export default function LandingContainer() {
 			<FeaturesLayout />
 
 			<HowItWorksLayout />
+
+			<MissionFaqLayout />
 		</>
 	);
 }
