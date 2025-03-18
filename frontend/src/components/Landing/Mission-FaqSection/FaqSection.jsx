@@ -2,6 +2,7 @@ import FaqAccordion from './FaqAccordion';
 
 import { Button } from '@/components/ui/button';
 import CONST from '@/utils/Constants';
+import { Link } from 'react-router-dom';
 
 export default function FaqSection() {
 	return (
@@ -14,9 +15,11 @@ export default function FaqSection() {
 				<FaqAccordion />
 
 				<div className="mt-8 text-center">
-					<Button className="bg-[#0D53E0] hover:bg-blue-800 text-white rounded-md px-8">
-						{CONST.FAQ[0].exploreMoreFaq}
-					</Button>
+					<Link to="/explore-faqs">
+						<Button className="bg-bob-color hover:bg-blue-800 text-white rounded-md px-8 cursor-pointer">
+							{CONST.FAQ[0].exploreMoreFaq}
+						</Button>
+					</Link>
 				</div>
 			</div>
 		</section>

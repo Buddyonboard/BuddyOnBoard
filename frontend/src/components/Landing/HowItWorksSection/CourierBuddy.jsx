@@ -31,7 +31,7 @@ export default function CourierBuddy() {
 					</div>
 				</div>
 				{/* Right side - Cards */}
-				<div className="space-y-4 md:space-y-6 order-1 lg:order-2 lg:right-[10%] z-50">
+				<div className="space-y-4 md:space-y-6 order-1 lg:order-2 lg:right-[10%] md:z-50">
 					<HowItWorksItem
 						icon={User}
 						title={CONST.findCourierBuddy}

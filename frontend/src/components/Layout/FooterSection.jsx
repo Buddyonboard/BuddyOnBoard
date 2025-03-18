@@ -5,6 +5,8 @@ import { Separator } from '../ui/separator';
 import FacebookIcon from '@/assets/Common/Icons/FacebookIcon.svg';
 import TwitterIcon from '@/assets/Common/Icons/TwitterIcon.svg';
 import LinkedinIcon from '@/assets/Common/Icons/LinkedinIcon.svg';
+import FooterBrandImage from '@/assets/Common/FooterBrandImage.svg';
+
 import CONST from '@/utils/Constants';
 
 const iconImages = [
@@ -25,7 +27,7 @@ const iconImages = [
 	}
 ];
 
-export default function FooterSection() {
+export default function FooterSection({ scrollToSection }) {
 	const [year, setYear] = useState(new Date().getFullYear());
 
 	useEffect(() => {
@@ -35,10 +37,16 @@ export default function FooterSection() {
 	return (
 		<footer className="py-12 md:py-5 px-4">
 			{CONST.footerSection.map((item) => (
-				<div className="bg-blue-600 text-[#F7F7F7] md:p-12 p-8 rounded-2xl">
+				<div
+					className={`
+					bg-blue-600 bg-[url(@/assets/Common/FooterBackgroundGrid.svg)]
+					text-[#F7F7F7]	md:p-12	p-8	rounded-2xl`}
+				>
 					{/* Footer Heading */}
-					<h2 className="md:text-7xl text-3xl font-medium mb-6">
-						{CONST.LANDING[0].brandName.name}
+					{/* <h2 className="md:text-7xl text-3xl font-medium mb-6"> */}
+					<h2 className="md:w-full w-2/3 md:mb-10 mb-8">
+						{/* {CONST.LANDING[0].brandName.name} */}
+						<img src={FooterBrandImage} alt="Footer Brand Image" />
 					</h2>
 
 					{/* Platform & Social Links  */}
@@ -46,7 +54,10 @@ export default function FooterSection() {
 						<div className="flex md:flex-row flex-col md:gap-6 gap-4 font-bold">
 							{item.navigationLink.map((itm) => (
 								<Link
-									href={itm.href}
+									onClick={() => {
+										itm.href === 'how-it-works' && scrollToSection(itm.href);
+									}}
+									to={itm.href !== 'how-it-works' && itm.href}
 									className="text-sm lg:text-[20px] hover:text-blue-200"
 								>
 									{itm.name}
@@ -70,7 +81,16 @@ export default function FooterSection() {
 						<p>{`©${year} ${CONST.footerSection[0].tradeMark}`}</p>
 						<div className="flex md:flex-row flex-col gap-4 mb-4">
 							{item.privacyPolicy.map((value) => (
-								<Link href={value.href} className="hover:text-blue-200">
+								<Link
+									to={value.href}
+									className="hover:text-blue-200"
+									onClick={() => {
+										window.scroll({
+											top: 0,
+											left: 0
+										});
+									}}
+								>
 									{value.name}
 								</Link>
 							))}

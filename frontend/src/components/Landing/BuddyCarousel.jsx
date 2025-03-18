@@ -156,7 +156,7 @@ export default function BuddyCarousel() {
 	}
 
 	return (
-		<div className="relative w-full max-w-[1440px] mx-auto px-4 bg-gradient-to-t from-transparent to-[#F5F5F5]">
+		<div className="relative w-full max-w-[1440px] mx-auto px-4 bg-bob-bg-color">
 			{/* Navigation Buttons */}
 			<div className="absolute left-0 top-1/2 -translate-y-1/2 z-10">
 				<Button
@@ -195,7 +195,7 @@ export default function BuddyCarousel() {
 				style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
 			>
 				{travelBuddies.map((buddy) => (
-					<Card className="min-w-[300px] max-w-[300px] snap-start shadow-2xl">
+					<Card className="min-w-[300px] max-w-[300px] snap-start shadow-none">
 						<CardContent>
 							{/* Journey Details */}
 							<div className="flex justify-between items-center mb-4">

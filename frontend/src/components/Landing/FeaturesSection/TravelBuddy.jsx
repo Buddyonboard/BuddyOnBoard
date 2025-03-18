@@ -15,7 +15,7 @@ export default function TravelBuddy() {
 			{/* Layout for screens 768px and above */}
 			<div className="hidden lg:grid lg:grid-cols-2 lg:gap-12">
 				<div className="flex flex-col justify-center">
-					<h2 className="text-2xl md:text-3xl font-medium mb-6">
+					<h2 className="text-2xl md:text-3xl font-medium mb-6 text-[#0A0A0A]">
 						{CONST.travelStressFree}
 					</h2>
 					<div className="space-y-4">

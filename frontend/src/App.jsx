@@ -3,42 +3,39 @@ import { Routes, Route, BrowserRouter, Navigate } from 'react-router-dom';
 
 import './App.css';
 import LandingPage from './pages/LandingPage';
+import PrivacyPolicy from './pages/Common-pages/PrivacyPolicy';
+import HowItWorksLayout from './components/Landing/HowItWorksLayout';
+import MainLayout from './pages/MainLayout';
+import NotFound from './pages/Common-pages/404-Not-Found';
+import ExploreFaq from './pages/Common-pages/Explore-Faq';
+import ScrollToTop from './utils/ScrollToTop';
 
 function App() {
 	return (
 		<>
 			<BrowserRouter>
 				<Suspense fallback={<div>Loading....</div>}>
+					<ScrollToTop />
 					<Routes>
 						{/* Default Route */}
 						<Route path="/" element={<LandingPage />} />
 
-						{/* Login/Registration Routes */}
-						{/* <Route path="/registration" element={<HotelAuth />} />
-          <Route path="/login" element={<HotelAuth />} /> */}
+						{/* Routes inside Layout */}
+						<Route
+							path="/*"
+							element={
+								<MainLayout>
+									<Routes>
+										<Route path="privacy-policy" element={<PrivacyPolicy />} />
+										<Route path="how-it-works" element={<HowItWorksLayout />} />
+										<Route path="explore-faqs" element={<ExploreFaq />} />
 
-						{/* Protected Admin Routes */}
-						{/* <Route element={<ProtectedRoute />}>
-            <Route path="/admin" element={<Dashboard />}>
-              <Route index element={<BentoGrid />} />
-              <Route path="menu" element={<MenuItems />} />
-             
-              <Route path="qrcodes" element={<GenerateQr />} />
-              <Route path="*" element={<Navigate to="/admin" />} />
-            </Route>
-          </Route> */}
-
-						{/* Customer Page Routes */}
-						{/* <Route path="/customermenuview/category" element={<CustomerPage />}>
-            <Route index element={<MenuItemsPage />} />
-            <Route path=":menu" element={<CategoryItems />} />
-            <Route path="*" element={<Navigate to="/customermenuview/category" />} />
-          </Route> */}
-
-						{/* <Route path="/menu/:restaurantId/:tableId" element={<CustomerPage />} /> */}
-
-						{/* Redirect Incorrect Route */}
-						<Route path="*" element={<Navigate to="/" />} />
+										{/* Redirect incorrect routes inside layout */}
+										<Route path="*" element={<NotFound />} />
+									</Routes>
+								</MainLayout>
+							}
+						/>
 					</Routes>
 				</Suspense>
 			</BrowserRouter>

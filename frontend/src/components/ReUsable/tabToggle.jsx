@@ -2,7 +2,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function TabToggle({ onToggle, tabNames }) {
 	return (
-		<div className="p-1 rounded-full inline-flex mb-8">
+		<div className="p-1 rounded-full inline-flex md:mb-8 mb-4">
 			<Tabs defaultValue={tabNames[0]} className="w-full">
 				<TabsList className="grid w-full grid-cols-2 bg-[#e1e1e1]">
 					<TabsTrigger

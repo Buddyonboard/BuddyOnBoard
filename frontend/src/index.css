@@ -83,6 +83,8 @@
 	--font-dm-sans: 'DM Sans', 'sans-serif';
 	--color-primary-color: white;
 	--color-secondary-color: black;
+	--color-bob-color: #0d53e0;
+	--color-bob-bg-color: #f5f5f5;
 	--color-background: var(--background);
 	--color-foreground: var(--foreground);
 	--color-card: var(--card);
@@ -127,6 +129,6 @@
 		@apply border-border outline-ring/50;
 	}
 	body {
-		@apply bg-none text-secondary-color font-dm-sans;
+		@apply bg-bob-bg-color text-secondary-color font-dm-sans;
 	}
 }

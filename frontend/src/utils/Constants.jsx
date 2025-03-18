@@ -3,11 +3,11 @@ const CONST = Object.freeze({
 		{
 			brandName: { name: 'Buddy On Board', href: '/' },
 			navSection: [
-				{ name: 'Become a buddy', href: '/' },
-				{ name: 'How it works', href: '/' },
-				{ name: 'About us', href: '/' }
+				{ name: 'Become a buddy', href: '' },
+				{ name: 'How it works', href: 'how-it-works' },
+				{ name: 'About us', href: '' }
 			],
-			loginSection: { name: 'Log in', href: '/' }
+			loginSection: { name: 'Log in', href: '' }
 		}
 	],
 	lookingFor: 'I am looking for:',
@@ -131,7 +131,7 @@ const CONST = Object.freeze({
 				},
 				{
 					title: 'Are payments refundable?',
-					decription:
+					description:
 						'Refunds are applicable in specific situations, such as cancellations made within 48 hours before the journey or for courier shipments. Please refer to our refund policy for more details.'
 				},
 				{
@@ -227,6 +227,11 @@ const CONST = Object.freeze({
 						'You can always refer to the guidelines for permissible items on the destination country’s Customs websites or take advantage of the free legal consultation services available on the platform for Courier Buddies.'
 				}
 			]
+		},
+		{
+			howCanWeHelpYou: 'How can we help you today?',
+			reportIssue: 'Report issue',
+			submitServiceRequest: 'Submit Service request'
 		}
 	],
 	footerSection: [
@@ -234,7 +239,7 @@ const CONST = Object.freeze({
 			navigationLink: [
 				{
 					name: 'How it works',
-					href: '/'
+					href: 'how-it-works'
 				},
 				{
 					name: 'About Us',
@@ -256,7 +261,7 @@ const CONST = Object.freeze({
 			privacyPolicy: [
 				{
 					name: 'Privacy Policy',
-					href: '/'
+					href: 'privacy-policy'
 				},
 				{
 					name: 'Terms of Use',
@@ -270,7 +275,10 @@ const CONST = Object.freeze({
 			tradeMark:
 				'Buddy on board. All rights reserved. Trademark registration in progress.'
 		}
-	]
+	],
+	notFoundTitle: 'Oops! 404 Error',
+	notFoundDescription:
+		'Well, this is awkward. Looks like you need a travel buddy to guide you back to the homepage safely.'
 });
 
 export default CONST;

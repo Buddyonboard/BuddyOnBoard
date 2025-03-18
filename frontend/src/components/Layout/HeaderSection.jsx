@@ -1,38 +1,69 @@
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '../ui/button';
-
 import { Menu, X } from 'lucide-react';
 
 import CONST from '@/utils/constants';
 
-export default function HeaderComponent() {
+export default function HeaderSection({ scrollToSection, page }) {
+	const [isMenuOpen, setIsMenuOpen] = useState(false);
+	const location = useLocation();
+	const navigate = useNavigate();
+
+	const toggleMenu = () => {
+		setIsMenuOpen((prev) => !prev);
+	};
+
+	const handleNavigation = (e, href) => {
+		e.preventDefault();
+		if (href === 'how-it-works') {
+			if (location.pathname === '/') {
+				/* If on landing page, scroll to section */
+				scrollToSection(href);
+			} else {
+				/* Navigate to how-it-works component */
+				navigate(`/${href}`);
+			}
+		} else {
+			navigate(`/${href}`); // Navigate to other pages
+		}
+	};
+
 	return (
 		<>
-			{/******** Header Section :: FOR LATER USE ********/}
 			{CONST.LANDING.map((item) => (
-				<header className="container mx-auto py-4 md:py-0 px-4 flex items-center justify-between text-primary-color">
+				<header
+					className={`${
+						page === 'landing' ? 'bg-none md:z-10 z-50' : 'bg-bob-color'
+					} py-4 md:py-0 px-4 flex items-center justify-between text-primary-color`}
+				>
+					{/* Brand Name */}
 					<Link
-						href={item.brandName.href}
-						className="text-[20px] md:text-[24px] lg:text-[32px] font-[400]"
+						to={item.brandName.href}
+						className="text-[20px] md:text-[24px] lg:text-[32px] font-[400] font-merriweather"
 					>
 						{item.brandName.name}
 					</Link>
+					{/* Nav Links */}
 					<nav className="hidden md:flex items-center gap-6">
 						{item.navSection.map((opt) => (
-							<Link href={opt.href} className="text-sm  font-[600]">
+							<Link
+								onClick={(e) => handleNavigation(e, opt.href)}
+								className="text-sm  font-[600]"
+							>
 								{opt.name}
 							</Link>
 						))}
 						<Button
 							variant="outline"
 							size="sm"
-							className="text-secondary-color hover:bg-[#DAE5FC] border-[#5E89E1]"
+							className="text-secondary-color bg-[#DAE5FC] border-[#5E89E1] cursor-pointer hover:bg-[#DAE5FC]"
 						>
 							{item.loginSection.name}
 						</Button>
 					</nav>
 
-					{/* Hamburger Icon */}
+					{/************** Mobile View - Hamburger Icon *****************/}
 					<div variant="none" className="md:hidden">
 						<button onClick={toggleMenu} aria-label="Open Menu">
 							{isMenuOpen ? (
@@ -57,16 +88,26 @@ export default function HeaderComponent() {
 							}`}
 						>
 							<ul className="flex flex-col p-4 gap-2">
+								{/* Nav Links */}
 								{item.navSection.map((value) => (
 									<li>
 										<Link
-											to={value.href}
+											// onClick={() => {
+											// 	value.href === 'how-it-works' && scrollToSection(value.href);
+											// 	setIsMenuOpen((prev) => !prev);
+											// }}
+											// to={value.href !== 'how-it-works' && value.href}
+											onClick={(e) => {
+												handleNavigation(e, value.href);
+												setIsMenuOpen((prev) => !prev);
+											}}
 											className="text-left w-full hover:bg-gray-100 rounded-md px-2 py-1"
 										>
 											{value.name}
 										</Link>
 									</li>
 								))}
+								{/* Log-in button */}
 								<li>
 									<Link
 										to={item.loginSection.href}
