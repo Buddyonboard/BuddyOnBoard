@@ -1,3 +1,5 @@
+import { Bell, CircleUserRound, Info, LogOut, Mail, Plane } from 'lucide-react';
+
 const CONST = Object.freeze({
 	LANDING: [
 		{
@@ -7,9 +9,25 @@ const CONST = Object.freeze({
 				{ name: 'How it works', href: 'how-it-works' },
 				{ name: 'About us', href: '' }
 			],
-			loginSection: { name: 'Log in', href: '' }
+			loginNav: [
+				{ name: 'Profile', href: '', icon: <CircleUserRound /> },
+				{ name: 'Notifications', href: '', icon: <Bell /> },
+				{ name: 'Your bookings', href: '', icon: <Plane /> },
+				{ name: 'Messages', href: '', icon: <Mail /> },
+				{ name: 'Help', href: 'explore-faqs', icon: <Info /> },
+				{ name: 'Log out', href: 'logout', icon: <LogOut /> }
+			],
+			loginSection: { name: 'Log in', href: '/sign-in' },
+			signupSection: { name: 'Sign up', href: '/sign-up' },
+			createAccount: 'Create your account',
+			userNotFound:
+				"We couldn't find this email in our records, please check the email address or click on Sign up to create your account.",
+			userAlreadyRegistered: 'Email already registered! Try to log in instead.',
+			wrongPasswordUsername:
+				'Hmm… we couldn’t find a match. Double-check your email or password and try again. New around here? Hit Sign Up to create your account — or click Forgot Password if you need a reset.'
 		}
 	],
+	somethingWentWrong: 'Oops! That didn’t go as planned. Give it another shot!',
 	lookingFor: 'I am looking for:',
 	landingTitle: 'Travel Smarter, Together: Companions & Deliveries Made Easy',
 	travelBuddy: 'A Travel Buddy',
@@ -247,11 +265,11 @@ const CONST = Object.freeze({
 				},
 				{
 					name: 'Report issue',
-					href: '/'
+					href: 'report-issue'
 				},
 				{
 					name: 'Submit Service Request',
-					href: '/'
+					href: 'feature-request'
 				},
 				{
 					name: 'Help',
@@ -278,7 +296,44 @@ const CONST = Object.freeze({
 	],
 	notFoundTitle: 'Oops! 404 Error',
 	notFoundDescription:
-		'Well, this is awkward. Looks like you need a travel buddy to guide you back to the homepage safely.'
+		'Well, this is awkward. Looks like you need a travel buddy to guide you back to the homepage safely.',
+	serviceRequestForm: {
+		submitRequest: 'Submit a Service Request',
+		reportAnIssue: 'Report an issue',
+		fullName: 'Full name*',
+		email: 'Email*',
+		password: 'Password*',
+		confirmPassword: 'Confirm Password*',
+		forgotPassword: 'Forgot password?',
+		categoryRequest: 'Category of request*',
+		typeOfIssue: 'Type of issue*',
+		uploadAttachement: 'Upload an attachment',
+		yourMessage: 'Your message*',
+		sendMessage: 'Send message',
+		requestCallBack: 'Request a call-back',
+		phoneNumber: 'Phone number',
+		successMessageTitle: 'Thank you for reaching out!',
+		successMessageContent:
+			'Your request has been received. Our team will review it and get back to you shortly.',
+		issueReportSuccessMessageTitle:
+			'Thank you for bringing this to our attention.',
+		issueReportSuccessMessageContent:
+			'Our team is reviewing your report and will take appropriate action promptly.',
+		acceptAnonymousTerms:
+			'I prefer to remain anonymous (if selected, your personal information will not be shared or visible to our support team).',
+		acceptPrivacyTerms:
+			'The above information will be processed based on our Terms of Use and Privacy Policy.'
+	},
+	postSignUpForm: {
+		tellUsBitMore: 'Tell us a bit more...',
+		firstName: 'First name*',
+		middleName: 'Middle name',
+		lastName: 'Last name*',
+		dateOfBirth: 'Date of birth*',
+		phoneNumber: 'Phone number',
+		countryOfResidence: 'Country of residence*',
+		finishRegistration: 'Finish registration'
+	}
 });
 
 export default CONST;

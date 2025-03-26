@@ -1,12 +1,16 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '../ui/button';
-import { Menu, X } from 'lucide-react';
+import { Menu, UserRound, X } from 'lucide-react';
 
 import CONST from '@/utils/constants';
+import { useFirebase } from '@/context/Firebase-Context';
+
+const userProfileIcon = <UserRound size={18} />;
 
 export default function HeaderSection({ scrollToSection, page }) {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
+	const { user, logout } = useFirebase();
 	const location = useLocation();
 	const navigate = useNavigate();
 
@@ -16,17 +20,18 @@ export default function HeaderSection({ scrollToSection, page }) {
 
 	const handleNavigation = (e, href) => {
 		e.preventDefault();
-		if (href === 'how-it-works') {
-			if (location.pathname === '/') {
-				/* If on landing page, scroll to section */
-				scrollToSection(href);
-			} else {
-				/* Navigate to how-it-works component */
-				navigate(`/${href}`);
-			}
-		} else {
-			navigate(`/${href}`); // Navigate to other pages
+
+		/* Logout Function */
+		if (href === 'logout') {
+			return logout();
 		}
+
+		/* If on landing page, scroll to how-it-works section */
+		if (href === 'how-it-works' && location.pathname === '/') {
+			return scrollToSection(href);
+		}
+
+		navigate(`/${href}`);
 	};
 
 	return (
@@ -34,8 +39,8 @@ export default function HeaderSection({ scrollToSection, page }) {
 			{CONST.LANDING.map((item) => (
 				<header
 					className={`${
-						page === 'landing' ? 'bg-none md:z-10 z-50' : 'bg-bob-color'
-					} py-4 md:py-0 px-4 flex items-center justify-between text-primary-color`}
+						page === 'landing' ? 'bg-none' : 'bg-bob-color'
+					} relative z-50 py-4 md:py-0 px-4 flex items-center justify-between text-primary-color`}
 				>
 					{/* Brand Name */}
 					<Link
@@ -54,19 +59,66 @@ export default function HeaderSection({ scrollToSection, page }) {
 								{opt.name}
 							</Link>
 						))}
-						<Button
-							variant="outline"
-							size="sm"
-							className="text-secondary-color bg-[#DAE5FC] border-[#5E89E1] cursor-pointer hover:bg-[#DAE5FC]"
-						>
-							{item.loginSection.name}
-						</Button>
+						{/* Conditional Login Button/User Icon */}
+						{user ? (
+							<div className="relative">
+								<Button
+									variant="outline"
+									size="sm"
+									className="text-secondary-color bg-[#DAE5FC] border-bob-border-color cursor-pointer hover:bg-[#DAE5FC]"
+									onClick={() => setIsMenuOpen((prev) => !prev)}
+								>
+									{userProfileIcon}
+								</Button>
+
+								{isMenuOpen && (
+									<div className="absolute right-0 mt-2 w-max border-2 border-[#E6E6E6] bg-white text-bob-icon-placeholder-color rounded-lg shadow-lg z-[1000]">
+										<ul className="flex flex-col p-2">
+											{item.loginNav.map((value) => (
+												<li key={value.name}>
+													<Link
+														onClick={(e) => {
+															handleNavigation(e, value.href);
+															setIsMenuOpen((prev) => !prev);
+														}}
+														className={`flex items-center gap-2 ${
+															value.name === 'Log out' && 'text-bob-error-color'
+														} rounded-md px-3 py-2`}
+													>
+														{value.icon} {value.name}
+													</Link>
+												</li>
+											))}
+										</ul>
+									</div>
+								)}
+							</div>
+						) : (
+							<Link to={item.loginSection.href}>
+								<Button
+									variant="outline"
+									size="sm"
+									className="text-secondary-color bg-[#DAE5FC] border-bob-border-color cursor-pointer hover:bg-[#DAE5FC]"
+								>
+									{item.loginSection.name}
+								</Button>
+							</Link>
+						)}
 					</nav>
 
-					{/************** Mobile View - Hamburger Icon *****************/}
+					{/************************ Mobile View *************************/}
 					<div variant="none" className="md:hidden">
+						{/* Hamburger/User Icon */}
 						<button onClick={toggleMenu} aria-label="Open Menu">
-							{isMenuOpen ? (
+							{user ? (
+								<Button
+									variant="outline"
+									size="sm"
+									className="text-secondary-color bg-[#DAE5FC] border-bob-border-color cursor-pointer"
+								>
+									{userProfileIcon}
+								</Button>
+							) : isMenuOpen ? (
 								<X size={24} className="text-white" />
 							) : (
 								<Menu size={24} className="text-white" />
@@ -83,35 +135,37 @@ export default function HeaderSection({ scrollToSection, page }) {
 
 						{/* Mobile Menu with Transition */}
 						<div
-							className={`absolute top-14 z-50 right-4 bg-white text-black rounded-xl shadow-md transition-transform duration-300 ${
+							className={`absolute ${
+								user && 'border-2 border-[#E6E6E6] text-bob-icon-placeholder-color'
+							} top-14 z-50 right-4 bg-white text-black rounded-xl shadow-md transition-transform duration-300 ${
 								isMenuOpen ? 'scale-100' : 'scale-0'
 							}`}
 						>
 							<ul className="flex flex-col p-4 gap-2">
 								{/* Nav Links */}
-								{item.navSection.map((value) => (
+								{(user ? item.loginNav : item.navSection).map((value) => (
 									<li>
 										<Link
-											// onClick={() => {
-											// 	value.href === 'how-it-works' && scrollToSection(value.href);
-											// 	setIsMenuOpen((prev) => !prev);
-											// }}
-											// to={value.href !== 'how-it-works' && value.href}
 											onClick={(e) => {
 												handleNavigation(e, value.href);
 												setIsMenuOpen((prev) => !prev);
 											}}
-											className="text-left w-full hover:bg-gray-100 rounded-md px-2 py-1"
+											className={`text-left w-full ${
+												value.name === 'Log out' && 'text-bob-error-color'
+											} rounded-md px-2 py-1 flex items-center gap-2`}
 										>
-											{value.name}
+											{user && value.icon} {value.name}
 										</Link>
 									</li>
 								))}
 								{/* Log-in button */}
-								<li>
+								<li className={`${user && 'hidden'}`}>
 									<Link
 										to={item.loginSection.href}
-										className="text-left w-full hover:bg-gray-100 rounded-md px-2 py-1"
+										onClick={() => {
+											setIsMenuOpen((prev) => !prev);
+										}}
+										className="text-left w-full rounded-md px-2"
 									>
 										{item.loginSection.name}
 									</Link>

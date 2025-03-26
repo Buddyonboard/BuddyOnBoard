@@ -1,0 +1,8 @@
+@layer utilities {
+	.rdp-month .rdp-month_caption {
+		display: none !important;
+	}
+	.rdp-month .rdp-nav {
+		display: none !important;
+	}
+}

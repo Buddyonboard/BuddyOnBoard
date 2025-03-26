@@ -104,7 +104,7 @@ export default function SearchSection() {
 							{/* Search Button */}
 							<div className="hidden lg:flex lg:justify-end lg:mt-0">
 								{/* <Button className="bg-blue-600 hover:bg-blue-700 text-2xl"> */}
-								<Button className="lg:h-20 lg:mt-1.5 bg-bob-color hover:bg-blue-700 lg:w-40 text-2xl cursor-pointer border-[#5E89E1] border-2 rounded-3xl">
+								<Button className="lg:h-20 lg:mt-1.5 bg-bob-color hover:bg-blue-700 lg:w-40 text-2xl cursor-pointer border-bob-border-color border-2 rounded-3xl">
 									Search
 									<img src={MagnifyingGlassIcon} alt="Magnifying Glass Icon" />
 									{/* <Search style={{ width: '25px', height: '25px', marginTop: '5px', gap: '5px' }} /> */}
@@ -117,7 +117,7 @@ export default function SearchSection() {
 
 							{/* Search button :: Mobile view */}
 							<div className="block lg:hidden mt-5">
-								<Button className="bg-bob-color hover:bg-blue-700 text-base w-full p-4 cursor-pointer border-[#5E89E1] border-2 rounded-3xl">
+								<Button className="bg-bob-color hover:bg-blue-700 text-base w-full p-4 cursor-pointer border-bob-border-color border-2 rounded-3xl">
 									Search <img src={MagnifyingGlassIcon} alt="Magnifying Glass Icon" />
 								</Button>
 							</div>

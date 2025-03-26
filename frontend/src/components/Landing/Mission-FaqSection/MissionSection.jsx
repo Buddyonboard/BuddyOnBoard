@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import CONST from '@/utils/Constants';
 
 import TravellersProfilesBadge from '@/assets/Landing/TravellersProfilesBadge.svg';
+import { Link } from 'react-router-dom';
 
 export default function MissionSection() {
 	return (
@@ -20,9 +21,11 @@ export default function MissionSection() {
 						</div>
 					</div>
 					<div>
-						<Button className="bg-white text-blue-600 hover:bg-gray-100 px-8 md:text-xl text-sm">
-							{CONST.LANDING[0].loginSection.name}
-						</Button>
+						<Link to={CONST.LANDING[0].loginSection.href}>
+							<Button className="bg-white text-blue-600 hover:bg-gray-100 px-8 md:text-xl text-sm cursor-pointer">
+								{CONST.LANDING[0].loginSection.name}
+							</Button>
+						</Link>
 					</div>
 				</div>
 			</div>

@@ -40,8 +40,6 @@ export default function ExploreFaq() {
 		name.title.toLowerCase().includes(debouncedQuery.toLowerCase())
 	);
 
-	// const faqList = filteredText.length > 0 ? filteredText : faqData;
-
 	return (
 		<>
 			<div className="container mx-auto md:px-4 px-2 py-6 md:py-8">
@@ -68,7 +66,7 @@ export default function ExploreFaq() {
 
 					{/* Action Cards */}
 					<div className="grid grid-cols-2 gap-4 items-center">
-						<Link to="/">
+						<Link to="/report-issue">
 							<Card className="hover:shadow-xl shadow-md transition-shadow py-4 md:max-lg:pt-11 md:max-lg:pb-11">
 								<CardContent className="flex md:flex-col flex-row md:items-start items-center md:gap-4 gap-2 max-sm:p-0 max-sm:pl-1">
 									<div className="rounded-full">
@@ -81,7 +79,7 @@ export default function ExploreFaq() {
 							</Card>
 						</Link>
 
-						<Link to="/">
+						<Link to="/feature-request">
 							<Card className="hover:shadow-xl shadow-md transition-shadow py-4">
 								<CardContent className="flex md:flex-col flex-row md:items-start items-center md:gap-4 gap-2 max-sm:p-0 max-sm:pl-1">
 									<div className="rounded-full">
