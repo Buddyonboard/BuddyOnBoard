@@ -79,7 +79,7 @@ export default function ExploreFaq() {
 							</Card>
 						</Link>
 
-						<Link to="/feature-request">
+						<Link to="/service-request">
 							<Card className="hover:shadow-xl shadow-md transition-shadow py-4">
 								<CardContent className="flex md:flex-col flex-row md:items-start items-center md:gap-4 gap-2 max-sm:p-0 max-sm:pl-1">
 									<div className="rounded-full">

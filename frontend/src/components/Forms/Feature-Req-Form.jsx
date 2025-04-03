@@ -70,7 +70,7 @@ export default function FeatureReqForm() {
 	async function onSubmit(data) {
 		// Here you would typically send the data to your API
 		await new Promise((resolve) => setTimeout(resolve, 3000));
-		console.log('Consoling Data >', data);
+		// console.log('Consoling Data >', data);
 
 		setFormError(null);
 		setSuccessMessage(true);
@@ -85,7 +85,7 @@ export default function FeatureReqForm() {
 
 	/* Handling complete form error */
 	function onError() {
-		setFormError('Please enter all fields correctly.');
+		setFormError(CONST.enterAllFields);
 	}
 
 	return (
@@ -102,7 +102,7 @@ export default function FeatureReqForm() {
 							{/* Full Name Input */}
 							<div className="flex flex-col">
 								<label
-									className="font-medium text-sm text-[#414651]"
+									className="font-medium text-sm text-bob-form-label-color"
 									htmlFor="fullName"
 								>
 									{CONST.serviceRequestForm.fullName}
@@ -124,7 +124,7 @@ export default function FeatureReqForm() {
 
 							{/* Email Input */}
 							<div className="flex flex-col">
-								<label className="font-medium text-sm text-[#414651]" htmlFor="email">
+								<label className="font-medium text-sm text-bob-form-label-color" htmlFor="email">
 									{CONST.serviceRequestForm.email}
 								</label>
 								<Controller
@@ -148,7 +148,7 @@ export default function FeatureReqForm() {
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 							<div className="flex flex-col">
 								<label
-									className="font-medium text-sm text-[#414651]"
+									className="font-medium text-sm text-bob-form-label-color"
 									htmlFor="categoryRequest"
 								>
 									{CONST.serviceRequestForm.categoryRequest}
@@ -189,7 +189,7 @@ export default function FeatureReqForm() {
 							{/* File Attachement Input */}
 							<div className="flex flex-col">
 								<label
-									className="font-medium text-sm text-[#414651]"
+									className="font-medium text-sm text-bob-form-label-color"
 									htmlFor="uploadAttachment"
 								>
 									{CONST.serviceRequestForm.uploadAttachement}
@@ -259,7 +259,7 @@ export default function FeatureReqForm() {
 						{/* Message Input */}
 						<div className="flex flex-col">
 							<label
-								className="font-medium text-sm text-[#414651]"
+								className="font-medium text-sm text-bob-form-label-color"
 								htmlFor="yourMessage"
 							>
 								{CONST.serviceRequestForm.yourMessage}
@@ -283,7 +283,7 @@ export default function FeatureReqForm() {
 						{showInput && (
 							<div className="flex flex-col">
 								<label
-									className="font-medium text-sm text-[#414651]"
+									className="font-medium text-sm text-bob-form-label-color"
 									htmlFor="phoneNumber"
 								>
 									{CONST.serviceRequestForm.phoneNumber}

@@ -1,16 +1,25 @@
-import { Bell, CircleUserRound, Info, LogOut, Mail, Plane } from 'lucide-react';
+import {
+	Bell,
+	CircleCheck,
+	CircleUserRound,
+	Info,
+	LogOut,
+	Mail,
+	Plane
+} from 'lucide-react';
 
 const CONST = Object.freeze({
+	circleCheck: CircleCheck,
 	LANDING: [
 		{
 			brandName: { name: 'Buddy On Board', href: '/' },
 			navSection: [
 				{ name: 'Become a buddy', href: '' },
 				{ name: 'How it works', href: 'how-it-works' },
-				{ name: 'About us', href: '' }
+				{ name: 'About us', href: 'about-us' }
 			],
 			loginNav: [
-				{ name: 'Profile', href: '', icon: <CircleUserRound /> },
+				{ name: 'Profile', href: 'user-profile', icon: <CircleUserRound /> },
 				{ name: 'Notifications', href: '', icon: <Bell /> },
 				{ name: 'Your bookings', href: '', icon: <Plane /> },
 				{ name: 'Messages', href: '', icon: <Mail /> },
@@ -27,7 +36,9 @@ const CONST = Object.freeze({
 				'Hmm… we couldn’t find a match. Double-check your email or password and try again. New around here? Hit Sign Up to create your account — or click Forgot Password if you need a reset.'
 		}
 	],
+	updatePassword: { name: 'Update password', href: '/forgot-password' },
 	somethingWentWrong: 'Oops! That didn’t go as planned. Give it another shot!',
+	savedSuccessfully: 'Saved Successfully',
 	lookingFor: 'I am looking for:',
 	landingTitle: 'Travel Smarter, Together: Companions & Deliveries Made Easy',
 	travelBuddy: 'A Travel Buddy',
@@ -64,6 +75,15 @@ const CONST = Object.freeze({
 	receiveUpdates: 'Receive Updates',
 	stayInformedWithUpdates:
 		'Stay informed with updates from the traveler until your package is safely delivered.',
+	enterAllFields: 'Please enter all fields correctly.',
+	sendPasswordResetLink: 'Send password reset link on email',
+	passwordMinLength: 'Must be at least 8 characters.',
+	passwordResetSuccesfully: 'Password has been succesfully reset',
+	passwordResetEmailSent: 'Password reset email sent, please check your inbox.',
+	loginSuccessfull: 'You have logged in successfully',
+	logoutSuccessfull: 'You have logged out successfully',
+	signupSuccessfull: 'Signup successful!',
+	passwordNotMatch: 'The passwords do not match.',
 	FAQ: [
 		{
 			productMission:
@@ -261,7 +281,7 @@ const CONST = Object.freeze({
 				},
 				{
 					name: 'About Us',
-					href: '/'
+					href: 'about-us'
 				},
 				{
 					name: 'Report issue',
@@ -269,7 +289,7 @@ const CONST = Object.freeze({
 				},
 				{
 					name: 'Submit Service Request',
-					href: 'feature-request'
+					href: 'service-request'
 				},
 				{
 					name: 'Help',
@@ -298,6 +318,7 @@ const CONST = Object.freeze({
 	notFoundDescription:
 		'Well, this is awkward. Looks like you need a travel buddy to guide you back to the homepage safely.',
 	serviceRequestForm: {
+		yourProfile: 'Your profile',
 		submitRequest: 'Submit a Service Request',
 		reportAnIssue: 'Report an issue',
 		fullName: 'Full name*',
@@ -305,6 +326,8 @@ const CONST = Object.freeze({
 		password: 'Password*',
 		confirmPassword: 'Confirm Password*',
 		forgotPassword: 'Forgot password?',
+		enterEmailToReset: 'Please enter your email below to reset your password.',
+		createNewPassword: 'Create new password',
 		categoryRequest: 'Category of request*',
 		typeOfIssue: 'Type of issue*',
 		uploadAttachement: 'Upload an attachment',
@@ -333,7 +356,13 @@ const CONST = Object.freeze({
 		phoneNumber: 'Phone number',
 		countryOfResidence: 'Country of residence*',
 		finishRegistration: 'Finish registration'
-	}
+	},
+	linkExpiredTitle: 'Looks like that link has expired.',
+	linkExpiredDescription:
+		'No worries — just click Forgot Password below to get a fresh reset link.',
+	emailVerificationTitle: "We've sent a verification link to your email.",
+	emailVerificationDescription:
+		'Please check your inbox (and spam folder just in case) to verify your account and get started!'
 });
 
 export default CONST;

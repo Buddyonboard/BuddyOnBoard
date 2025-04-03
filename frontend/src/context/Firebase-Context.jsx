@@ -5,8 +5,14 @@ import {
 	createUserWithEmailAndPassword,
 	signInWithEmailAndPassword,
 	onAuthStateChanged,
-	signOut
+	signOut,
+	sendPasswordResetEmail,
+	verifyPasswordResetCode,
+	confirmPasswordReset,
+	sendEmailVerification
 } from 'firebase/auth';
+import { toast } from 'sonner';
+import CONST from '@/utils/Constants';
 
 const FirebaseContext = createContext();
 
@@ -34,9 +40,28 @@ export default function FirebaseProvider(props) {
 		unSubscribe();
 	}, []);
 
+	/*** Reset Password ***/
+	function ResetPassword(email) {
+		return sendPasswordResetEmail(firebaseAuth, email);
+	}
+
+	/*** Verify Reset Password Link ***/
+	function VerifyResetLink(oobCode) {
+		return verifyPasswordResetCode(firebaseAuth, oobCode);
+	}
+
+	/*** Create New Password ***/
+	function CreateNewPasswordLink(oobCode, password) {
+		return confirmPasswordReset(firebaseAuth, oobCode, password);
+	}
+
 	/*** Logout ***/
 	const logout = async () => {
 		await signOut(firebaseAuth);
+		toast(CONST.logoutSuccessfull, {
+			position: 'top-right',
+			closeButton: true
+		});
 	};
 
 	/*** Sign-in authentication ***/
@@ -49,9 +74,27 @@ export default function FirebaseProvider(props) {
 		return signInWithEmailAndPassword(firebaseAuth, email, password);
 	}
 
+	function EmailVerification(user) {
+		const actionCodeSettings = {
+			url: 'http://localhost:5173/user-registration', // Redirect user to your app
+			handleCodeInApp: true // Ensures the link opens in your app
+		};
+		return sendEmailVerification(user, actionCodeSettings);
+	}
+
 	return (
 		<FirebaseContext.Provider
-			value={{ SignupAuthentication, SigninAuthentication, user, logout }}
+			value={{
+				SignupAuthentication,
+				SigninAuthentication,
+				user,
+				logout,
+				ResetPassword,
+				VerifyResetLink,
+				CreateNewPasswordLink,
+				EmailVerification,
+				firebaseAuth
+			}}
 		>
 			{props.children}
 		</FirebaseContext.Provider>

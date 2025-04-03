@@ -91,6 +91,8 @@
 	--color-bob-text-placeholder-color: #cfcfcf;
 	--color-bob-link-placeholder-color: #535862;
 	--color-bob-icon-placeholder-color: #767676;
+	--color-bob-form-label-color: #414651;
+	--color-bob-update-password-link-color: #3d07f0;
 	--color-background: var(--background);
 	--color-foreground: var(--foreground);
 	--color-card: var(--card);

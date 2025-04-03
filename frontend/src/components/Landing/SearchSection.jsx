@@ -16,7 +16,7 @@ export default function SearchSection() {
 			<section className="relative py-8 md:py-12 lg:py-20 px-4">
 				<div className="container mx-auto relative z-10">
 					<div>
-						<h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white lg:mb-24 mb-6 font-merriweather">
+						<h1 className="text-3xl md:text-4xl lg:text-5xl font-normal text-white lg:mb-24 mb-6 font-merriweather">
 							{CONST.landingTitle}
 						</h1>
 

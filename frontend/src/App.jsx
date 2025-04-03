@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from 'react';
-import { Routes, Route, BrowserRouter, Navigate } from 'react-router-dom';
+import { Routes, Route, BrowserRouter } from 'react-router-dom';
 
 import './App.css';
 // import LandingPage from './pages/LandingPage';
@@ -13,12 +13,18 @@ import './App.css';
 // import FeatureReqForm from './components/Forms/Feature-Req-Form';
 // import ReportIssueForm from './components/Forms/Report-Issue-Form';
 import ScrollToTop from './utils/ScrollToTop';
-import SignIn from './auth/Sign-in/Sign-in';
-import SignUp from './auth/Sign-up/Sign-up';
-import PostSignupForm from './components/Forms/Post-Signup-Form';
+import { AuthRoute, PrivateRoute } from './utils/ProtectedRoutes';
+import FirebaseRedirectHandler from './utils/FirebaseRedirectHandler';
+
+// import UserProfile from './pages/Common-pages/User-Profile';
+// import SignIn from './auth/Sign-in/Sign-in';
+// import SignUp from './auth/Sign-up/Sign-up';
+// import PostSignupForm from './components/Forms/Post-Signup-Form';
+// import ResetPassword from './auth/Forgot-Password/Reset-Password';
 
 const LandingPage = lazy(() => import('./pages/LandingPage'));
 const PrivacyPolicy = lazy(() => import('./pages/Common-pages/PrivacyPolicy'));
+const AboutUs = lazy(() => import('./pages/Common-pages/About-Us'));
 const HowItWorksLayout = lazy(() =>
 	import('./components/Landing/HowItWorksLayout')
 );
@@ -31,6 +37,17 @@ const FeatureReqForm = lazy(() =>
 const ReportIssueForm = lazy(() =>
 	import('./components/Forms/Report-Issue-Form')
 );
+const SignIn = lazy(() => import('./auth/Sign-in/Sign-in'));
+const SignUp = lazy(() => import('./auth/Sign-up/Sign-up'));
+const PostSignupForm = lazy(() =>
+	import('./components/Forms/Post-Signup-Form')
+);
+const ResetPassword = lazy(() =>
+	import('./auth/Forgot-Password/Reset-Password')
+);
+const UserProfile = lazy(() =>
+	import('./components/Forms/Profile-Page/User-Profile')
+);
 
 function App() {
 	return (
@@ -39,7 +56,7 @@ function App() {
 				<Suspense fallback={<div>Loading....</div>}>
 					<ScrollToTop />
 					<Routes>
-						{/* Default Route */}
+						{/* Public Default Route */}
 						<Route path="/" element={<LandingPage />} />
 
 						{/* Routes inside Layout */}
@@ -48,14 +65,31 @@ function App() {
 							element={
 								<MainLayout>
 									<Routes>
+										{/* This route will handle Firebase auth links */}
+										<Route
+											path="firebase-redirect"
+											element={<FirebaseRedirectHandler />}
+										/>
+										{/* Public Routes (Anyone Can Access) */}
 										<Route path="privacy-policy" element={<PrivacyPolicy />} />
+										<Route path="about-us" element={<AboutUs />} />
 										<Route path="how-it-works" element={<HowItWorksLayout />} />
 										<Route path="explore-faqs" element={<ExploreFaq />} />
-										<Route path="feature-request" element={<FeatureReqForm />} />
+										<Route path="service-request" element={<FeatureReqForm />} />
 										<Route path="report-issue" element={<ReportIssueForm />} />
-										<Route path="sign-in" element={<SignIn />} />
-										<Route path="sign-up" element={<SignUp />} />
-										<Route path="user-registration" element={<PostSignupForm />} />
+										<Route path="forgot-password" element={<ResetPassword />} />
+
+										{/* Auth Routes (Restricted for Logged-in Users) */}
+										<Route element={<AuthRoute />}>
+											<Route path="sign-in" element={<SignIn />} />
+											<Route path="sign-up" element={<SignUp />} />
+										</Route>
+
+										{/* Private Routes (Only Logged-in Users Can Access) */}
+										<Route element={<PrivateRoute />}>
+											<Route path="user-registration" element={<PostSignupForm />} />
+											<Route path="user-profile" element={<UserProfile />} />
+										</Route>
 
 										{/* Redirect incorrect routes inside layout */}
 										<Route path="*" element={<NotFound />} />

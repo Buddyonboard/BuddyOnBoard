@@ -27,9 +27,9 @@ export default function LandingContainer() {
 		<>
 			<HeroSection scrollToSection={scrollToSection} />
 
-			{/* Gradient Overlay to blend the bottom into white */}
+			{/**** Gradient Overlay to blend the bottom into white ****/}
 			{/* Working 1 - Till search bar */}
-			<div className="absolute inset-0 lg:bg-gradient-to-b lg:from-transparent lg:to-[#F5F5F5]"></div>
+			<div className="absolute inset-0 lg:bg-gradient-to-b lg:from-transparent lg:to-bob-bg-color"></div>
 
 			{/* Working 2 :: Later Reference */}
 			{/* <div className="absolute bottom-0 left-0 w-full lg:h-1/2 max-sm:h-1/2 bg-gradient-to-b from-transparent to-bob-bg-color"></div> */}

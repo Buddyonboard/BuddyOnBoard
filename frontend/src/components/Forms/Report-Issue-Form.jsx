@@ -85,7 +85,7 @@ export default function ReportIssueForm() {
 
 	/* Handling complete form error */
 	function onError() {
-		setFormError('Please enter all fields correctly.');
+		setFormError(CONST.enterAllFields);
 	}
 
 	return (
@@ -102,7 +102,7 @@ export default function ReportIssueForm() {
 							{/* Full Name Input */}
 							<div className="flex flex-col">
 								<label
-									className="font-medium text-sm text-[#414651]"
+									className="font-medium text-sm text-bob-form-label-color"
 									htmlFor="fullName"
 								>
 									{CONST.serviceRequestForm.fullName}
@@ -124,7 +124,7 @@ export default function ReportIssueForm() {
 
 							{/* Email Input */}
 							<div className="flex flex-col">
-								<label className="font-medium text-sm text-[#414651]" htmlFor="email">
+								<label className="font-medium text-sm text-bob-form-label-color" htmlFor="email">
 									{CONST.serviceRequestForm.email}
 								</label>
 								<Controller
@@ -148,7 +148,7 @@ export default function ReportIssueForm() {
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 							<div className="flex flex-col">
 								<label
-									className="font-medium text-sm text-[#414651]"
+									className="font-medium text-sm text-bob-form-label-color"
 									htmlFor="typeOfIssue"
 								>
 									{CONST.serviceRequestForm.typeOfIssue}
@@ -188,7 +188,7 @@ export default function ReportIssueForm() {
 							{/* File Attachement Input */}
 							<div className="flex flex-col">
 								<label
-									className="font-medium text-sm text-[#414651]"
+									className="font-medium text-sm text-bob-form-label-color"
 									htmlFor="uploadAttachment"
 								>
 									{CONST.serviceRequestForm.uploadAttachement}
@@ -258,7 +258,7 @@ export default function ReportIssueForm() {
 						{/* Message Input */}
 						<div className="flex flex-col">
 							<label
-								className="font-medium text-sm text-[#414651]"
+								className="font-medium text-sm text-bob-form-label-color"
 								htmlFor="yourMessage"
 							>
 								{CONST.serviceRequestForm.yourMessage}
@@ -282,7 +282,7 @@ export default function ReportIssueForm() {
 						{showInput && (
 							<div className="flex flex-col">
 								<label
-									className="font-medium text-sm text-[#414651]"
+									className="font-medium text-sm text-bob-form-label-color"
 									htmlFor="phoneNumber"
 								>
 									{CONST.serviceRequestForm.phoneNumber}
