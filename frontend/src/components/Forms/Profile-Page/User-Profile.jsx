@@ -141,7 +141,7 @@ export default function UserProfile() {
 							className="font-medium text-sm text-bob-form-label-color"
 							htmlFor="firstName"
 						>
-							{CONST.postSignUpForm.firstName}
+							{CONST.UserRegistrationForm.firstName}
 						</label>
 						<Controller
 							name="firstName"
@@ -167,7 +167,7 @@ export default function UserProfile() {
 							className="font-medium text-sm text-bob-form-label-color"
 							htmlFor="lastName"
 						>
-							{CONST.postSignUpForm.lastName}
+							{CONST.UserRegistrationForm.lastName}
 						</label>
 						<Controller
 							name="lastName"
@@ -195,7 +195,7 @@ export default function UserProfile() {
 							className="font-medium text-sm text-bob-form-label-color"
 							htmlFor="dateOfBirth"
 						>
-							{CONST.postSignUpForm.dateOfBirth}
+							{CONST.UserRegistrationForm.dateOfBirth}
 						</label>
 						<Controller
 							name="dateOfBirth"
@@ -271,7 +271,7 @@ export default function UserProfile() {
 							className="font-medium text-sm text-bob-form-label-color"
 							htmlFor="middleName"
 						>
-							{CONST.postSignUpForm.middleName}
+							{CONST.UserRegistrationForm.middleName}
 						</label>
 						<Controller
 							name="middleName"
@@ -319,7 +319,7 @@ export default function UserProfile() {
 							className="font-medium text-sm text-bob-form-label-color"
 							htmlFor="phoneNumber"
 						>
-							{CONST.postSignUpForm.phoneNumber}
+							{CONST.UserRegistrationForm.phoneNumber}
 						</label>
 						<Controller
 							name="phoneNumber"
@@ -351,7 +351,7 @@ export default function UserProfile() {
 							className="font-medium text-sm text-bob-form-label-color"
 							htmlFor="countryOfResidence"
 						>
-							{CONST.postSignUpForm.countryOfResidence}
+							{CONST.UserRegistrationForm.countryOfResidence}
 						</label>
 						<Controller
 							name="countryOfResidence"

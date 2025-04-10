@@ -85,12 +85,18 @@
 	--color-secondary-color: black;
 	--color-bob-color: #0d53e0;
 	--color-bob-border-color: #5e89e1;
+	--color-bob-travel-time-color: #1f14f0;
+	--color-bob-travel-details-color: #a5a5a5;
 	--color-bob-bg-color: #f5f5f5;
 	--color-bob-error-color: #df1316;
 	--color-bob-success-color: #1e966a;
+	--color-bob-higher-rating-color: #1a6e4f;
+	--color-bob-language-badge-color: #f6bd41;
 	--color-bob-text-placeholder-color: #cfcfcf;
 	--color-bob-link-placeholder-color: #535862;
 	--color-bob-icon-placeholder-color: #767676;
+	--color-bob-tabs-toggle-color: #e1e1e1;
+	--color-bob-tabs-text-color: #656565;
 	--color-bob-form-label-color: #414651;
 	--color-bob-update-password-link-color: #3d07f0;
 	--color-background: var(--background);

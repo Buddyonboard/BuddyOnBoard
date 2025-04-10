@@ -9,6 +9,7 @@ import DottedHorizontalLine from '@/assets/Landing/DottedHorizontalLine.svg';
 import WomenProfilePicPlaceholder from '@/assets/Common/WomenProfilePicPlaceholder.svg';
 import UserPicOutline from '@/assets/Common/circle-user-round.svg';
 import VerifiedIcon from '@/assets/Common/VerifiedIcon.svg';
+import FlightSchedule from '../ReUsable/Flight-Schedule';
 
 const travelBuddies = [
 	{
@@ -199,26 +200,14 @@ export default function BuddyCarousel() {
 						<CardContent>
 							{/* Journey Details */}
 							<div className="flex justify-between items-center mb-4">
-								{/* Departure */}
-								<div className="text-left">
-									<div className="text-[#1F14F0] font-bold">{buddy.departure.time}</div>
-									<div className="text-xs text-[#A5A5A5]">{buddy.departure.date}</div>
-									<div className="text-xs text-[#A5A5A5] ">
-										{buddy.departure.location}
-									</div>
-								</div>
-
-								{/* Journey Flight Icon */}
-								<div className="flex flex-col items-center mx-2">
-									<img src={CarouselFlight} alt="CarouselFlight" />
-								</div>
-
-								{/* Arrival */}
-								<div className="text-right">
-									<div className="text-[#1F14F0] font-bold">{buddy.arrival.time}</div>
-									<div className="text-xs text-[#A5A5A5]">{buddy.arrival.date}</div>
-									<div className="text-xs text-[#A5A5A5]">{buddy.arrival.location}</div>
-								</div>
+								<FlightSchedule
+									departureTime={buddy.departure.time}
+									departureDate={buddy.departure.date}
+									departureLocation={buddy.departure.location}
+									arrivalTime={buddy.arrival.time}
+									arrivalDate={buddy.arrival.date}
+									arrivalLocation={buddy.arrival.location}
+								/>
 							</div>
 
 							{/* Horizontal Line Separator */}
@@ -250,13 +239,16 @@ export default function BuddyCarousel() {
 								{/* Rating & Language */}
 								<div className="flex flex-row items-end gap-2 mt-1">
 									<div className="flex items-center gap-2">
-										<Badge variant="secondary" className="bg-[#1A6E4F] text-white">
+										<Badge
+											variant="secondary"
+											className="bg-bob-higher-rating-color text-white"
+										>
 											<Star className="h-3 w-3 mr-1 fill-current" />
 											{buddy.rating}
 										</Badge>
 									</div>
 									<div className="flex flex-wrap gap-1 mt-1">
-										<Badge variant="outline" className="bg-[#F6BD41]">
+										<Badge variant="outline" className="bg-bob-language-badge-color">
 											Speaks {buddy.languages.join(', ')}
 										</Badge>
 									</div>

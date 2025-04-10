@@ -36,7 +36,7 @@ const years = Array.from(
 	(_, i) => startYear + i
 );
 
-export default function PostSignupForm() {
+export default function UserRegistrationForm() {
 	const {
 		control,
 		handleSubmit,
@@ -96,7 +96,7 @@ export default function PostSignupForm() {
 	return (
 		<div className="w-full max-w-3xl mx-auto p-6">
 			<h1 className="text-xl md:text-3xl font-normal font-merriweather mb-4 md:mb-8">
-				{CONST.postSignUpForm.tellUsBitMore}
+				{CONST.UserRegistrationForm.tellUsBitMore}
 			</h1>
 
 			<form onSubmit={handleSubmit(onSubmit, onError)} className="space-y-6">
@@ -104,7 +104,7 @@ export default function PostSignupForm() {
 					{/* First Name Input */}
 					<div className="flex flex-col">
 						<label className="font-medium text-sm text-bob-form-label-color" htmlFor="firstName">
-							{CONST.postSignUpForm.firstName}
+							{CONST.UserRegistrationForm.firstName}
 						</label>
 						<Controller
 							name="firstName"
@@ -130,7 +130,7 @@ export default function PostSignupForm() {
 							className="font-medium text-sm text-bob-form-label-color"
 							htmlFor="middleName"
 						>
-							{CONST.postSignUpForm.middleName}
+							{CONST.UserRegistrationForm.middleName}
 						</label>
 						<Controller
 							name="middleName"
@@ -149,7 +149,7 @@ export default function PostSignupForm() {
 					{/* Last Name Input */}
 					<div className="flex flex-col">
 						<label className="font-medium text-sm text-bob-form-label-color" htmlFor="lastName">
-							{CONST.postSignUpForm.lastName}
+							{CONST.UserRegistrationForm.lastName}
 						</label>
 						<Controller
 							name="lastName"
@@ -177,7 +177,7 @@ export default function PostSignupForm() {
 							className="font-medium text-sm text-bob-form-label-color"
 							htmlFor="dateOfBirth"
 						>
-							{CONST.postSignUpForm.dateOfBirth}
+							{CONST.UserRegistrationForm.dateOfBirth}
 						</label>
 						<Controller
 							name="dateOfBirth"
@@ -253,7 +253,7 @@ export default function PostSignupForm() {
 							className="font-medium text-sm text-bob-form-label-color"
 							htmlFor="phoneNumber"
 						>
-							{CONST.postSignUpForm.phoneNumber}
+							{CONST.UserRegistrationForm.phoneNumber}
 						</label>
 						<Controller
 							name="phoneNumber"
@@ -285,7 +285,7 @@ export default function PostSignupForm() {
 							className="font-medium text-sm text-bob-form-label-color"
 							htmlFor="countryOfResidence"
 						>
-							{CONST.postSignUpForm.countryOfResidence}
+							{CONST.UserRegistrationForm.countryOfResidence}
 						</label>
 						<Controller
 							name="countryOfResidence"
@@ -338,7 +338,7 @@ export default function PostSignupForm() {
 					className="w-full font-semibold text-xl rounded-2xl bg-bob-color hover:bg-blue-700 border-bob-border-color border-2 text-primary-color py-6 cursor-pointer"
 					disabled={isSubmitting}
 				>
-					{CONST.postSignUpForm.finishRegistration}
+					{CONST.UserRegistrationForm.finishRegistration}
 				</Button>
 
 				{/* If any of the field in the form is not filled then show error */}

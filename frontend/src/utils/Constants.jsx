@@ -21,7 +21,7 @@ const CONST = Object.freeze({
 			loginNav: [
 				{ name: 'Profile', href: 'user-profile', icon: <CircleUserRound /> },
 				{ name: 'Notifications', href: '', icon: <Bell /> },
-				{ name: 'Your bookings', href: '', icon: <Plane /> },
+				{ name: 'Your bookings', href: 'bookings', icon: <Plane /> },
 				{ name: 'Messages', href: '', icon: <Mail /> },
 				{ name: 'Help', href: 'explore-faqs', icon: <Info /> },
 				{ name: 'Log out', href: 'logout', icon: <LogOut /> }
@@ -33,11 +33,14 @@ const CONST = Object.freeze({
 				"We couldn't find this email in our records, please check the email address or click on Sign up to create your account.",
 			userAlreadyRegistered: 'Email already registered! Try to log in instead.',
 			wrongPasswordUsername:
-				'Hmm… we couldn’t find a match. Double-check your email or password and try again. New around here? Hit Sign Up to create your account — or click Forgot Password if you need a reset.'
+				'Hmm… we couldn’t find a match. Double-check your email or password and try again. New around here? Hit Sign Up to create your account - or click Forgot Password if you need a reset.'
 		}
 	],
 	updatePassword: { name: 'Update password', href: '/forgot-password' },
 	somethingWentWrong: 'Oops! That didn’t go as planned. Give it another shot!',
+	networkError: 'Network error. Please check your internet connection.',
+	emailAlreadyLinked:
+		'This email is already linked with another sign-in provider. Please use the original sign-in method.',
 	savedSuccessfully: 'Saved Successfully',
 	lookingFor: 'I am looking for:',
 	landingTitle: 'Travel Smarter, Together: Companions & Deliveries Made Easy',
@@ -84,6 +87,8 @@ const CONST = Object.freeze({
 	logoutSuccessfull: 'You have logged out successfully',
 	signupSuccessfull: 'Signup successful!',
 	passwordNotMatch: 'The passwords do not match.',
+	signInWithGoogle: 'Sign in with Google',
+	signInWithFacebook: 'Sign in with Facebook',
 	FAQ: [
 		{
 			productMission:
@@ -347,7 +352,7 @@ const CONST = Object.freeze({
 		acceptPrivacyTerms:
 			'The above information will be processed based on our Terms of Use and Privacy Policy.'
 	},
-	postSignUpForm: {
+	UserRegistrationForm: {
 		tellUsBitMore: 'Tell us a bit more...',
 		firstName: 'First name*',
 		middleName: 'Middle name',
@@ -356,6 +361,20 @@ const CONST = Object.freeze({
 		phoneNumber: 'Phone number',
 		countryOfResidence: 'Country of residence*',
 		finishRegistration: 'Finish registration'
+	},
+	bookings: {
+		yourBookings: 'Your bookings',
+		upComing: 'Upcoming',
+		previousBookings: 'Previous Bookings',
+		bookingRequests: 'Booking Requests',
+		noUpComingBookings:
+			'You currently have no upcoming bookings. If you have recently sent requests for a Travel Buddy or Courier Buddy, please wait for a buddy to accept your request or check them in the Booking Requests tab.',
+		noPreviousBookings: 'Your completed bookings will be shown here.',
+		nobookingRequests:
+			'You currently have no pending requests. Search for a Travel Buddy or Courier Buddy and send them a request today!',
+		bookingCancelledTitle: 'Your booking has been cancelled.',
+		bookingCancelledDescription:
+			'You will receive you refund to your original payment method in 5 business days.'
 	},
 	linkExpiredTitle: 'Looks like that link has expired.',
 	linkExpiredDescription:

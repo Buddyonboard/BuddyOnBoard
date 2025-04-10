@@ -5,10 +5,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
 import CONST from '@/utils/Constants';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useFirebase } from '@/context/Firebase-Context';
 import { toast } from 'sonner';
 import MessageAfterSubmit from '@/components/ReUsable/MessageAfterSubmit';
+import GoogleSignInButton from '../Google-Auth/GoogleSignInButton';
+import FacebookSignInButton from '../Facebook-Auth/FacebookSignInButton';
+import { getFirebaseErrorMessage } from '@/utils/firebaseErrorHandler';
 
 export default function SignUp() {
 	const {
@@ -29,6 +32,8 @@ export default function SignUp() {
 	const [emailVerified, setEmailVerified] = useState(false);
 	const firebase = useFirebase();
 	const navigate = useNavigate();
+	const location = useLocation();
+	const pathName = location.pathname.split('/')[1];
 
 	/* Handling Form submission */
 	async function onSubmit(data) {
@@ -49,12 +54,9 @@ export default function SignUp() {
 			setEmailVerified(true);
 			// navigate('/user-registration', { replace: true });
 		} catch (error) {
-			if (error?.code === 'auth/email-already-in-use') {
-				setFormError(CONST.LANDING[0].userAlreadyRegistered);
-			} else {
-				setFormError(CONST.somethingWentWrong);
-				// console.log('Error: ', error);
-			}
+			const message = getFirebaseErrorMessage(error?.code);
+			setFormError(message);
+			// console.log('Error: ', error?.code);
 		}
 	}
 
@@ -199,6 +201,12 @@ export default function SignUp() {
 							</Link>
 						</p>
 					</form>
+
+					{/*** Social Logins ***/}
+					<div className="flex md:flex-row flex-col justify-center">
+						<GoogleSignInButton pathName={pathName} />
+						<FacebookSignInButton pathName={pathName} />
+					</div>
 				</div>
 			) : (
 				<MessageAfterSubmit

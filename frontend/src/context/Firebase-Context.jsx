@@ -9,7 +9,11 @@ import {
 	sendPasswordResetEmail,
 	verifyPasswordResetCode,
 	confirmPasswordReset,
-	sendEmailVerification
+	sendEmailVerification,
+	getAdditionalUserInfo,
+	GoogleAuthProvider,
+	signInWithPopup,
+	FacebookAuthProvider
 } from 'firebase/auth';
 import { toast } from 'sonner';
 import CONST from '@/utils/Constants';
@@ -39,6 +43,27 @@ export default function FirebaseProvider(props) {
 
 		unSubscribe();
 	}, []);
+
+	/*** Get User Additional Info ***/
+	function GetAdditionalInfo(userInfo) {
+		return getAdditionalUserInfo(userInfo).isNewUser;
+	}
+
+	/*** Google Provider Authentication ***/
+	function GoogleAuthentication() {
+		const googleProvider = new GoogleAuthProvider().setCustomParameters({
+			prompt: 'select_account'
+		});
+		return signInWithPopup(firebaseAuth, googleProvider);
+	}
+
+	/*** Facebook Provider Authentication ***/
+	function FacebookAuthentication() {
+		const facebookProvider = new FacebookAuthProvider().setCustomParameters({
+			prompt: 'select_account'
+		});
+		return signInWithPopup(firebaseAuth, facebookProvider);
+	}
 
 	/*** Reset Password ***/
 	function ResetPassword(email) {
@@ -74,6 +99,7 @@ export default function FirebaseProvider(props) {
 		return signInWithEmailAndPassword(firebaseAuth, email, password);
 	}
 
+	/*** Email Verification Trigger ***/
 	function EmailVerification(user) {
 		const actionCodeSettings = {
 			url: 'http://localhost:5173/user-registration', // Redirect user to your app
@@ -93,7 +119,10 @@ export default function FirebaseProvider(props) {
 				VerifyResetLink,
 				CreateNewPasswordLink,
 				EmailVerification,
-				firebaseAuth
+				firebaseAuth,
+				GoogleAuthentication,
+				FacebookAuthentication,
+				GetAdditionalInfo
 			}}
 		>
 			{props.children}

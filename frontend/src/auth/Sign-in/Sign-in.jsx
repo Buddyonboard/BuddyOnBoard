@@ -5,10 +5,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
 import CONST from '@/utils/Constants';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useFirebase } from '@/context/Firebase-Context';
 import { toast } from 'sonner';
 import ReusableLink from '@/components/ReUsable/ReusableLink';
+import GoogleSignInButton from '../Google-Auth/GoogleSignInButton';
+import FacebookSignInButton from '../Facebook-Auth/FacebookSignInButton';
+import { getFirebaseErrorMessage } from '@/utils/firebaseErrorHandler';
 
 export default function SignIn() {
 	const {
@@ -26,6 +29,8 @@ export default function SignIn() {
 	const [formError, setFormError] = useState(null);
 	const firebase = useFirebase();
 	const navigate = useNavigate();
+	const location = useLocation();
+	const pathName = location.pathname.split('/')[1];
 
 	/* Handling Form submission */
 	async function onSubmit(data) {
@@ -40,11 +45,8 @@ export default function SignIn() {
 			setFormError(null);
 			navigate('/');
 		} catch (error) {
-			if (error?.code === 'auth/invalid-credential') {
-				setFormError(CONST.LANDING[0].wrongPasswordUsername);
-			} else {
-				setFormError(CONST.somethingWentWrong);
-			}
+			const message = getFirebaseErrorMessage(error?.code);
+			setFormError(message);
 			// console.log('Error: ', error);
 		}
 	}
@@ -152,6 +154,12 @@ export default function SignIn() {
 					</Link>
 				</p>
 			</form>
+
+			{/*** Social Logins ***/}
+			<div className="flex md:flex-row flex-col justify-center">
+				<GoogleSignInButton pathName={pathName} />
+				<FacebookSignInButton pathName={pathName} />
+			</div>
 		</div>
 	);
 }

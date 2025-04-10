@@ -19,7 +19,7 @@ import FirebaseRedirectHandler from './utils/FirebaseRedirectHandler';
 // import UserProfile from './pages/Common-pages/User-Profile';
 // import SignIn from './auth/Sign-in/Sign-in';
 // import SignUp from './auth/Sign-up/Sign-up';
-// import PostSignupForm from './components/Forms/Post-Signup-Form';
+// import UserRegistrationForm from './components/Forms/Post-Signup-Form';
 // import ResetPassword from './auth/Forgot-Password/Reset-Password';
 
 const LandingPage = lazy(() => import('./pages/LandingPage'));
@@ -39,14 +39,17 @@ const ReportIssueForm = lazy(() =>
 );
 const SignIn = lazy(() => import('./auth/Sign-in/Sign-in'));
 const SignUp = lazy(() => import('./auth/Sign-up/Sign-up'));
-const PostSignupForm = lazy(() =>
-	import('./components/Forms/Post-Signup-Form')
+const UserRegistrationForm = lazy(() =>
+	import('./components/Forms/User-Registration-Form')
 );
 const ResetPassword = lazy(() =>
 	import('./auth/Forgot-Password/Reset-Password')
 );
 const UserProfile = lazy(() =>
 	import('./components/Forms/Profile-Page/User-Profile')
+);
+const BookingsLayout = lazy(() =>
+	import('./components/Bookings/Bookings-Layout')
 );
 
 function App() {
@@ -87,8 +90,9 @@ function App() {
 
 										{/* Private Routes (Only Logged-in Users Can Access) */}
 										<Route element={<PrivateRoute />}>
-											<Route path="user-registration" element={<PostSignupForm />} />
+											<Route path="user-registration" element={<UserRegistrationForm />} />
 											<Route path="user-profile" element={<UserProfile />} />
+											<Route path="bookings" element={<BookingsLayout />} />
 										</Route>
 
 										{/* Redirect incorrect routes inside layout */}
