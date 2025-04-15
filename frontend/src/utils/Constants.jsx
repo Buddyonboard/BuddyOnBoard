@@ -367,14 +367,47 @@ const CONST = Object.freeze({
 		upComing: 'Upcoming',
 		previousBookings: 'Previous Bookings',
 		bookingRequests: 'Booking Requests',
+		goToBookingsPage: 'Go back to your bookings',
+		editBookingRequest: 'Edit request',
+		payBookingRequest: 'Confirm & Pay',
 		noUpComingBookings:
 			'You currently have no upcoming bookings. If you have recently sent requests for a Travel Buddy or Courier Buddy, please wait for a buddy to accept your request or check them in the Booking Requests tab.',
 		noPreviousBookings: 'Your completed bookings will be shown here.',
 		nobookingRequests:
 			'You currently have no pending requests. Search for a Travel Buddy or Courier Buddy and send them a request today!',
-		bookingCancelledTitle: 'Your booking has been cancelled.',
+		bookingCancelledTitle: 'Your booking has been cancelled',
 		bookingCancelledDescription:
-			'You will receive you refund to your original payment method in 5 business days.'
+			'You will receive you refund to your original payment method in 5 business days.',
+		bookingCompletedTitle: 'Your booking has been completed'
+	},
+	bookingsCancelDialog: {
+		whyCancelling: 'Why are you cancelling?',
+		travelBuddy: {
+			changeOfPlans:
+				'Change of Travel Plans - My trip has been rescheduled or canceled.',
+			foundAnAlternative:
+				'Found an Alternative - I found another travel companion outside the platform.',
+			companionUnavailable:
+				'Companion Unavailable - The selected travel buddy is no longer available.',
+			safetyConcerns:
+				'Safety Concerns - I no longer feel comfortable with my selected travel buddy.',
+			platformIssues:
+				'Platform Issues - I faced technical difficulties while booking.'
+		},
+		courierBuddy: {
+			changeOfPlans: 'Change of Plans - I no longer need to send the item.',
+			foundAnAlternative:
+				'Found an Alternative Courier - I found another way to send my item.',
+			deliveryDelay:
+				'Delivery Delay - The courier’s schedule doesn’t align with my requirements.',
+			safetyConcerns:
+				'Safety or Trust Concerns - I am unsure about handing over my package.',
+			platformIssues:
+				'Platform Issues - I faced technical difficulties while booking.'
+		},
+		other: 'Other',
+		cancellationTerms:
+			'A standard cancellation fee of $5 will be deducted from your refund. The remaining amount will be refunded to your original payment method within 5 business days.'
 	},
 	linkExpiredTitle: 'Looks like that link has expired.',
 	linkExpiredDescription:

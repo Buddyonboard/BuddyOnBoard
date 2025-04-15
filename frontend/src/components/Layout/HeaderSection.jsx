@@ -23,6 +23,7 @@ export default function HeaderSection({ scrollToSection, page }) {
 
 		/* Logout Function */
 		if (href === 'logout') {
+			navigate('/sign-in');
 			return logout();
 		}
 
@@ -72,7 +73,7 @@ export default function HeaderSection({ scrollToSection, page }) {
 								</Button>
 
 								{isMenuOpen && (
-									<div className="absolute right-0 mt-2 w-max border-2 border-[#E6E6E6] bg-white text-bob-icon-placeholder-color rounded-lg shadow-lg z-[1000]">
+									<div className="absolute right-0 mt-2 w-max border-2 border-bob-border-outline-color bg-white text-bob-icon-placeholder-color rounded-lg shadow-lg z-[1000]">
 										<ul className="flex flex-col p-2">
 											{item.loginNav.map((value) => (
 												<li key={value.name}>
@@ -136,7 +137,8 @@ export default function HeaderSection({ scrollToSection, page }) {
 						{/* Mobile Menu with Transition */}
 						<div
 							className={`absolute ${
-								user && 'border-2 border-[#E6E6E6] text-bob-icon-placeholder-color'
+								user &&
+								'border-2 border-bob-border-outline-color text-bob-icon-placeholder-color'
 							} top-14 z-50 right-4 bg-white text-black rounded-xl shadow-md transition-transform duration-300 ${
 								isMenuOpen ? 'scale-100' : 'scale-0'
 							}`}

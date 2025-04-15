@@ -15,6 +15,7 @@ import './App.css';
 import ScrollToTop from './utils/ScrollToTop';
 import { AuthRoute, PrivateRoute } from './utils/ProtectedRoutes';
 import FirebaseRedirectHandler from './utils/FirebaseRedirectHandler';
+import { BookingCancellationProvider } from './context/Booking-Cancellation-Context';
 
 // import UserProfile from './pages/Common-pages/User-Profile';
 // import SignIn from './auth/Sign-in/Sign-in';
@@ -92,7 +93,14 @@ function App() {
 										<Route element={<PrivateRoute />}>
 											<Route path="user-registration" element={<UserRegistrationForm />} />
 											<Route path="user-profile" element={<UserProfile />} />
-											<Route path="bookings" element={<BookingsLayout />} />
+											<Route
+												path="bookings"
+												element={
+													<BookingCancellationProvider>
+														<BookingsLayout />
+													</BookingCancellationProvider>
+												}
+											/>
 										</Route>
 
 										{/* Redirect incorrect routes inside layout */}

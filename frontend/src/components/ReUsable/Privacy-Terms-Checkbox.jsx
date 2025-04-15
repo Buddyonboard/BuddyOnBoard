@@ -24,7 +24,7 @@ export default function PrivacyTermsCheckBox({
 								setValue(`${name}`, checked); //Update form state
 								field.onChange(checked);
 							}}
-							className="border border-[#A3A3A3] data-[state=checked]:bg-bob-color cursor-pointer"
+							className="border border-bob-outline-color data-[state=checked]:bg-bob-color cursor-pointer"
 						/>
 					)}
 				/>
@@ -35,11 +35,14 @@ export default function PrivacyTermsCheckBox({
 					{page === 'forms' && (
 						<>
 							The above information will be processed based on our{' '}
-							<Link to="/" className="text-[#3D07F0] font-bold">
+							<Link to="/" className="text-bob-update-password-link-color font-bold">
 								Terms of Use
 							</Link>{' '}
 							and{' '}
-							<Link to="/privacy-policy" className="text-[#3D07F0] font-bold">
+							<Link
+								to="/privacy-policy"
+								className="text-bob-update-password-link-color font-bold"
+							>
 								Privacy Policy
 							</Link>
 							.
@@ -49,11 +52,14 @@ export default function PrivacyTermsCheckBox({
 					{page === 'userRegistration' && (
 						<>
 							I have read and agree to the{' '}
-							<Link to="/" className="text-[#3D07F0] font-bold">
+							<Link to="/" className="text-bob-update-password-link-color font-bold">
 								Terms of Use
 							</Link>{' '}
 							and{' '}
-							<Link to="/privacy-policy" className="text-[#3D07F0] font-bold">
+							<Link
+								to="/privacy-policy"
+								className="text-bob-update-password-link-color font-bold"
+							>
 								Privacy Policy
 							</Link>
 							. I understand that agreeing to the Terms is required to complete my

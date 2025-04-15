@@ -1,5 +1,6 @@
 import CONST from '@/utils/Constants';
 import { Link, useNavigate } from 'react-router-dom';
+import { Button } from '../ui/button';
 
 export default function MessageAfterSubmit({ title, description, page }) {
 	const navigate = useNavigate();
@@ -21,6 +22,19 @@ export default function MessageAfterSubmit({ title, description, page }) {
 				>
 					{CONST.serviceRequestForm.forgotPassword}
 				</Link>
+			)}
+			{page === 'bookingCancellation' && (
+				<Button className="bg-bob-color border-2 border-bob-border-color p-5 rounded-2xl">
+					<Link
+						className="text-primary-color font-semibold text-xl p-5"
+						onClick={() => {
+							navigate('/bookings', { replace: true });
+							window.location.reload();
+						}}
+					>
+						{CONST.bookings.goToBookingsPage}
+					</Link>
+				</Button>
 			)}
 		</div>
 	);

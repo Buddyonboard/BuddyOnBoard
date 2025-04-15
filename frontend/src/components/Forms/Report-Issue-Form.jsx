@@ -124,7 +124,10 @@ export default function ReportIssueForm() {
 
 							{/* Email Input */}
 							<div className="flex flex-col">
-								<label className="font-medium text-sm text-bob-form-label-color" htmlFor="email">
+								<label
+									className="font-medium text-sm text-bob-form-label-color"
+									htmlFor="email"
+								>
 									{CONST.serviceRequestForm.email}
 								</label>
 								<Controller
@@ -323,7 +326,7 @@ export default function ReportIssueForm() {
 											setShowInput((prev) => !prev);
 											field.onChange(checked);
 										}}
-										className="border border-[#A3A3A3] data-[state=checked]:bg-bob-color cursor-pointer"
+										className="border border-bob-outline-color data-[state=checked]:bg-bob-color cursor-pointer"
 									/>
 								)}
 							/>
@@ -348,7 +351,7 @@ export default function ReportIssueForm() {
 											setValue('anonymousTerms', checked); //Update form state
 											field.onChange(checked);
 										}}
-										className="border border-[#A3A3A3] data-[state=checked]:bg-bob-color cursor-pointer"
+										className="border border-bob-outline-color data-[state=checked]:bg-bob-color cursor-pointer"
 									/>
 								)}
 							/>
