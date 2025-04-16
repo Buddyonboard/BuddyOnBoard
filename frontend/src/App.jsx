@@ -49,9 +49,7 @@ const ResetPassword = lazy(() =>
 const UserProfile = lazy(() =>
 	import('./components/Forms/Profile-Page/User-Profile')
 );
-const BookingsLayout = lazy(() =>
-	import('./components/Bookings/Bookings-Layout')
-);
+const BookingsLayout = lazy(() => import('./pages/Bookings-Layout'));
 
 function App() {
 	return (

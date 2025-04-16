@@ -14,10 +14,10 @@ export default function BookingStatusDetails({
 			{(isCancelled || isCompleted) && (
 				<p
 					className="text-center text-sm font-bold text-bob-form-label-color
-                    lg:pl-10 md:pl-15 pl-5"
+                    lg:pl-20 md:pl-30 pl-5"
 				>
-					{isCancelled && CONST.bookings.bookingCancelledTitle}
-					{isCompleted && CONST.bookings.bookingCompletedTitle}
+					{isCancelled && CONST.bookings.cancelledTrip}
+					{isCompleted && CONST.bookings.completedTrip}
 				</p>
 			)}
 

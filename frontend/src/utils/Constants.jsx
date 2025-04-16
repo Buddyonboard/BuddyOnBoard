@@ -378,7 +378,8 @@ const CONST = Object.freeze({
 		bookingCancelledTitle: 'Your booking has been cancelled',
 		bookingCancelledDescription:
 			'You will receive you refund to your original payment method in 5 business days.',
-		bookingCompletedTitle: 'Your booking has been completed'
+		completedTrip: 'Completed Trip',
+		cancelledTrip: 'Cancelled Trip'
 	},
 	bookingsCancelDialog: {
 		whyCancelling: 'Why are you cancelling?',

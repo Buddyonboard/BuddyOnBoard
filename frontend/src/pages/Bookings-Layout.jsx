@@ -1,5 +1,5 @@
-import BookingsTabs from './Bookings-Tabs';
-import MessageAfterSubmit from '../ReUsable/MessageAfterSubmit';
+import BookingsTabs from '@/components/Bookings/Bookings-Tabs';
+import MessageAfterSubmit from '@/components/ReUsable/MessageAfterSubmit';
 import { useBookingCancellation } from '@/context/Booking-Cancellation-Context';
 import CONST from '@/utils/Constants';
 
