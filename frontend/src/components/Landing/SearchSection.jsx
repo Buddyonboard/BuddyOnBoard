@@ -40,7 +40,9 @@ export default function SearchSection() {
 							>
 								{/* <div className="bg-white rounded-lg p-4 shadow-lg flex flex-col md:flex-row gap-4"> */}
 								<div className="md:w-full">
-									<label className="text-xs text-[#5A5A5A] ml-3 font-bold">FROM</label>
+									<label className="text-xs text-bob-search-input-label-color ml-3 font-bold">
+										FROM
+									</label>
 									<Input
 										placeholder="Add an airport"
 										className="w-full border-0 outline-none border-none focus-visible:ring-0 shadow-none"
@@ -53,7 +55,9 @@ export default function SearchSection() {
 								<Separator orientation="horizontal" className="block md:hidden" />
 
 								<div className="md:w-full">
-									<label className="text-xs text-[#5A5A5A] ml-3 font-bold">TO</label>
+									<label className="text-xs text-bob-search-input-label-color ml-3 font-bold">
+										TO
+									</label>
 									<Input
 										placeholder="Add an airport"
 										className="w-full border-0 outline-none border-none focus-visible:ring-0 shadow-none"
@@ -64,7 +68,9 @@ export default function SearchSection() {
 								<Separator orientation="horizontal" className="hidden" />
 
 								<div className="hidden md:block md:w-full">
-									<label className="text-xs text-[#5A5A5A] ml-3 font-bold">DATE</label>
+									<label className="text-xs text-bob-search-input-label-color ml-3 font-bold">
+										DATE
+									</label>
 									<Input
 										placeholder="Choose a date"
 										className="w-full border-0 outline-none border-none focus-visible:ring-0 shadow-none"
@@ -80,7 +86,7 @@ export default function SearchSection() {
 										{/* Horizontal Separator for Mobile Screens */}
 										<Separator orientation="horizontal" className="block md:hidden" />
 										<div className="w-full">
-											<label className="text-xs text-[#5A5A5A] mb-1  ml-3 font-bold">
+											<label className="text-xs text-bob-search-input-label-color mb-1  ml-3 font-bold">
 												TYPE OF PACKAGE
 											</label>
 											<Input
@@ -94,7 +100,9 @@ export default function SearchSection() {
 
 							{/* Separate Date block :: Mobile view */}
 							<div className="block md:hidden bg-white rounded-3xl p-4 mt-5">
-								<label className="text-xs text-[#5A5A5A] ml-3 font-bold">DATE</label>
+								<label className="text-xs text-bob-search-input-label-color ml-3 font-bold">
+									DATE
+								</label>
 								<Input
 									placeholder="Choose a date"
 									className="w-full border-0 outline-none border-none focus-visible:ring-0"

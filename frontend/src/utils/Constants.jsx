@@ -410,6 +410,19 @@ const CONST = Object.freeze({
 		cancellationTerms:
 			'A standard cancellation fee of $5 will be deducted from your refund. The remaining amount will be refunded to your original payment method within 5 business days.'
 	},
+	buddySearch: {
+		sendRequest: 'Send request',
+		startPrice: 'Price starts from',
+		filters: 'FILTERS',
+		language: 'Language',
+		gender: 'Gender',
+		sortBy: 'Sort by:',
+		noResultsFound: 'No results found for the date selected',
+		exactMatch:
+			'These travel buddies are heading to your exact destination on your chosen date!',
+		sameDestination:
+			'These buddies are going to your destination, but their travel dates are slightly different.'
+	},
 	linkExpiredTitle: 'Looks like that link has expired.',
 	linkExpiredDescription:
 		'No worries — just click Forgot Password below to get a fresh reset link.',

@@ -50,6 +50,7 @@ const UserProfile = lazy(() =>
 	import('./components/Forms/Profile-Page/User-Profile')
 );
 const BookingsLayout = lazy(() => import('./pages/Bookings-Layout'));
+const SearchResultsLayout = lazy(() => import('./pages/Search-Results-Layout'));
 
 function App() {
 	return (
@@ -91,6 +92,7 @@ function App() {
 										<Route element={<PrivateRoute />}>
 											<Route path="user-registration" element={<UserRegistrationForm />} />
 											<Route path="user-profile" element={<UserProfile />} />
+											<Route path="search" element={<SearchResultsLayout />} />
 											<Route
 												path="bookings"
 												element={
