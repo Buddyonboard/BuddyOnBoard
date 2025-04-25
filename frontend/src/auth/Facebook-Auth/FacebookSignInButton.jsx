@@ -6,12 +6,15 @@ import {
 } from '@/utils/authHelper';
 import CONST from '@/utils/Constants';
 import { getFirebaseErrorMessage } from '@/utils/firebaseErrorHandler';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 
 export default function FacebookSignInButton({ pathName }) {
 	const navigate = useNavigate();
 	const firebase = useFirebase();
+
+	const [params] = useSearchParams();
+	const redirectTo = params.get('redirect');
 
 	/*** Facebook Sign in handler ***/
 	async function handleFacebookLogin() {
@@ -27,7 +30,9 @@ export default function FacebookSignInButton({ pathName }) {
 			HandleAuthToastMessage(pathName, isNewUser);
 
 			/* Redirect ONLY if it's a new user signing in */
-			RedirectAuthHandler(isNewUser, navigate);
+			redirectTo && !isNewUser
+				? navigate(redirectTo, { replace: true })
+				: RedirectAuthHandler(isNewUser, navigate);
 		} catch (error) {
 			const message = getFirebaseErrorMessage(error?.code);
 			toast(message, {

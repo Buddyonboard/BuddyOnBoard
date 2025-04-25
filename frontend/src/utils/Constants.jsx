@@ -421,7 +421,9 @@ const CONST = Object.freeze({
 		exactMatch:
 			'These travel buddies are heading to your exact destination on your chosen date!',
 		sameDestination:
-			'These buddies are going to your destination, but their travel dates are slightly different.'
+			'These buddies are going to your destination, but their travel dates are slightly different.',
+		enterAllFields: 'Please fill all fields to start your search',
+		fromAndToSameValue: 'From and To locations must be different'
 	},
 	linkExpiredTitle: 'Looks like that link has expired.',
 	linkExpiredDescription:

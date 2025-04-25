@@ -16,6 +16,7 @@ import ScrollToTop from './utils/ScrollToTop';
 import { AuthRoute, PrivateRoute } from './utils/ProtectedRoutes';
 import FirebaseRedirectHandler from './utils/FirebaseRedirectHandler';
 import { BookingCancellationProvider } from './context/Booking-Cancellation-Context';
+import SearchRouteGuard from './utils/SearchRouteGuard';
 
 // import UserProfile from './pages/Common-pages/User-Profile';
 // import SignIn from './auth/Sign-in/Sign-in';
@@ -92,7 +93,6 @@ function App() {
 										<Route element={<PrivateRoute />}>
 											<Route path="user-registration" element={<UserRegistrationForm />} />
 											<Route path="user-profile" element={<UserProfile />} />
-											<Route path="search" element={<SearchResultsLayout />} />
 											<Route
 												path="bookings"
 												element={
@@ -102,6 +102,16 @@ function App() {
 												}
 											/>
 										</Route>
+
+										{/* Protected Route for Search */}
+										<Route
+											path="search"
+											element={
+												<SearchRouteGuard>
+													<SearchResultsLayout />
+												</SearchRouteGuard>
+											}
+										/>
 
 										{/* Redirect incorrect routes inside layout */}
 										<Route path="*" element={<NotFound />} />

@@ -18,7 +18,7 @@ function SelectValue({ ...props }) {
 	return <SelectPrimitive.Value data-slot="select-value" {...props} />;
 }
 
-function SelectTrigger({ className, children, ...props }) {
+function SelectTrigger({ className, children, hideIcon = false, ...props }) {
 	return (
 		<SelectPrimitive.Trigger
 			data-slot="select-trigger"
@@ -30,10 +30,12 @@ function SelectTrigger({ className, children, ...props }) {
 		>
 			{children}
 			<SelectPrimitive.Icon asChild>
-				<ChevronDownIcon
-					size={16}
-					className="text-muted-foreground/80 in-aria-invalid:text-destructive/80 shrink-0"
-				/>
+				{!hideIcon && (
+					<ChevronDownIcon
+						size={16}
+						className="text-muted-foreground/80 in-aria-invalid:text-destructive/80 shrink-0"
+					/>
+				)}
 			</SelectPrimitive.Icon>
 		</SelectPrimitive.Trigger>
 	);

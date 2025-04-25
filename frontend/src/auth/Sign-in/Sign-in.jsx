@@ -5,7 +5,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
 import CONST from '@/utils/Constants';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import {
+	Link,
+	useLocation,
+	useNavigate,
+	useSearchParams
+} from 'react-router-dom';
 import { useFirebase } from '@/context/Firebase-Context';
 import { toast } from 'sonner';
 import ReusableLink from '@/components/ReUsable/ReusableLink';
@@ -32,6 +37,9 @@ export default function SignIn() {
 	const location = useLocation();
 	const pathName = location.pathname.split('/')[1];
 
+	const [params] = useSearchParams();
+	const redirectTo = params.get('redirect') || '/';
+
 	/* Handling Form submission */
 	async function onSubmit(data) {
 		try {
@@ -43,7 +51,7 @@ export default function SignIn() {
 				closeButton: true
 			});
 			setFormError(null);
-			navigate('/');
+			navigate(redirectTo);
 		} catch (error) {
 			const message = getFirebaseErrorMessage(error?.code);
 			setFormError(message);
