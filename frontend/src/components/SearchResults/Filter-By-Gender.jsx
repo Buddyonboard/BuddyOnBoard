@@ -9,9 +9,9 @@ import CONST from '@/utils/Constants';
 
 export default function FilterByGender() {
 	return (
-		<div>
+		<div className="w-full">
 			<Select>
-				<SelectTrigger className="w-full justify-between bg-primary-color data-[placeholder]:text-bob-filters-placeholder-color">
+				<SelectTrigger className="w-full justify-between bg-primary-color data-[placeholder]:text-bob-filters-placeholder-color max-sm:*:data-[slot=select-value]:text-xs">
 					<SelectValue placeholder={CONST.buddySearch.gender} />
 				</SelectTrigger>
 				<SelectContent className="w-full">

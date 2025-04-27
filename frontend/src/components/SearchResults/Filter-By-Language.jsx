@@ -28,7 +28,7 @@ export default function FilterByLanguage({
 	};
 
 	return (
-		<div>
+		<div className="w-full">
 			<DropdownMenu>
 				<DropdownMenuTrigger className="w-full justify-between" asChild>
 					<Button className="text-bob-filters-placeholder-color bg-primary-color">
@@ -44,7 +44,7 @@ export default function FilterByLanguage({
 
 				{/*** Selected Options Tags ***/}
 				{selectedLanguages.length > 0 && (
-					<div className="grid grid-cols-3 mt-3">
+					<div className="grid lg:grid-cols-3 md:grid-cols-4 grid-cols-1 md:gap-0 gap-2.5 mt-3">
 						{selectedLanguages.map((tag) => (
 							<Badge
 								key={tag}
@@ -68,7 +68,7 @@ export default function FilterByLanguage({
 					</div>
 				)}
 
-				<DropdownMenuContent className="lg:min-w-[16rem]">
+				<DropdownMenuContent className="lg:min-w-[16rem] md:min-w-[20rem]">
 					{languages.sort().map((lang, index) => (
 						<DropdownMenuItem
 							key={index}

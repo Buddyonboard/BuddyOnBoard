@@ -43,9 +43,9 @@ export function BuddyListingCard({ buddyList }) {
 				{/* Horizontal Line Separator */}
 				<CardHorizontalSeparator />
 
-				<div className="flex flex-col lg:flex-row justify-evenly md:max-lg:items-baseline max-sm:items-center">
+				<div className="flex flex-col lg:flex-row justify-evenly md:max-lg:items-center max-sm:items-center">
 					{/******** Flight Details Section **********/}
-					<div className="flex flex-1 flex-col lg:p-5 md:py-2.5 py-4 md:pr-10 md:px-0 px-4">
+					<div className="flex flex-1 flex-col lg:p-5 md:py-2.5 py-4 md:pr-10 md:px-0 px-4 md:max-lg:mt-3">
 						<div className="flex flex-row md:items-center md:justify-between">
 							{/***** Departure *****/}
 							<div className="text-start">
@@ -74,7 +74,9 @@ export function BuddyListingCard({ buddyList }) {
 					</div>
 
 					{/***** Vertical Line Separator *****/}
-					<CardVerticalSeparator />
+					<div className="lg:block hidden">
+						<CardVerticalSeparator />
+					</div>
 
 					{/****** Actions or Status *******/}
 					<SendRequestButton price={buddyList.price} />

@@ -9,7 +9,7 @@ import {
 export default function SortByOption() {
 	return (
 		<Select>
-			<SelectTrigger className="w-auto text-nowrap justify-between shadow-none text-bob-filters-placeholder-color font-semibold">
+			<SelectTrigger className="w-auto text-nowrap justify-between shadow-none text-bob-filters-placeholder-color font-semibold max-sm:text-xs">
 				<SelectValue placeholder="Relevance" />
 			</SelectTrigger>
 			<SelectContent>
