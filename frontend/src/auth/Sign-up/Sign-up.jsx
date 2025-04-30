@@ -172,6 +172,9 @@ export default function SignUp() {
 										/>
 									)}
 								/>
+								{formError === CONST.passwordNotMatch && (
+									<p className="text-sm text-bob-error-color mt-4">{formError}</p>
+								)}
 							</div>
 						</div>
 
@@ -186,7 +189,7 @@ export default function SignUp() {
 						</Button>
 
 						{/* If any of the field in the form is not filled then show error */}
-						{formError && (
+						{formError !== CONST.passwordNotMatch && (
 							<p className="text-center text-bob-error-color">{formError}</p>
 						)}
 

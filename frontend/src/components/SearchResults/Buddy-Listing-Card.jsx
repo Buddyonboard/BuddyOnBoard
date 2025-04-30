@@ -24,7 +24,7 @@ export function BuddyListingCard({ buddyList }) {
 								altAvatarName={buddyList.user.name}
 							/>
 							{/*** Profile Name & Verified Icon ***/}
-							<VerifiedBuddyName userName={buddyList.user.name} />
+							<VerifiedBuddyName userName={buddyList.user.name} page="search" />
 						</div>
 					</div>
 

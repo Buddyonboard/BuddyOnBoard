@@ -416,6 +416,7 @@ const CONST = Object.freeze({
 		filters: 'FILTERS',
 		language: 'Language',
 		gender: 'Gender',
+		courierItem: 'Courier item',
 		sortBy: 'Sort by:',
 		noResultsFound: 'No results found for the date selected',
 		exactMatch:

@@ -50,7 +50,7 @@ export default function FaqAccordion() {
 			<Accordion type="single" collapsible className="w-full">
 				{items.map((item) => (
 					<AccordionItem value={item.id} key={item.id} className="py-2">
-						<AccordionTrigger className="p-5 text-[15px] leading-6 hover:no-underline text-[#595959] bg-[#CEDAF3] rounded-t-md rounded-b-none data-[state=open]:bg-[#E1E9F7] data-[state=closed]:rounded-b-md">
+						<AccordionTrigger className="p-5 text-[15px] leading-6 hover:no-underline text-bob-accordion-content-color bg-[#CEDAF3] rounded-t-md rounded-b-none data-[state=open]:bg-[#E1E9F7] data-[state=closed]:rounded-b-md">
 							{item.title}
 						</AccordionTrigger>
 						<AccordionContent className="text-[#737070] pl-5 bg-[#E1E9F7] rounded-b-md">
