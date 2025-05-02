@@ -238,7 +238,7 @@ export default function BuddyCarousel() {
 
 								{/* Rating & Language */}
 								<div className="flex flex-row items-end gap-2 mt-1">
-									<div className="flex items-center gap-2">
+									{/* <div className="flex items-center gap-2">
 										<Badge
 											variant="secondary"
 											className="bg-bob-higher-rating-color text-white"
@@ -246,7 +246,7 @@ export default function BuddyCarousel() {
 											<Star className="h-3 w-3 mr-1 fill-current" />
 											{buddy.rating}
 										</Badge>
-									</div>
+									</div> */}
 									<div className="flex flex-wrap gap-1 mt-1">
 										<Badge variant="outline" className="bg-bob-language-badge-color">
 											Speaks {buddy.languages.join(', ')}
