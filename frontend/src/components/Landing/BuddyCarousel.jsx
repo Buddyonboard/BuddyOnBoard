@@ -157,7 +157,7 @@ export default function BuddyCarousel() {
 	}
 
 	return (
-		<div className="relative w-full max-w-[1440px] mx-auto px-4 bg-bob-bg-color">
+		<div className="relative w-full max-w-[1440px] 2xl:max-w-[100%] mx-auto px-4 bg-bob-bg-color">
 			{/* Navigation Buttons */}
 			<div className="absolute left-0 top-1/2 -translate-y-1/2 z-10">
 				<Button

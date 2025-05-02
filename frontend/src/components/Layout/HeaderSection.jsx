@@ -5,6 +5,7 @@ import { Menu, UserRound, X } from 'lucide-react';
 
 import CONST from '@/utils/constants';
 import { useFirebase } from '@/context/Firebase-Context';
+import FooterBrandImage from '@/assets/Common/FooterBrandImage.svg';
 
 const userProfileIcon = <UserRound size={18} />;
 
@@ -43,19 +44,23 @@ export default function HeaderSection({ scrollToSection, page }) {
 						page === 'landing' ? 'bg-none' : 'bg-bob-color'
 					} relative z-50 py-4 md:py-0 px-4 flex items-center justify-between text-primary-color`}
 				>
-					{/* Brand Name */}
+					{/* Brand Name Logo */}
 					<Link
 						to={item.brandName.href}
-						className="text-[20px] md:text-[24px] lg:text-[32px] font-[400] font-merriweather"
+						className="content-center 
+							2xl:h-[55px] 2xl:w-20 2xl:ml-5 
+							lg:h-[55px] lg:w-20 lg:ml-5 
+							md:h-[55px] md:w-20 md:ml-2
+							max-sm:h-[25px] max-sm:w-16 max-sm:ml-2"
 					>
-						{item.brandName.name}
+						<img src={FooterBrandImage} alt="FooterBrandImage" />
 					</Link>
 					{/* Nav Links */}
 					<nav className="hidden md:flex items-center gap-6">
 						{item.navSection.map((opt) => (
 							<Link
 								onClick={(e) => handleNavigation(e, opt.href)}
-								className="text-sm  font-[600]"
+								className="text-sm font-[600] font-dm-sans"
 							>
 								{opt.name}
 							</Link>

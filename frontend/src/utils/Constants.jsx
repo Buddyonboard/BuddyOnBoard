@@ -298,7 +298,7 @@ const CONST = Object.freeze({
 				},
 				{
 					name: 'Help',
-					href: '/'
+					href: 'explore-faqs'
 				}
 			],
 			privacyPolicy: [
@@ -308,7 +308,7 @@ const CONST = Object.freeze({
 				},
 				{
 					name: 'Terms of Use',
-					href: '/'
+					href: 'terms-of-use'
 				},
 				{
 					name: 'Cookies Settings',

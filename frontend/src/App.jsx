@@ -17,6 +17,7 @@ import { AuthRoute, PrivateRoute } from './utils/ProtectedRoutes';
 import FirebaseRedirectHandler from './utils/FirebaseRedirectHandler';
 import { BookingCancellationProvider } from './context/Booking-Cancellation-Context';
 import SearchRouteGuard from './utils/SearchRouteGuard';
+// import TermsOfUse from './pages/Common-pages/TermsOfUse';
 
 // import UserProfile from './pages/Common-pages/User-Profile';
 // import SignIn from './auth/Sign-in/Sign-in';
@@ -26,6 +27,7 @@ import SearchRouteGuard from './utils/SearchRouteGuard';
 
 const LandingPage = lazy(() => import('./pages/LandingPage'));
 const PrivacyPolicy = lazy(() => import('./pages/Common-pages/PrivacyPolicy'));
+const TermsOfUse = lazy(() => import('./pages/Common-pages/TermsOfUse'));
 const AboutUs = lazy(() => import('./pages/Common-pages/About-Us'));
 const HowItWorksLayout = lazy(() =>
 	import('./components/Landing/HowItWorksLayout')
@@ -76,6 +78,7 @@ function App() {
 										/>
 										{/* Public Routes (Anyone Can Access) */}
 										<Route path="privacy-policy" element={<PrivacyPolicy />} />
+										<Route path="terms-of-use" element={<TermsOfUse />} />
 										<Route path="about-us" element={<AboutUs />} />
 										<Route path="how-it-works" element={<HowItWorksLayout />} />
 										<Route path="explore-faqs" element={<ExploreFaq />} />
