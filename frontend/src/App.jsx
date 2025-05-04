@@ -17,6 +17,7 @@ import { AuthRoute, PrivateRoute } from './utils/ProtectedRoutes';
 import FirebaseRedirectHandler from './utils/FirebaseRedirectHandler';
 import { BookingCancellationProvider } from './context/Booking-Cancellation-Context';
 import SearchRouteGuard from './utils/SearchRouteGuard';
+// import SendRequestForm from './pages/SendRequestForm-Layout';
 // import TermsOfUse from './pages/Common-pages/TermsOfUse';
 
 // import UserProfile from './pages/Common-pages/User-Profile';
@@ -52,6 +53,7 @@ const ResetPassword = lazy(() =>
 const UserProfile = lazy(() =>
 	import('./components/Forms/Profile-Page/User-Profile')
 );
+const SendRequestForm = lazy(() => import('./pages/SendRequestForm-Layout'));
 const BookingsLayout = lazy(() => import('./pages/Bookings-Layout'));
 const SearchResultsLayout = lazy(() => import('./pages/Search-Results-Layout'));
 
@@ -76,6 +78,7 @@ function App() {
 											path="firebase-redirect"
 											element={<FirebaseRedirectHandler />}
 										/>
+
 										{/* Public Routes (Anyone Can Access) */}
 										<Route path="privacy-policy" element={<PrivacyPolicy />} />
 										<Route path="terms-of-use" element={<TermsOfUse />} />
@@ -96,6 +99,7 @@ function App() {
 										<Route element={<PrivateRoute />}>
 											<Route path="user-registration" element={<UserRegistrationForm />} />
 											<Route path="user-profile" element={<UserProfile />} />
+											<Route path="send-request" element={<SendRequestForm />} />
 											<Route
 												path="bookings"
 												element={

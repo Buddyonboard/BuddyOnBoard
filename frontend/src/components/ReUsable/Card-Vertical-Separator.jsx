@@ -7,7 +7,8 @@ export default function CardVerticalSeparator({ page }) {
 			{page === 'listingInfo' ? (
 				<Separator
 					orientation="vertical"
-					className="data-[orientation=vertical]:h-24 data-[orientation=vertical]:w-[1px] bg-[#CCCCCC] lg:ml-15 md:block hidden"
+					className="data-[orientation=vertical]:h-24 data-[orientation=vertical]:w-[1px] bg-bob-line-separator-color lg:ml-15 md:ml-16 2xl:ml-[100px] 
+					md:block hidden"
 				/>
 			) : (
 				<img

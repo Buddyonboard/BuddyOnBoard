@@ -8,39 +8,36 @@ import CardHorizontalSeparator from '@/components/ReUsable/Card-Horizontal-Separ
 import FlightStopType from '@/components/ReUsable/Service-Seeker/Flight-Stop-Type';
 import BookingsSchedule from '@/components/Bookings/Bookings-Schedule';
 
-export default function BuddyProfileInfoCard({ selectedBuddyInfo }) {
+export default function BuddyInfoCard({ buddyDetails }) {
 	return (
 		<Card className="overflow-hidden rounded-2xl shadow-xl py-0 mb-6">
 			<div className="flex flex-col-reverse md:flex-row items-center md:max-lg:justify-between max-sm:gap-0 lg:justify-around">
 				{/************ User Info Section *************/}
-				<div className="pl-2 pb-5 md:w-1/3 w-full">
+				<div className="2xl:pl-0 pl-5 pb-5 md:w-1/3 w-full">
 					{/***** Profile Pic and Verified Tag *****/}
 					<div className="flex items-center gap-3">
 						<div className="flex items-center gap-3 mt-4">
 							{/*** Profile Pic ***/}
 							<BuddyCardAvatar
-								userAvatar={selectedBuddyInfo?.user.avatar}
-								altAvatarName={selectedBuddyInfo?.user.name}
+								userAvatar={buddyDetails?.user.avatar}
+								altAvatarName={buddyDetails?.user.name}
 							/>
 							{/*** Profile Name & Verified Icon ***/}
-							<VerifiedBuddyName userName={selectedBuddyInfo?.user.name} />
+							<VerifiedBuddyName userName={buddyDetails?.user.name} />
 						</div>
 					</div>
 
 					<div className="flex md:flex-row flex-col md:gap-2 gap-0">
 						{/**** Number Of Trips Completed *****/}
 						<ServiceCategoryTag
-							// serviceType={selectedBuddyInfo?.user.type}
-							serviceType="15 completed trips"
+							serviceType={buddyDetails?.user.type}
 							className="w-max font-medium"
 						/>
 
 						{/**** Language/Courier Preferences ****/}
 						<LanguageCourierTag
-							// serviceType="Courier Buddy"
-							// userPreference="Telugu, English"
-							serviceType={selectedBuddyInfo?.user.type}
-							userPreference={selectedBuddyInfo?.user.preferences}
+							serviceType={buddyDetails?.user.type}
+							userPreference={buddyDetails?.user.preferences}
 						/>
 					</div>
 				</div>
@@ -52,29 +49,29 @@ export default function BuddyProfileInfoCard({ selectedBuddyInfo }) {
 
 				<div className="flex flex-col lg:flex-row justify-evenly md:max-lg:items-center max-sm:items-center">
 					{/******** Flight Details Section **********/}
-					<div className="flex flex-1 flex-col lg:p-5 md:py-2.5 py-4 md:pr-5 md:px-0 px-4">
+					<div className="flex flex-1 flex-col lg:p-5 md:py-2.5 py-4 md:pr-10 md:px-0 px-4 md:max-lg:mt-3">
 						<div className="flex flex-row md:items-center md:justify-between">
 							{/***** Departure *****/}
 							<div className="text-start">
 								<BookingsSchedule
-									time={selectedBuddyInfo?.departure.time}
-									date={selectedBuddyInfo?.departure.date}
-									location={selectedBuddyInfo?.departure.location}
+									time={buddyDetails?.departure.time}
+									date={buddyDetails?.departure.date}
+									location={buddyDetails?.departure.location}
 								/>
 							</div>
 
 							{/**** Flight Connection Type ****/}
 							<FlightStopType
-								connectionType={selectedBuddyInfo?.connectionType}
-								connectionLocation={selectedBuddyInfo?.connectionLocation}
+								connectionType={buddyDetails?.connectionType}
+								connectionLocation={buddyDetails?.connectionLocation}
 							/>
 
 							{/***** Arrival *****/}
 							<div className="text-end">
 								<BookingsSchedule
-									time={selectedBuddyInfo?.arrival.time}
-									date={selectedBuddyInfo?.arrival.date}
-									location={selectedBuddyInfo?.arrival.location}
+									time={buddyDetails?.arrival.time}
+									date={buddyDetails?.arrival.date}
+									location={buddyDetails?.arrival.location}
 								/>
 							</div>
 						</div>

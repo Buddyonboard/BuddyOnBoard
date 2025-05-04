@@ -12,10 +12,10 @@ export default function PricingSection({ pricingOptions, screenType }) {
 				<CardContent className="p-4">
 					{Object.entries(pricingOptions).map(([key, option]) => (
 						<div key={key} className="cursor-pointer rounded-lg p-2">
-							<div className="text-sm font-semibold text-[#A6A6A6]">
+							<div className="text-sm 2xl:text-2xl font-semibold text-bob-pricing-block-color">
 								{option.label}
 							</div>
-							<div className="text-xl font-medium text-bob-accordion-content-color">
+							<div className="text-xl 2xl:text-2xl font-medium text-bob-accordion-content-color">
 								{option.price}
 							</div>
 						</div>

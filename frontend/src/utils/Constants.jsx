@@ -411,7 +411,7 @@ const CONST = Object.freeze({
 			'A standard cancellation fee of $5 will be deducted from your refund. The remaining amount will be refunded to your original payment method within 5 business days.'
 	},
 	buddySearch: {
-		sendRequest: 'Send request',
+		sendRequest: { name: 'Send request', href: 'send-request' },
 		startPrice: 'Price starts from',
 		filters: 'FILTERS',
 		language: 'Language',
@@ -425,6 +425,21 @@ const CONST = Object.freeze({
 			'These buddies are going to your destination, but their travel dates are slightly different.',
 		enterAllFields: 'Please fill all fields to start your search',
 		fromAndToSameValue: 'From and To locations must be different'
+	},
+	sendRequestForm: {
+		sendARequest: 'Send a request',
+		addYourDetails: 'Add Your Details',
+		totalPassengers: 'Total passengers',
+		passengersAllowed: 'Up to 3 passengers allowed',
+		priceDetails: 'Price details',
+		buddyServiceFee: 'BUDDY SERVICE FEE',
+		platformFees: 'PLATFORM FEES',
+		toolTipText:
+			'Buddy On Board platform charges standard 15 % fee on all transactions',
+		totalPriceBeforeTaxes: 'TOTAL PRICE BEFORE TAXES',
+		paymentInfo:
+			'You’ll be asked to pay only after a buddy accepts your request.',
+		platformFee: 10.0
 	},
 	linkExpiredTitle: 'Looks like that link has expired.',
 	linkExpiredDescription:

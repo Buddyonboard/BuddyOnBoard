@@ -18,8 +18,6 @@ export default function SearchResultsLayout() {
 
 	const userIdParam = params.get('selectedUserId');
 
-	console.log('userIdParam >', userIdParam);
-
 	const languages = [
 		'English',
 		'Hindi',
@@ -30,196 +28,9 @@ export default function SearchResultsLayout() {
 		'Arabic'
 	];
 
-	const travelBuddies = [
+	const buddiesListingData = [
 		{
-			id: 1,
-			name: 'Sarah T.',
-			avatar: '/placeholder.svg?height=40&width=40',
-			rating: 4.2,
-			languages: ['English', 'Hindi', 'Tamil'],
-			user: {
-				name: 'Sarah T.',
-				verified: true,
-				avatar: WomenProfilePicPlaceholder,
-				rating: 4.4,
-				type: 'Travel Buddy',
-				preferences: 'Speaks English, Hindi, Tamil'
-			},
-			departure: {
-				time: '08:30 AM',
-				date: '22 August, 2024',
-				location: 'LAX, USA'
-			},
-			arrival: {
-				time: '12:15 PM',
-				date: '22 August, 2024',
-				location: 'YVR, Canada'
-			},
-			price: 422.21,
-			direct: true,
-			stopover: ''
-		},
-		{
-			id: 1,
-			name: 'Sarah T.',
-			avatar: '/placeholder.svg?height=40&width=40',
-			rating: 4.2,
-			languages: ['English', 'Hindi', 'Tamil'],
-			user: {
-				name: 'Sarah T.',
-				verified: true,
-				avatar: WomenProfilePicPlaceholder,
-				rating: 4.4,
-				type: 'Travel Buddy',
-				preferences: 'Speaks English, Hindi, Tamil'
-			},
-			departure: {
-				time: '08:30 AM',
-				date: '22 August, 2024',
-				location: 'LAX, USA'
-			},
-			arrival: {
-				time: '12:15 PM',
-				date: '22 August, 2024',
-				location: 'YVR, Canada'
-			},
-			price: 422.21,
-			direct: true,
-			stopover: ''
-		},
-		{
-			id: 1,
-			name: 'Sarah T.',
-			avatar: '/placeholder.svg?height=40&width=40',
-			rating: 4.2,
-			languages: ['English', 'Hindi', 'Tamil'],
-			user: {
-				name: 'Sarah T.',
-				verified: true,
-				avatar: WomenProfilePicPlaceholder,
-				rating: 4.4,
-				type: 'Travel Buddy',
-				preferences: 'Speaks English, Hindi, Tamil'
-			},
-			departure: {
-				time: '08:30 AM',
-				date: '22 August, 2024',
-				location: 'LAX, USA'
-			},
-			arrival: {
-				time: '12:15 PM',
-				date: '22 August, 2024',
-				location: 'YVR, Canada'
-			},
-			price: 422.21,
-			direct: true,
-			stopover: ''
-		}
-		// {
-		// 	id: 2,
-		// 	name: 'Sarah T.',
-		// 	avatar: '/placeholder.svg?height=40&width=40',
-		// 	rating: 4.2,
-		// 	languages: ['English', 'Hindi', 'Tamil'],
-		// 	departure: {
-		// 		time: '08:30 AM',
-		// 		date: '22 August, 2024',
-		// 		location: 'LAX, USA'
-		// 	},
-		// 	arrival: {
-		// 		time: '12:15 PM',
-		// 		date: '22 August, 2024',
-		// 		location: 'YVR, Canada'
-		// 	},
-		// 	price: 422.21,
-		// 	direct: false,
-		// 	stopover: 'NYC'
-		// },
-		// {
-		// 	id: 3,
-		// 	name: 'Sarah T.',
-		// 	avatar: '/placeholder.svg?height=40&width=40',
-		// 	rating: 4.2,
-		// 	languages: ['English', 'Hindi', 'Tamil'],
-		// 	departure: {
-		// 		time: '08:30 AM',
-		// 		date: '22 August, 2024',
-		// 		location: 'LAX, USA'
-		// 	},
-		// 	arrival: {
-		// 		time: '12:15 PM',
-		// 		date: '22 August, 2024',
-		// 		location: 'YVR, Canada'
-		// 	},
-		// 	price: 422.21,
-		// 	direct: true,
-		// 	stopover: ''
-		// },
-		// {
-		// 	id: 4,
-		// 	name: 'Sarah T.',
-		// 	avatar: '/placeholder.svg?height=40&width=40',
-		// 	rating: 4.2,
-		// 	languages: ['English', 'Hindi', 'Tamil'],
-		// 	departure: {
-		// 		time: '08:30 AM',
-		// 		date: '22 August, 2024',
-		// 		location: 'LAX, USA'
-		// 	},
-		// 	arrival: {
-		// 		time: '12:15 PM',
-		// 		date: '22 August, 2024',
-		// 		location: 'YVR, Canada'
-		// 	},
-		// 	price: 422.21,
-		// 	direct: false,
-		// 	stopover: 'NYC'
-		// },
-		// {
-		// 	id: 5,
-		// 	name: 'Sarah T.',
-		// 	avatar: '/placeholder.svg?height=40&width=40',
-		// 	rating: 4.2,
-		// 	languages: ['English', 'Hindi', 'Tamil'],
-		// 	departure: {
-		// 		time: '08:30 AM',
-		// 		date: '22 August, 2024',
-		// 		location: 'LAX, USA'
-		// 	},
-		// 	arrival: {
-		// 		time: '12:15 PM',
-		// 		date: '22 August, 2024',
-		// 		location: 'YVR, Canada'
-		// 	},
-		// 	price: 422.21,
-		// 	direct: true,
-		// 	stopover: ''
-		// },
-		// {
-		// 	id: 6,
-		// 	name: 'Sarah T.',
-		// 	avatar: '/placeholder.svg?height=40&width=40',
-		// 	rating: 4.2,
-		// 	languages: ['English', 'Hindi', 'Tamil'],
-		// 	departure: {
-		// 		time: '08:30 AM',
-		// 		date: '22 August, 2024',
-		// 		location: 'LAX, USA'
-		// 	},
-		// 	arrival: {
-		// 		time: '12:15 PM',
-		// 		date: '22 August, 2024',
-		// 		location: 'YVR, Canada'
-		// 	},
-		// 	price: 422.21,
-		// 	direct: false,
-		// 	stopover: 'NYC'
-		// }
-	];
-
-	const exactMatchTravelBuddies = [
-		{
-			id: 1,
+			id: '1001',
 			name: 'Sarah T.',
 			avatar: '/placeholder.svg?height=40&width=40',
 			rating: 4.2,
@@ -247,7 +58,7 @@ export default function SearchResultsLayout() {
 			connectionLocation: ''
 		},
 		{
-			id: 1,
+			id: '1002',
 			name: 'Sarah T.',
 			avatar: '/placeholder.svg?height=40&width=40',
 			rating: 4.2,
@@ -275,7 +86,178 @@ export default function SearchResultsLayout() {
 			connectionLocation: 'LA'
 		},
 		{
-			id: 1,
+			id: '1003',
+			name: 'Sarah T.',
+			avatar: '/placeholder.svg?height=40&width=40',
+			rating: 4.2,
+			languages: ['English', 'Hindi', 'Tamil'],
+			user: {
+				name: 'Sarah T.',
+				verified: true,
+				avatar: WomenProfilePicPlaceholder,
+				rating: 4.4,
+				type: 'Courier Buddy',
+				preferences: 'Documents, Electronics'
+			},
+			departure: {
+				time: '08:30 AM',
+				date: '22 August, 2024',
+				location: 'LAX, USA'
+			},
+			arrival: {
+				time: '12:15 PM',
+				date: '22 August, 2024',
+				location: 'YVR, Canada'
+			},
+			price: 10000,
+			connectionType: '1 Stop',
+			connectionLocation: 'LA'
+		},
+		{
+			id: '1004',
+			name: 'Sarah T.',
+			avatar: '/placeholder.svg?height=40&width=40',
+			rating: 4.2,
+			languages: ['English', 'Hindi', 'Tamil'],
+			user: {
+				name: 'Sarah T.',
+				verified: true,
+				avatar: WomenProfilePicPlaceholder,
+				rating: 4.4,
+				type: 'Travel Buddy',
+				preferences: 'English, Hindi, Tamil'
+			},
+			departure: {
+				time: '08:30 AM',
+				date: '22 August, 2024',
+				location: 'LAX, USA'
+			},
+			arrival: {
+				time: '12:15 PM',
+				date: '22 August, 2024',
+				location: 'YVR, Canada'
+			},
+			price: 3000.81,
+			connectionType: 'Direct',
+			connectionLocation: ''
+		},
+		{
+			id: '1005',
+			name: 'Sarah T.',
+			avatar: '/placeholder.svg?height=40&width=40',
+			rating: 4.2,
+			languages: ['English', 'Hindi', 'Tamil'],
+			user: {
+				name: 'Sarah T.',
+				verified: true,
+				avatar: WomenProfilePicPlaceholder,
+				rating: 4.4,
+				type: 'Courier Buddy',
+				preferences: 'Documents, Electronics'
+			},
+			departure: {
+				time: '08:30 AM',
+				date: '22 August, 2024',
+				location: 'LAX, USA'
+			},
+			arrival: {
+				time: '12:15 PM',
+				date: '22 August, 2024',
+				location: 'YVR, Canada'
+			},
+			price: 10000,
+			connectionType: '1 Stop',
+			connectionLocation: 'LA'
+		},
+		{
+			id: '1006',
+			name: 'Sarah T.',
+			avatar: '/placeholder.svg?height=40&width=40',
+			rating: 4.2,
+			languages: ['English', 'Hindi', 'Tamil'],
+			user: {
+				name: 'Sarah T.',
+				verified: true,
+				avatar: WomenProfilePicPlaceholder,
+				rating: 4.4,
+				type: 'Courier Buddy',
+				preferences: 'Documents, Electronics'
+			},
+			departure: {
+				time: '08:30 AM',
+				date: '22 August, 2024',
+				location: 'LAX, USA'
+			},
+			arrival: {
+				time: '12:15 PM',
+				date: '22 August, 2024',
+				location: 'YVR, Canada'
+			},
+			price: 10000,
+			connectionType: '1 Stop',
+			connectionLocation: 'LA'
+		}
+	];
+
+	const exactMatchTravelBuddies = [
+		{
+			id: '1001',
+			name: 'Sarah T.',
+			avatar: '/placeholder.svg?height=40&width=40',
+			rating: 4.2,
+			languages: ['English', 'Hindi'],
+			user: {
+				name: 'Sarah T.',
+				verified: true,
+				avatar: WomenProfilePicPlaceholder,
+				rating: 4.4,
+				type: 'Travel Buddy',
+				preferences: 'English, Hindi, Tamil'
+			},
+			departure: {
+				time: '08:30 AM',
+				date: '22 August, 2024',
+				location: 'LAX, USA'
+			},
+			arrival: {
+				time: '12:15 PM',
+				date: '22 August, 2024',
+				location: 'YVR, Canada'
+			},
+			price: 3000.81,
+			connectionType: 'Direct',
+			connectionLocation: ''
+		},
+		{
+			id: '1002',
+			name: 'Sarah T.',
+			avatar: '/placeholder.svg?height=40&width=40',
+			rating: 4.2,
+			languages: ['English', 'Hindi', 'Tamil'],
+			user: {
+				name: 'Sarah T.',
+				verified: true,
+				avatar: WomenProfilePicPlaceholder,
+				rating: 4.4,
+				type: 'Courier Buddy',
+				preferences: 'Documents, Electronics'
+			},
+			departure: {
+				time: '08:30 AM',
+				date: '22 August, 2024',
+				location: 'LAX, USA'
+			},
+			arrival: {
+				time: '12:15 PM',
+				date: '22 August, 2024',
+				location: 'YVR, Canada'
+			},
+			price: 10000,
+			connectionType: '1 Stop',
+			connectionLocation: 'LA'
+		},
+		{
+			id: '1003',
 			name: 'Sarah T.',
 			avatar: '/placeholder.svg?height=40&width=40',
 			rating: 4.2,
@@ -306,7 +288,7 @@ export default function SearchResultsLayout() {
 
 	const sameDestinationTravelBuddies = [
 		{
-			id: 1,
+			id: '1004',
 			name: 'Sarah T.',
 			avatar: '/placeholder.svg?height=40&width=40',
 			rating: 4.2,
@@ -334,7 +316,7 @@ export default function SearchResultsLayout() {
 			connectionLocation: ''
 		},
 		{
-			id: 1,
+			id: '1005',
 			name: 'Sarah T.',
 			avatar: '/placeholder.svg?height=40&width=40',
 			rating: 4.2,
@@ -362,7 +344,7 @@ export default function SearchResultsLayout() {
 			connectionLocation: 'LA'
 		},
 		{
-			id: 1,
+			id: '1006',
 			name: 'Sarah T.',
 			avatar: '/placeholder.svg?height=40&width=40',
 			rating: 4.2,
@@ -391,6 +373,10 @@ export default function SearchResultsLayout() {
 		}
 	];
 
+	const selectedBuddyInfo = buddiesListingData.filter(
+		(item) => item.id === userIdParam
+	);
+
 	return (
 		<div className="min-h-screen">
 			<div className="container mx-auto">
@@ -408,6 +394,7 @@ export default function SearchResultsLayout() {
 								</h3>
 
 								<div className="flex lg:space-y-4 lg:flex-col lg:gap-0 flex-row gap-5">
+									{/********* To Show Filters based on Travel or Courier Buddy *********/}
 									{!checkPackageType ? (
 										<>
 											{/*** Language Filter ***/}
@@ -472,7 +459,7 @@ export default function SearchResultsLayout() {
 					</div>
 				) : (
 					/********* To Show Buddy Profile Info *********/
-					<BuddyListingInfo />
+					<BuddyListingInfo selectedBuddyInfo={selectedBuddyInfo[0]} />
 				)}
 			</div>
 		</div>

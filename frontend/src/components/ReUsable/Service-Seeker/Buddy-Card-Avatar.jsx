@@ -5,7 +5,7 @@ export default function BuddyCardAvatar({ userAvatar, altAvatarName }) {
 		<img
 			src={userAvatar || UserPicOutline}
 			alt={altAvatarName}
-			className="rounded-full h-[42px] w-[42]"
+			className="rounded-full h-[42px] w-[42] 2xl:h-[55px] 2xl:w-[55px]"
 		/>
 	);
 }

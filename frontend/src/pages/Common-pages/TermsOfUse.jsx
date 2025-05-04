@@ -344,7 +344,7 @@ export default function TermsOfUse() {
 				</p>
 				<ul className="list-disc pl-6 space-y-2">
 					<li>Submitting a Service Request</li>
-					<li>Email: [Insert Email Address]</li>
+					<li>Email: support@buddyonboard.co</li>
 				</ul>
 			</div>
 

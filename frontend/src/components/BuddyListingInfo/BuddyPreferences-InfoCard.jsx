@@ -10,8 +10,8 @@ export default function BuddyPreferencesInfoCard() {
 			<CardContent className="p-0">
 				{/****** About Section ******/}
 				<div className="p-4 md:p-6">
-					<h3 className="mb-3 text-base font-bold">About</h3>
-					<p className="text-gray-700">
+					<h3 className="mb-3 2xl:text-2xl text-base font-bold">About</h3>
+					<p className="text-gray-700 2xl:text-2xl">
 						Hi, I’m Sarah T., an experienced traveler who loves making journeys
 						smoother and more enjoyable. Whether you're flying for business or
 						adventure, I can help with navigation, local insights, or just good
@@ -19,16 +19,16 @@ export default function BuddyPreferencesInfoCard() {
 					</p>
 				</div>
 
-				<Separator className="bg-[#CCCCCC] data-[orientation=horizontal]:h-0.5" />
+				<Separator className="bg-bob-line-separator-color data-[orientation=horizontal]:h-0.5" />
 
 				{/****** Preferences Section ******/}
 				<div className="p-4 md:p-6">
-					<h3 className="mb-4 text-base font-bold">Preferences</h3>
+					<h3 className="mb-4 2xl:text-2xl text-base font-bold">Preferences</h3>
 					<div className="space-y-3">
 						{/*** Can Help With ***/}
 						<div className="flex items-center gap-3">
 							<img src={HandShake} alt="HandShake" />
-							<span className="text-bob-form-label-color font-normal">
+							<span className="text-bob-form-label-color font-normal 2xl:text-2xl">
 								Can help with check-in, security, boarding, and luggage
 							</span>
 						</div>
@@ -36,7 +36,7 @@ export default function BuddyPreferencesInfoCard() {
 						{/*** Languages ***/}
 						<div className="flex items-center gap-3">
 							<img src={HumanIcon} alt="HumanIcon" />
-							<span className="text-bob-form-label-color font-normal">
+							<span className="text-bob-form-label-color font-normal 2xl:text-2xl">
 								Speaks English, Hindi, Tamil
 							</span>
 						</div>
@@ -44,7 +44,7 @@ export default function BuddyPreferencesInfoCard() {
 						{/*** Gender Preference ***/}
 						<div className="flex items-center gap-3">
 							<img src={GenderIcon} alt="GenderIcon" />
-							<span className="text-bob-form-label-color font-normal">
+							<span className="text-bob-form-label-color font-normal 2xl:text-2xl">
 								Comfortable accompanying only Female Travelers
 							</span>
 						</div>

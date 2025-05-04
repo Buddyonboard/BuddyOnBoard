@@ -24,7 +24,11 @@ export function BuddyListingCard({ buddyList }) {
 								altAvatarName={buddyList.user.name}
 							/>
 							{/*** Profile Name & Verified Icon ***/}
-							<VerifiedBuddyName userName={buddyList.user.name} page="search" />
+							<VerifiedBuddyName
+								userName={buddyList.user.name}
+								userId={buddyList.id}
+								page="search"
+							/>
 						</div>
 					</div>
 
@@ -79,7 +83,7 @@ export function BuddyListingCard({ buddyList }) {
 					</div>
 
 					{/****** Actions or Status *******/}
-					<SendRequestButton price={buddyList.price} />
+					<SendRequestButton price={buddyList.price} buddyDetails={buddyList} />
 				</div>
 			</div>
 		</Card>

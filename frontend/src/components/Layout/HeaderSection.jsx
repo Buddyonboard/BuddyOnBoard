@@ -48,7 +48,7 @@ export default function HeaderSection({ scrollToSection, page }) {
 					<Link
 						to={item.brandName.href}
 						className="content-center 
-							2xl:h-[55px] 2xl:w-20 2xl:ml-5 
+							2xl:h-[55px] 2xl:w-24 2xl:ml-5
 							lg:h-[55px] lg:w-20 lg:ml-5 
 							md:h-[55px] md:w-20 md:ml-2
 							max-sm:h-[25px] max-sm:w-16 max-sm:ml-2"
@@ -60,7 +60,7 @@ export default function HeaderSection({ scrollToSection, page }) {
 						{item.navSection.map((opt) => (
 							<Link
 								onClick={(e) => handleNavigation(e, opt.href)}
-								className="text-sm font-[600] font-dm-sans"
+								className="2xl:text-xl text-sm font-[600] font-dm-sans"
 							>
 								{opt.name}
 							</Link>

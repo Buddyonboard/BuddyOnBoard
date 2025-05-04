@@ -81,7 +81,7 @@ export function BookingCard({ booking }) {
 				/>
 				{/* Horizontal Line Separator */}
 				<Separator
-					className="md:hidden block w-0.5 bg-[#CCCCCC] data-[orientation=horizontal]:w-[90%]"
+					className="md:hidden block w-0.5 bg-bob-line-separator-color data-[orientation=horizontal]:w-[90%]"
 					orientation="horizontal"
 				/>
 
