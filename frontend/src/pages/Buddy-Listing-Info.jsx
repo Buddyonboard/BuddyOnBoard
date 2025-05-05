@@ -25,7 +25,10 @@ export default function BuddyListingInfo({ selectedBuddyInfo }) {
 
 					{/******************* Right column - Pricing *****************/}
 					{/*** Visible only for Laptop Screen ***/}
-					<PricingSection pricingOptions={pricingOptions} />
+					<PricingSection
+						pricingOptions={pricingOptions}
+						selectedBuddyInfo={selectedBuddyInfo}
+					/>
 				</div>
 			</div>
 		</div>

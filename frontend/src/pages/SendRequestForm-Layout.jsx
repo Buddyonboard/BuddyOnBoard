@@ -9,7 +9,9 @@ export default function SendRequestForm() {
 	const [passengerCount, setPassengerCount] = useState(1);
 	const location = useLocation();
 	const navigate = useNavigate();
-	const buddyDetails = location.state?.buddy;
+	const [buddyDetails, setBuddyDetails] = useState(
+		location.state?.buddy || null
+	);
 
 	useEffect(() => {
 		if (!buddyDetails) {

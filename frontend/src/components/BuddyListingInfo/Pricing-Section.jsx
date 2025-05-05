@@ -1,7 +1,11 @@
 import { Card, CardContent } from '@/components/ui/card';
 import SendRequestButton from './SendRequest-Button';
 
-export default function PricingSection({ pricingOptions, screenType }) {
+export default function PricingSection({
+	pricingOptions,
+	screenType,
+	selectedBuddyInfo
+}) {
 	return (
 		<div
 			className={`md:col-span-1 ${
@@ -22,7 +26,7 @@ export default function PricingSection({ pricingOptions, screenType }) {
 					))}
 
 					{/**** Send Request Button ****/}
-					<SendRequestButton />
+					<SendRequestButton selectedBuddyInfo={selectedBuddyInfo} />
 				</CardContent>
 			</Card>
 		</div>

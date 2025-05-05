@@ -16,7 +16,11 @@ export default function ProfileAboutSection({
 				<BuddyPreferencesInfoCard />
 
 				{/**** Visible only for Tablet/Mobile Screen ****/}
-				<PricingSection pricingOptions={pricingOptions} screenType="tabletMobile" />
+				<PricingSection
+					pricingOptions={pricingOptions}
+					screenType="tabletMobile"
+					selectedBuddyInfo={selectedBuddyInfo}
+				/>
 			</div>
 		</div>
 	);

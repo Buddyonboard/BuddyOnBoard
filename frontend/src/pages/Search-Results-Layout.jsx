@@ -15,7 +15,6 @@ export default function SearchResultsLayout() {
 	const [params] = useSearchParams();
 
 	const checkPackageType = params.get('packageType');
-
 	const userIdParam = params.get('selectedUserId');
 
 	const languages = [
@@ -373,7 +372,7 @@ export default function SearchResultsLayout() {
 		}
 	];
 
-	const selectedBuddyInfo = buddiesListingData.filter(
+	const selectedBuddyInfo = buddiesListingData.find(
 		(item) => item.id === userIdParam
 	);
 
@@ -459,7 +458,7 @@ export default function SearchResultsLayout() {
 					</div>
 				) : (
 					/********* To Show Buddy Profile Info *********/
-					<BuddyListingInfo selectedBuddyInfo={selectedBuddyInfo[0]} />
+					<BuddyListingInfo selectedBuddyInfo={selectedBuddyInfo} />
 				)}
 			</div>
 		</div>

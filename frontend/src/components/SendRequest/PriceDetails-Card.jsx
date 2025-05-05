@@ -34,7 +34,9 @@ export default function PriceDetailsCard({ buddyDetails, passengerCount }) {
 							<p className="2xl:text-xl text-sm text-bob-pricing-block-color font-semibold">
 								{CONST.sendRequestForm.buddyServiceFee}
 							</p>
-							<p className="2xl:text-2xl text-lg font-medium">${buddyDetails.price}</p>
+							<p className="2xl:text-2xl text-lg font-medium">
+								{`$${buddyDetails.price}`}
+							</p>
 						</div>
 
 						{/******** Platform Fees *********/}
@@ -73,7 +75,7 @@ export default function PriceDetailsCard({ buddyDetails, passengerCount }) {
 								{CONST.sendRequestForm.totalPriceBeforeTaxes}
 							</p>
 							<p className="2xl:text-2xl text-lg font-medium">
-								${platformFees + buddyDetails.price}
+								{`$${platformFees + buddyDetails.price}`}
 							</p>
 						</div>
 
