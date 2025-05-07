@@ -4,13 +4,72 @@ import CONST from '@/utils/Constants';
 import BuddyInfoCard from '@/components/SendRequest/BuddyInfo-Card';
 import PassengersInfoCard from '@/components/SendRequest/PassengersInfo-Card';
 import PriceDetailsCard from '@/components/SendRequest/PriceDetails-Card';
+import RequestSubmitPopup from '@/components/SendRequest/RequestSubmit-Popup';
 
 export default function SendRequestForm() {
 	const [passengerCount, setPassengerCount] = useState(1);
+	const [showSuccessDialog, setShowSuccessDialog] = useState(false);
 	const location = useLocation();
 	const navigate = useNavigate();
 	const [buddyDetails, setBuddyDetails] = useState(
 		location.state?.buddy || null
+	);
+	const itemList = {
+		age: '',
+		gender: '',
+		itemType: '',
+		weight: '',
+		itemPicture: '',
+		itemDocument: '',
+		itemDescription: ''
+	};
+	const [items, setItems] = useState([{ ...itemList }]);
+	const [formError, setFormError] = useState('');
+
+	console.log('items >', items);
+
+	/********* Validate SendRequest Form Input Details ********/
+	function validateFormDetails() {
+		const buddyType = buddyDetails.user.type;
+		const errorMessage = CONST.sendRequestForm.formError;
+
+		if (buddyType === 'Travel Buddy') {
+			const isValid = items.every((item) => item.age && item.gender);
+			if (!isValid) {
+				setFormError(errorMessage);
+				return false;
+			}
+			setFormError('');
+			return true;
+		}
+
+		if (buddyType === 'Courier Buddy') {
+			const isValid = items.every((item) => {
+				if (!item.itemType || !item.weight || !item.itemDescription) return false;
+
+				if (item.itemType === 'Open-box-with-invoice') {
+					return item.itemDocument;
+				}
+
+				if (item.itemType !== 'Documents') {
+					return item.itemPicture;
+				}
+
+				return true;
+			});
+			if (!isValid) {
+				setFormError(errorMessage);
+				return false;
+			}
+			setFormError('');
+			return true;
+		}
+	}
+
+	/***** Total Weight Of All Courier Items ******/
+	const totalWeight = items.reduce(
+		(sum, item) => sum + Number(item.weight || 0),
+		0
 	);
 
 	useEffect(() => {
@@ -20,15 +79,42 @@ export default function SendRequestForm() {
 		}
 	}, [buddyDetails, navigate]);
 
-	const decrementPassengers = () => {
-		if (passengerCount > 1) {
-			setPassengerCount(passengerCount - 1);
+	/***** Handling Increment of Items/Passengers ******/
+	const incrementCount = () => {
+		if (passengerCount < 3) {
+			setPassengerCount((prev) => {
+				const newCount = prev + 1;
+				setItems((prevItems) => {
+					// Only add a new item if current items.length < newCount
+					if (prevItems.length < newCount) {
+						return [...prevItems, { ...itemList }];
+					}
+					return prevItems;
+				});
+				return newCount;
+			});
 		}
 	};
 
-	const incrementPassengers = () => {
-		if (passengerCount < 3) {
-			setPassengerCount(passengerCount + 1);
+	/***** Handling Decrement of Items/Passengers ******/
+	const decrementCount = () => {
+		if (passengerCount > 1) {
+			// setPassengerCount(passengerCount - 1);
+			setPassengerCount((prev) => {
+				const newCount = prev - 1;
+				setItems((prevItems) => prevItems.slice(0, newCount));
+				return newCount;
+			});
+		}
+	};
+
+	/********* Handle Send Request Form Submission ********/
+	const handleRequestSubmit = () => {
+		if (validateFormDetails()) {
+			// console.log('Form filled list >', items);
+			setShowSuccessDialog(true);
+		} else {
+			// console.log('Validation failed');
 		}
 	};
 
@@ -46,8 +132,11 @@ export default function SendRequestForm() {
 					{/**************** Passenger Details Form ****************/}
 					<PassengersInfoCard
 						passengerCount={passengerCount}
-						decrementPassengers={decrementPassengers}
-						incrementPassengers={incrementPassengers}
+						decrementCount={decrementCount}
+						incrementCount={incrementCount}
+						buddyDetails={buddyDetails}
+						setItems={setItems}
+						items={items}
 					/>
 				</div>
 
@@ -55,8 +144,19 @@ export default function SendRequestForm() {
 				<PriceDetailsCard
 					buddyDetails={buddyDetails}
 					passengerCount={passengerCount}
+					totalWeight={totalWeight}
+					formError={formError}
+					handleRequestSubmit={handleRequestSubmit}
 				/>
 			</div>
+
+			<RequestSubmitPopup
+				open={showSuccessDialog}
+				onClose={() => {
+					window.location.reload();
+					setShowSuccessDialog(false);
+				}}
+			/>
 		</div>
 	);
 }

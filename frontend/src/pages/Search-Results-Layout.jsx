@@ -15,8 +15,13 @@ export default function SearchResultsLayout() {
 	const [params] = useSearchParams();
 
 	const checkPackageType = params.get('packageType');
+	const checkServiceType = params.get('serviceType');
 	const userIdParam = params.get('selectedUserId');
 
+	const serviceTypeValue =
+		checkServiceType === 'travel' ? 'Travel Buddy' : 'Courier Buddy';
+
+	/******* Full List of Languages *******/
 	const languages = [
 		'English',
 		'Hindi',
@@ -27,6 +32,7 @@ export default function SearchResultsLayout() {
 		'Arabic'
 	];
 
+	/******* Full List of Buddies Data *******/
 	const buddiesListingData = [
 		{
 			id: '1001',
@@ -198,7 +204,8 @@ export default function SearchResultsLayout() {
 		}
 	];
 
-	const exactMatchTravelBuddies = [
+	/******* Full List of Unfiltered exact match Buddies Data *******/
+	const unFilteredExactMatchTravelBuddies = [
 		{
 			id: '1001',
 			name: 'Sarah T.',
@@ -285,7 +292,13 @@ export default function SearchResultsLayout() {
 		}
 	];
 
-	const sameDestinationTravelBuddies = [
+	/******* To filter exact match buddies based on serviceType *******/
+	const exactMatchTravelBuddies = unFilteredExactMatchTravelBuddies.filter(
+		(item) => item.user.type === serviceTypeValue
+	);
+
+	/******* Full List of Unfiltered same destination Buddies Data *******/
+	const unFilteredsameDestinationTravelBuddies = [
 		{
 			id: '1004',
 			name: 'Sarah T.',
@@ -372,6 +385,13 @@ export default function SearchResultsLayout() {
 		}
 	];
 
+	/******* To filter same destination buddies based on serviceType *******/
+	const sameDestinationTravelBuddies =
+		unFilteredsameDestinationTravelBuddies.filter(
+			(item) => item.user.type === serviceTypeValue
+		);
+
+	/******* To Find the selected user in search page from the buddies data *******/
 	const selectedBuddyInfo = buddiesListingData.find(
 		(item) => item.id === userIdParam
 	);
@@ -450,9 +470,15 @@ export default function SearchResultsLayout() {
 								</div>
 
 								{/******** Buddy List With Same Destination Different Date ********/}
-								{sameDestinationTravelBuddies.map((buddy) => (
-									<BuddyListingCard buddyList={buddy} />
-								))}
+								{sameDestinationTravelBuddies.length > 0 ? (
+									sameDestinationTravelBuddies.map((buddy) => (
+										<BuddyListingCard buddyList={buddy} />
+									))
+								) : (
+									<div className="flex justify-center text-2xl my-10 text-bob-form-label-color text-center">
+										{CONST.buddySearch.sameDestinationNoResultsFound}
+									</div>
+								)}
 							</div>
 						</div>
 					</div>

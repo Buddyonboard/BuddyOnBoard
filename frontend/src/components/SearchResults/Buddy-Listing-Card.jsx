@@ -83,7 +83,10 @@ export function BuddyListingCard({ buddyList }) {
 					</div>
 
 					{/****** Actions or Status *******/}
-					<SendRequestButton price={buddyList.price} buddyDetails={buddyList} />
+					<SendRequestButton
+						price={Number(buddyList.price).toFixed(2)}
+						buddyDetails={buddyList}
+					/>
 				</div>
 			</div>
 		</Card>

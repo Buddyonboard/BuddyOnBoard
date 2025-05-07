@@ -419,6 +419,8 @@ const CONST = Object.freeze({
 		courierItem: 'Courier item',
 		sortBy: 'Sort by:',
 		noResultsFound: 'No results found for the date selected',
+		sameDestinationNoResultsFound:
+			'No results found for the date selected. Please try a different destination or date',
 		exactMatch:
 			'These travel buddies are heading to your exact destination on your chosen date!',
 		sameDestination:
@@ -429,17 +431,24 @@ const CONST = Object.freeze({
 	sendRequestForm: {
 		sendARequest: 'Send a request',
 		addYourDetails: 'Add Your Details',
+		approximateWeight: 'APPROXIMATE WEIGHT',
 		totalPassengers: 'Total passengers',
+		totalItems: 'Total items',
 		passengersAllowed: 'Up to 3 passengers allowed',
+		itemsAllowed: 'Up to 3 items allowed',
 		priceDetails: 'Price details',
 		buddyServiceFee: 'BUDDY SERVICE FEE',
 		platformFees: 'PLATFORM FEES',
+		formError: 'Enter all details correctly before proceeding!',
 		toolTipText:
 			'Buddy On Board platform charges standard 15 % fee on all transactions',
 		totalPriceBeforeTaxes: 'TOTAL PRICE BEFORE TAXES',
 		paymentInfo:
 			'You’ll be asked to pay only after a buddy accepts your request.',
-		platformFee: 10.0
+		platformFee: 10.0,
+		requestSubmitPopupTitle: 'Your request has been sent!',
+		requestSubmitPopupContent:
+			'Did you know? You can send your request to multiple buddies. You’ve already sent a request, but don’t stop there — increase your chances by reaching out to more buddies. Once one of them accepts, you’ll be able to proceed with the payment and confirm your booking.'
 	},
 	linkExpiredTitle: 'Looks like that link has expired.',
 	linkExpiredDescription:

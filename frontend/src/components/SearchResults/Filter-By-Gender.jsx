@@ -17,7 +17,7 @@ export default function FilterByGender() {
 				<SelectContent className="w-full">
 					<SelectItem value="male">Male</SelectItem>
 					<SelectItem value="female">Female</SelectItem>
-					<SelectItem value="non-preference">No preference</SelectItem>
+					<SelectItem value="no-preference">No preference</SelectItem>
 				</SelectContent>
 			</Select>
 		</div>
