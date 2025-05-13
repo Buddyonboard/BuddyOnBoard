@@ -31,7 +31,7 @@ export default function LandingContainer() {
 			{/* Working 1 - Till search bar */}
 			<div
 				className="absolute inset-0 lg:bg-gradient-to-b lg:from-transparent lg:to-bob-bg-color 2xl:bg-gradient-to-b 2xl:from-transparent 
-				2xl:to-bob-bg-color 2xl:h-[55%]"
+				2xl:to-bob-bg-color 2xl:h-[56%]"
 			></div>
 
 			{/* Working 2 :: Later Reference */}

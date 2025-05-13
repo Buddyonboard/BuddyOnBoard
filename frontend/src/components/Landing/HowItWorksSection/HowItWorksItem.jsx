@@ -20,8 +20,10 @@ export default function HowItWorksItem({ icon, title, text }) {
 							<img src={icon} alt="Flight" />
 						</div>
 						<div>
-							<h3 className="font-semibold text-base">{title}</h3>
-							<p className="text-sm md:text-base text-[#0A0A0A]">{text}</p>
+							<h3 className="font-bold 2xl:text-2xl text-base">{title}</h3>
+							<p className="text-sm 2xl:text-lg md:text-base font-normal text-bob-tiles-text-color">
+								{text}
+							</p>
 						</div>
 					</CardContent>
 				</Card>

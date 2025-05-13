@@ -37,7 +37,7 @@ export default function SearchSection() {
 					<div>
 						{/******* Page Title *******/}
 						<h1
-							className="text-3xl md:text-4xl lg:text-5xl font-normal
+							className="text-3xl md:text-4xl lg:text-5xl font-light
 						text-white lg:mb-24 mb-6 font-merriweather"
 						>
 							{CONST.landingTitle}

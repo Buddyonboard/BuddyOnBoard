@@ -17,6 +17,8 @@ import { Badge } from '../ui/badge';
 import CarouselFlight from '@/assets/Landing/CarouselFlight.svg';
 import BookingsSchedule from './Bookings-Schedule';
 import { useBookingCancellation } from '@/context/Booking-Cancellation-Context';
+import UserPicOutline from '@/assets/Common/circle-user-round.svg';
+import ProfilePicPlaceholder from '@/assets/Common/Profile-Pic-Placeholder.svg';
 
 export default function BookingCancellationPopup({ open, setOpen, onClose }) {
 	const [reason, setReason] = useState(null);
@@ -146,7 +148,7 @@ export default function BookingCancellationPopup({ open, setOpen, onClose }) {
 									<div className="flex items-center gap-3 mt-4">
 										{/* Profile Pic */}
 										<img
-											src={bookings[0].user.avatar || UserPicOutline}
+											src={bookings[0].user.avatar || ProfilePicPlaceholder}
 											alt={bookings[0].user.name}
 											className="rounded-full h-[42px] w-[42]"
 										/>

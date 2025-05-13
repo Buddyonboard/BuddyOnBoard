@@ -5,6 +5,7 @@ import { Separator } from '@/components/ui/separator';
 import CarouselFlight from '@/assets/Landing/CarouselFlight.svg';
 import LineSeparator from '@/assets/Common/Line-Separator.svg';
 import UserPicOutline from '@/assets/Common/circle-user-round.svg';
+import ProfilePicPlaceholder from '@/assets/Common/Profile-Pic-Placeholder.svg';
 import VerifiedIcon from '@/assets/Common/VerifiedIcon.svg';
 import BookingsActionButtons from './Bookings-Action-Buttons';
 import BookingsSchedule from './Bookings-Schedule';
@@ -27,7 +28,7 @@ export function BookingCard({ booking }) {
 						<div className="flex items-center gap-3 mt-4">
 							{/* Profile Pic */}
 							<img
-								src={booking.user.avatar || UserPicOutline}
+								src={booking.user.avatar || ProfilePicPlaceholder}
 								alt={booking.user.name}
 								className="rounded-full h-[42px] w-[42]"
 							/>

@@ -90,6 +90,8 @@
 	--color-bob-bg-color: #f5f5f5;
 	--color-bob-error-color: #df1316;
 	--color-bob-success-color: #1e966a;
+	--color-bob-login-button-bg-color: #dae5fc;
+	--color-bob-tiles-text-color: #0a0a0a;
 	--color-bob-pricing-block-color: #a6a6a6;
 	--color-bob-higher-rating-color: #1a6e4f;
 	--color-bob-language-badge-color: #f6bd41;
@@ -97,6 +99,7 @@
 	--color-bob-filters-placeholder-color: #7c7c7c;
 	--color-bob-search-input-label-color: #5a5a5a;
 	--color-bob-accordion-content-color: #595959;
+	--color-bob-accordion-bg-color: #e1e9f7;
 	--color-bob-text-placeholder-color: #cfcfcf;
 	--color-bob-link-placeholder-color: #535862;
 	--color-bob-icon-placeholder-color: #767676;

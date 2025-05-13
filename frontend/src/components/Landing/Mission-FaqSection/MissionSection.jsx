@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 export default function MissionSection() {
 	return (
 		<section className="py-12 md:py-16 px-4">
-			<div className="mx-auto max-w-6xl md:p-8 max-sm:pt-2 max-sm:pb-8 rounded-3xl bg-blue-600 text-white">
+			<div className="mx-auto max-w-6xl md:p-8 max-sm:pt-2 max-sm:pb-8 rounded-3xl bg-blue-600 bg-[url(@/assets/Common/FooterBackgroundGrid.svg)] text-white">
 				<div className="flex flex-col items-center justify-between">
 					<div className="sm:max-md:mb-6 mb-0 p-5 text-center justify-items-center">
 						<h2 className="text-xl md:text-[42px] font-medium mb-3 font-merriweather">

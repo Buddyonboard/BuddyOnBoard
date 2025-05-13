@@ -15,7 +15,7 @@ export default function CourierBuddy() {
 		<div className="relative mt-8 md:mt-12">
 			<div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
 				{/* Left side - Image */}
-				<div className="relative lg:left-[10%]">
+				<div className="relative lg:left-[15%] 2xl:left-[20%]">
 					<div className="w-full h-full">
 						<img
 							src={CourierBuddyLarge}

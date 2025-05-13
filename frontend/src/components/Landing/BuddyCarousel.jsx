@@ -8,8 +8,10 @@ import CarouselFlight from '@/assets/Landing/CarouselFlight.svg';
 import DottedHorizontalLine from '@/assets/Landing/DottedHorizontalLine.svg';
 import WomenProfilePicPlaceholder from '@/assets/Common/WomenProfilePicPlaceholder.svg';
 import UserPicOutline from '@/assets/Common/circle-user-round.svg';
+import ProfilePicPlaceholder from '@/assets/Common/Profile-Pic-Placeholder.svg';
 import VerifiedIcon from '@/assets/Common/VerifiedIcon.svg';
 import FlightSchedule from '../ReUsable/Flight-Schedule';
+import BuddyCardAvatar from '../ReUsable/Service-Seeker/Buddy-Card-Avatar';
 
 const travelBuddies = [
 	{
@@ -159,7 +161,7 @@ export default function BuddyCarousel() {
 	return (
 		<div className="relative w-full max-w-[1440px] 2xl:max-w-[100%] mx-auto px-4 bg-bob-bg-color">
 			{/* Navigation Buttons */}
-			<div className="absolute left-0 top-1/2 -translate-y-1/2 z-10">
+			<div className="absolute left-0 top-1/2 -translate-y-1/2 z-10 md:ml-2.5">
 				<Button
 					variant="outline"
 					size="icon"
@@ -221,10 +223,9 @@ export default function BuddyCarousel() {
 							<div className="flex flex-col gap-2">
 								<div className="flex items-center gap-3 mt-4">
 									{/* Profile Pic */}
-									<img
-										src={buddy.avatar || UserPicOutline}
-										alt={buddy.name}
-										className="rounded-full h-[42px] w-[42]"
+									<BuddyCardAvatar
+										userAvatar={buddy.avatar}
+										altAvatarName={buddy.name}
 									/>
 									<div>
 										{/* Profile Name & Verified Icon */}
@@ -238,6 +239,7 @@ export default function BuddyCarousel() {
 
 								{/* Rating & Language */}
 								<div className="flex flex-row items-end gap-2 mt-1">
+									{/******** DO NOT DELETE :: LATER REFERENCE *******/}
 									{/* <div className="flex items-center gap-2">
 										<Badge
 											variant="secondary"
@@ -248,7 +250,10 @@ export default function BuddyCarousel() {
 										</Badge>
 									</div> */}
 									<div className="flex flex-wrap gap-1 mt-1">
-										<Badge variant="outline" className="bg-bob-language-badge-color">
+										<Badge
+											variant="outline"
+											className="bg-bob-language-badge-color rounded-2xl"
+										>
 											Speaks {buddy.languages.join(', ')}
 										</Badge>
 									</div>
