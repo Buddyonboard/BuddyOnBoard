@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '../ui/button';
 import { Menu, UserRound, X } from 'lucide-react';
-
 import CONST from '@/utils/constants';
 import { useFirebase } from '@/context/Firebase-Context';
 import FooterBrandImage from '@/assets/Common/FooterBrandImage.svg';
@@ -41,10 +40,10 @@ export default function HeaderSection({ scrollToSection, page }) {
 			{CONST.LANDING.map((item) => (
 				<header
 					className={`${
-						page === 'landing' ? 'bg-none' : 'bg-bob-color'
+						page === 'landing' ? 'bg-none' : 'bg-bob-color 2xl:py-5'
 					} relative z-50 py-4 md:py-0 px-4 flex items-center justify-between text-primary-color`}
 				>
-					{/* Brand Name Logo */}
+					{/****** Brand Name Logo ******/}
 					<Link
 						to={item.brandName.href}
 						className="content-center 
@@ -55,28 +54,30 @@ export default function HeaderSection({ scrollToSection, page }) {
 					>
 						<img src={FooterBrandImage} alt="FooterBrandImage" />
 					</Link>
-					{/* Nav Links */}
+					{/****** Nav Links *****/}
 					<nav className="hidden md:flex items-center gap-6">
 						{item.navSection.map((opt) => (
 							<Link
 								onClick={(e) => handleNavigation(e, opt.href)}
-								className="2xl:text-xl text-sm font-[600] font-dm-sans"
+								className="2xl:text-xl md:text-base text-sm font-[600] font-dm-sans text-primary-color"
 							>
 								{opt.name}
 							</Link>
 						))}
-						{/* Conditional Login Button/User Icon */}
+						{/***** Conditional Login Button/User Icon *****/}
 						{user ? (
+							/***** User Icon Button ****/
 							<div className="relative">
 								<Button
 									variant="outline"
 									size="sm"
-									className="text-secondary-color bg-[#DAE5FC] border-bob-border-color cursor-pointer hover:bg-[#DAE5FC]"
+									className="text-secondary-color bg-bob-login-button-bg-color border-bob-border-color cursor-pointer hover:bg-bob-login-button-bg-color"
 									onClick={() => setIsMenuOpen((prev) => !prev)}
 								>
 									{userProfileIcon}
 								</Button>
 
+								{/****** Dropdown Menu Items ******/}
 								{isMenuOpen && (
 									<div className="absolute right-0 mt-2 w-max border-2 border-bob-border-outline-color bg-white text-bob-icon-placeholder-color rounded-lg shadow-lg z-[1000]">
 										<ul className="flex flex-col p-2">
@@ -89,7 +90,7 @@ export default function HeaderSection({ scrollToSection, page }) {
 														}}
 														className={`flex items-center gap-2 ${
 															value.name === 'Log out' && 'text-bob-error-color'
-														} rounded-md px-3 py-2`}
+														} rounded-md px-3 py-2 font-medium`}
 													>
 														{value.icon} {value.name}
 													</Link>
@@ -100,11 +101,12 @@ export default function HeaderSection({ scrollToSection, page }) {
 								)}
 							</div>
 						) : (
+							/******** Login Button *******/
 							<Link to={item.loginSection.href}>
 								<Button
 									variant="outline"
 									size="sm"
-									className="text-secondary-color bg-[#DAE5FC] border-bob-border-color cursor-pointer hover:bg-[#DAE5FC]"
+									className="text-secondary-color bg-bob-login-button-bg-color border-bob-border-color font-medium 2xl:text-lg text-sm cursor-pointer hover:bg-bob-login-button-bg-color 2xl:p-5 font-dm-sans"
 								>
 									{item.loginSection.name}
 								</Button>
@@ -120,7 +122,7 @@ export default function HeaderSection({ scrollToSection, page }) {
 								<Button
 									variant="outline"
 									size="sm"
-									className="text-secondary-color bg-[#DAE5FC] border-bob-border-color cursor-pointer"
+									className="text-secondary-color bg-bob-login-button-bg-color border-bob-border-color cursor-pointer"
 								>
 									{userProfileIcon}
 								</Button>
@@ -159,7 +161,7 @@ export default function HeaderSection({ scrollToSection, page }) {
 											}}
 											className={`text-left w-full ${
 												value.name === 'Log out' && 'text-bob-error-color'
-											} rounded-md px-2 py-1 flex items-center gap-2`}
+											} rounded-md px-2 py-1 flex items-center gap-2 font-medium`}
 										>
 											{user && value.icon} {value.name}
 										</Link>

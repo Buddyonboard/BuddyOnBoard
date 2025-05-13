@@ -1,7 +1,9 @@
 export default function AboutUs() {
 	return (
 		<div className="md:px-6 px-2 py-4">
-			<h1 className="font-bold md:text-5xl text-4xl">About Us</h1>
+			<h1 className="font-bold md:text-5xl text-4xl font-merriweather">
+				About Us
+			</h1>
 			<br />
 			<p>
 				At <strong>Buddy On Board</strong>, we believe that travel is not just about

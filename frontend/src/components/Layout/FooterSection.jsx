@@ -63,13 +63,13 @@ export default function FooterSection({ scrollToSection }) {
 					{/*************** Platform & Social Links  ****************/}
 					<div className="flex lg:flex-row flex-col-reverse lg:gap-2 gap-8 lg:justify-between lg:items-center items-start">
 						{/******* Platform Links *******/}
-						<div className="flex md:flex-row flex-col md:gap-6 gap-4 font-bold">
+						<div className="flex md:flex-row flex-col md:gap-6 gap-4">
 							{item.navigationLink.map((itm) => (
 								<Link
 									onClick={(e) => {
 										handleNavigation(e, itm.href);
 									}}
-									className="text-sm lg:text-[20px] hover:text-blue-200"
+									className="text-sm lg:text-[20px] font-bold hover:text-blue-200"
 								>
 									{itm.name}
 								</Link>
@@ -90,12 +90,12 @@ export default function FooterSection({ scrollToSection }) {
 					<Separator orientation="horizontal" className="lg:mt-16 mt-8" />
 
 					{/****** Copyright and Privacy Links *******/}
-					<div className="flex lg:flex-row flex-col-reverse gap-2 lg:justify-between lg:items-baseline lg:mt-8 mt-5 items-start font-normal">
+					<div className="flex lg:flex-row flex-col-reverse gap-2 lg:justify-between lg:items-baseline lg:mt-8 mt-5 items-start">
 						<p>{`©${year} ${CONST.footerSection[0].tradeMark}`}</p>
 						<div className="flex md:flex-row flex-col gap-4 mb-4">
 							{item.privacyPolicy.map((value) => (
 								<Link
-									className="hover:text-blue-200"
+									className="hover:text-blue-200 font-normal"
 									onClick={(e) => {
 										handleNavigation(e, value.href);
 										window.scroll({
