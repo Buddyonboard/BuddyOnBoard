@@ -35,7 +35,10 @@ export default function PrivacyTermsCheckBox({
 					{page === 'forms' && (
 						<>
 							The above information will be processed based on our{' '}
-							<Link to="/" className="text-bob-update-password-link-color font-bold">
+							<Link
+								to="/terms-of-use"
+								className="text-bob-update-password-link-color font-bold"
+							>
 								Terms of Use
 							</Link>{' '}
 							and{' '}
@@ -52,7 +55,10 @@ export default function PrivacyTermsCheckBox({
 					{page === 'userRegistration' && (
 						<>
 							I have read and agree to the{' '}
-							<Link to="/" className="text-bob-update-password-link-color font-bold">
+							<Link
+								to="/terms-of-use"
+								className="text-bob-update-password-link-color font-bold"
+							>
 								Terms of Use
 							</Link>{' '}
 							and{' '}

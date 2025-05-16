@@ -3,7 +3,6 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { MoveLeft, MoveRight, Star } from 'lucide-react';
 import { useState, useRef } from 'react';
-
 import CarouselFlight from '@/assets/Landing/CarouselFlight.svg';
 import DottedHorizontalLine from '@/assets/Landing/DottedHorizontalLine.svg';
 import WomenProfilePicPlaceholder from '@/assets/Common/WomenProfilePicPlaceholder.svg';
@@ -161,33 +160,29 @@ export default function BuddyCarousel() {
 	return (
 		<div className="relative w-full max-w-[1440px] 2xl:max-w-[100%] mx-auto px-4 bg-bob-bg-color">
 			{/* Navigation Buttons */}
-			<div className="absolute left-0 top-1/2 -translate-y-1/2 z-10 md:ml-2.5">
+			<div className="absolute left-0 top-1/2 -translate-y-1/2 z-10 lg:flex lg:items-center lg:justify-center lg:h-52 lg:w-3/10 lg:bg-gradient-to-r lg:from-bob-bg-color lg:to-transparent lg:opacity-85">
 				<Button
-					variant="outline"
+					variant="ghost"
 					size="icon"
-					className={`rounded-full bg-white shadow-md ${
-						!canScrollLeft ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
-					}`}
+					className={`rounded-full bg-white shadow-xl lg:mr-28 2xl:mr-40
+						${!canScrollLeft ? 'cursor-not-allowed' : 'cursor-pointer'}`}
 					onClick={() => scroll('left')}
-					disabled={!canScrollLeft}
+					// disabled={!canScrollLeft}
 				>
-					{/* <ChevronLeft className="h-4 w-4" /> */}
-					<MoveLeft className="h-4 w-4" color="#000000" />
+					<MoveLeft className="h-5 w-5" color="#000000" />
 				</Button>
 			</div>
 
-			<div className="absolute right-0 top-1/2 -translate-y-1/2 z-10">
+			<div className="absolute right-0 top-1/2 -translate-y-1/2 z-10 lg:flex lg:items-center lg:justify-center lg:h-52 lg:w-3/10 lg:bg-gradient-to-l lg:from-bob-bg-color lg:to-transparent lg:opacity-85">
 				<Button
-					variant="outline"
+					variant="ghost"
 					size="icon"
-					className={`rounded-full bg-white shadow-md ${
-						!canScrollRight ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
-					}`}
+					className={`rounded-full bg-white shadow-xl lg:ml-16 2xl:ml-40
+						${!canScrollRight ? 'cursor-not-allowed' : 'cursor-pointer'}`}
 					onClick={() => scroll('right')}
-					disabled={!canScrollRight}
+					// disabled={!canScrollRight}
 				>
-					{/* <ChevronRight className="h-4 w-4" /> */}
-					<MoveRight className="h-4 w-4" color="#000000" />
+					<MoveRight className="h-5 w-5" color="#000000" />
 				</Button>
 			</div>
 
@@ -198,7 +193,7 @@ export default function BuddyCarousel() {
 				style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
 			>
 				{travelBuddies.map((buddy) => (
-					<Card className="min-w-[300px] max-w-[300px] snap-start shadow-none">
+					<Card className="md:min-w-[350px] min-w-[300px] max-w-[300px] snap-start shadow-none">
 						<CardContent>
 							{/* Journey Details */}
 							<div className="flex justify-between items-center mb-4">
