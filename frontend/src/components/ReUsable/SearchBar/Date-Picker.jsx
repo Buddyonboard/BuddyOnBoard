@@ -108,6 +108,7 @@ export default function DatePicker({ setDate, date }) {
 						month={new Date(year, month)}
 						className="rdp-month"
 						fromDate={new Date()} // Prevent selecting past dates
+						disabled={(date) => date < new Date().setHours(0, 0, 0, 0)} // disables previous dates selection
 					/>
 				</PopoverContent>
 			</Popover>

@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 export function getUserDetails() {
 	const storedUser = localStorage.getItem('user');
 
@@ -19,4 +21,15 @@ export function getTokenDetails() {
 	}
 
 	return userDetails.stsTokenManager.accessToken;
+}
+
+export function getuserProfile() {
+	const userProfile = JSON.parse(localStorage.getItem('userProfile'))?.data;
+	return userProfile?.profileCompleted;
+}
+
+export async function setUserProfile(apiUrl, userUid) {
+	const res = await axios.get(`${apiUrl}/users/${userUid}`);
+	localStorage.setItem('userProfile', JSON.stringify(res.data));
+	return res;
 }

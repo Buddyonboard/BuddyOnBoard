@@ -1,5 +1,5 @@
-import { Navigate, Outlet } from 'react-router-dom';
-import { getTokenDetails } from './localStorageHelper';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { getTokenDetails, getuserProfile } from './localStorageHelper';
 
 /*** Private Route: Only Logged-in Users Can Access ***/
 export function PrivateRoute() {
@@ -11,13 +11,26 @@ export function AuthRoute() {
 	return getTokenDetails() ? <Navigate to="/" replace /> : <Outlet />;
 }
 
-/*** Register Route: Only Accessible Right After Signup :: Later Reference ***/
-/* export function RegisterRoute() {
-	const Token = getTokenDetails();
-	const hasCompletedRegistration = Token?.displayName; // Example: Check if user has completed profile
-	return user && !hasCompletedRegistration ? (
+/*** User Registration Form Route Guard ***/
+export function RegistrationRoute() {
+	const hasCompletedRegistration = getuserProfile();
+
+	return !hasCompletedRegistration && getTokenDetails() ? (
 		<Outlet />
 	) : (
-		<Navigate to="/dashboard" replace />
+		<Navigate to="/" replace />
 	);
-} */
+}
+
+/***** Block App Access if Registration Not Completed *****/
+export function BlockOtherRoutesIfUnregistered() {
+	const location = useLocation();
+	const hasCompletedRegistration = getuserProfile();
+
+	/*** Allow /user-registration if profile incomplete ***/
+	if (!hasCompletedRegistration && location.pathname !== '/user-registration') {
+		return <Navigate to="/user-registration" replace />;
+	}
+
+	return <Outlet />;
+}

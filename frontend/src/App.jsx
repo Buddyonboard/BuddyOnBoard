@@ -13,7 +13,12 @@ import './App.css';
 // import FeatureReqForm from './components/Forms/Feature-Req-Form';
 // import ReportIssueForm from './components/Forms/Report-Issue-Form';
 import ScrollToTop from './utils/ScrollToTop';
-import { AuthRoute, PrivateRoute } from './utils/ProtectedRoutes';
+import {
+	AuthRoute,
+	BlockOtherRoutesIfUnregistered,
+	PrivateRoute,
+	RegistrationRoute
+} from './utils/ProtectedRoutes';
 import FirebaseRedirectHandler from './utils/FirebaseRedirectHandler';
 import { BookingCancellationProvider } from './context/Booking-Cancellation-Context';
 import SearchRouteGuard from './utils/SearchRouteGuard';
@@ -97,17 +102,27 @@ function App() {
 
 										{/* Private Routes (Only Logged-in Users Can Access) */}
 										<Route element={<PrivateRoute />}>
-											<Route path="user-registration" element={<UserRegistrationForm />} />
-											<Route path="user-profile" element={<UserProfile />} />
-											<Route path="send-request" element={<SendRequestForm />} />
-											<Route
-												path="bookings"
-												element={
-													<BookingCancellationProvider>
-														<BookingsLayout />
-													</BookingCancellationProvider>
-												}
-											/>
+											{/* User Reigstration Page Route Guard */}
+											<Route element={<RegistrationRoute />}>
+												<Route
+													path="user-registration"
+													element={<UserRegistrationForm />}
+												/>
+											</Route>
+
+											{/* Non Registered Users Route Guard */}
+											<Route element={<BlockOtherRoutesIfUnregistered />}>
+												<Route path="user-profile" element={<UserProfile />} />
+												<Route path="send-request" element={<SendRequestForm />} />
+												<Route
+													path="bookings"
+													element={
+														<BookingCancellationProvider>
+															<BookingsLayout />
+														</BookingCancellationProvider>
+													}
+												/>
+											</Route>
 										</Route>
 
 										{/* Protected Route for Search */}

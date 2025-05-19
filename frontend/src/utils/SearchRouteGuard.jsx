@@ -1,8 +1,11 @@
+import { useEffect } from 'react';
 import { useSearchParams, Navigate, useLocation } from 'react-router-dom';
+import { toast } from 'sonner';
 
 export default function SearchRouteGuard({ children }) {
 	const isAuthenticated = localStorage.getItem('user');
 	const location = useLocation();
+	const isEmailVerified = JSON.parse(isAuthenticated)?.emailVerified;
 
 	const [params] = useSearchParams();
 
@@ -21,12 +24,28 @@ export default function SearchRouteGuard({ children }) {
 		date &&
 		(!isCourier || (isCourier && packageType));
 
+	// If Query Params not valid
 	if (!isValid) {
 		return <Navigate to="/" replace />;
 	}
 
+	// If email not verified, show toast
+	useEffect(() => {
+		if (isAuthenticated && !isEmailVerified) {
+			toast.warning('Email not verified. Please verify your email.', {
+				position: 'top-right',
+				closeButton: true
+			});
+		}
+	}, [isAuthenticated, isEmailVerified]);
+
+	// If email not verified redirect
+	if (isAuthenticated && !isEmailVerified) {
+		return <Navigate to="/" replace />;
+	}
+
+	// If user not authenticated Redirect to login with original destination
 	if (!isAuthenticated) {
-		// Redirect to login with original destination
 		return (
 			<Navigate
 				to={`/sign-in?redirect=${encodeURIComponent(
@@ -37,5 +56,6 @@ export default function SearchRouteGuard({ children }) {
 		);
 	}
 
+	// If everything is valid
 	return children;
 }

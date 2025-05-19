@@ -29,7 +29,8 @@ const firebaseErrorMessages = {
 	// Custom token
 	// 'auth/invalid-custom-token': 'Invalid custom token.',
 	// 'auth/custom-token-mismatch':
-	// 	'Custom token belongs to a different Firebase project.',
+	// 'Custom token belongs to a different Firebase project.',
+	'auth/too-many-requests': 'Too many requests, try again after sometime',
 
 	// Fallback
 	default: CONST.somethingWentWrong

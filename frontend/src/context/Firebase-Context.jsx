@@ -13,10 +13,14 @@ import {
 	getAdditionalUserInfo,
 	GoogleAuthProvider,
 	signInWithPopup,
-	FacebookAuthProvider
+	FacebookAuthProvider,
+	applyActionCode
 } from 'firebase/auth';
 import { toast } from 'sonner';
 import CONST from '@/utils/Constants';
+import API_URL from '../../environments/Environment-dev';
+import axios from 'axios';
+import { setUserProfile } from '@/utils/localStorageHelper';
 
 const FirebaseContext = createContext();
 
@@ -30,13 +34,30 @@ export default function FirebaseProvider(props) {
 
 	useEffect(() => {
 		function unSubscribe() {
-			onAuthStateChanged(firebaseAuth, (user) => {
+			onAuthStateChanged(firebaseAuth, async (user) => {
 				if (user) {
-					setUser(user);
-					localStorage.setItem('user', JSON.stringify(user));
+					try {
+						setUser(user);
+						localStorage.setItem('user', JSON.stringify(user));
+						const userUid = user.uid;
+						const res = await setUserProfile(API_URL, userUid);
+
+						if (res.status === 200) {
+							localStorage.setItem('userProfile', JSON.stringify(res.data));
+						}
+					} catch (error) {
+						if (error.status === 404) {
+							toast('Please Complete User Registration', {
+								position: 'top-right',
+								closeButton: true
+							});
+						}
+						// console.log('Failed to fetch user profile', error);
+					}
 				} else {
 					setUser(null);
 					localStorage.removeItem('user');
+					localStorage.removeItem('userProfile');
 				}
 			});
 		}
@@ -87,6 +108,7 @@ export default function FirebaseProvider(props) {
 			position: 'top-right',
 			closeButton: true
 		});
+		localStorage.removeItem('userProfile');
 	};
 
 	/*** Sign-in authentication ***/
@@ -102,10 +124,14 @@ export default function FirebaseProvider(props) {
 	/*** Email Verification Trigger ***/
 	function EmailVerification(user) {
 		const actionCodeSettings = {
-			url: 'http://localhost:5173/user-registration', // Redirect user to your app
+			url: 'http://localhost:5173/', // Redirect user to your app
 			handleCodeInApp: true // Ensures the link opens in your app
 		};
 		return sendEmailVerification(user, actionCodeSettings);
+	}
+
+	function VerifyEmail(oobCode) {
+		return applyActionCode(firebaseAuth, oobCode);
 	}
 
 	return (
@@ -122,7 +148,8 @@ export default function FirebaseProvider(props) {
 				firebaseAuth,
 				GoogleAuthentication,
 				FacebookAuthentication,
-				GetAdditionalInfo
+				GetAdditionalInfo,
+				VerifyEmail
 			}}
 		>
 			{props.children}

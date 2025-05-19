@@ -39,6 +39,8 @@ const CONST = Object.freeze({
 	updatePassword: { name: 'Update password', href: '/forgot-password' },
 	somethingWentWrong: 'Oops! That didn’t go as planned. Give it another shot!',
 	networkError: 'Network error. Please check your internet connection.',
+	emailVerified: 'Your email has been successfully verified',
+	emailVerificationLinkInvalid: 'This link is invalid or has already been used',
 	emailAlreadyLinked:
 		'This email is already linked with another sign-in provider. Please use the original sign-in method.',
 	savedSuccessfully: 'Saved Successfully',

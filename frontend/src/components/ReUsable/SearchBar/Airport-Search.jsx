@@ -1,14 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Input } from '../../ui/input';
-
-const airportOptions = [
-	'Newark Liberty International Airport (EWR)',
-	'New York John F. Kennedy International Airport (JFK)',
-	'New York LaGuardia Airport (LGA)',
-	'Dubai Airport (DBX)',
-	'Paris Airport (PAX)',
-	'Delhi Airport (DEL)'
-];
+import API_URL from '../../../../environments/Environment-dev';
 
 export default function AirportSearch({
 	setAirportFromSelected,
@@ -32,11 +24,19 @@ export default function AirportSearch({
 			setShowDropdown(false);
 		} else {
 			const handler = setTimeout(() => {
-				const filtered = airportOptions.filter((option) =>
-					option.toLowerCase().includes(query.toLowerCase())
-				);
-				setFilteredOptions(filtered);
-				setShowDropdown(true);
+				const fetchSuggestions = async () => {
+					try {
+						const response = await fetch(`${API_URL}/airportsList?query=${query}`);
+						const data = await response.json();
+
+						setFilteredOptions(data);
+						setShowDropdown(true);
+					} catch (error) {
+						// console.error('Error fetching airport suggestions:', error);
+					}
+				};
+
+				fetchSuggestions();
 			}, 300);
 
 			return () => clearTimeout(handler);
@@ -72,14 +72,20 @@ export default function AirportSearch({
 						filteredOptions.map((option, index) => (
 							<div
 								key={index}
-								onClick={() => handleSelect(option)}
+								onClick={() =>
+									handleSelect(
+										`${option.iata_code}, ${option.municipality}, ${option.iso_country}`
+									)
+								}
 								className="px-4 py-2 cursor-pointer hover:bg-gray-100"
 							>
-								{option}
+								{option.iata_code}, {option.municipality}, {option.country_name}
 							</div>
 						))
 					) : (
-						<div className="px-4 py-2 text-gray-500">No airports found</div>
+						<div className="px-4 py-2 text-bob-search-input-label-color">
+							No Airports Found
+						</div>
 					)}
 				</div>
 			)}
