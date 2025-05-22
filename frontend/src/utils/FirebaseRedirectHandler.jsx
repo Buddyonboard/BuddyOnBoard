@@ -3,6 +3,9 @@ import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import CONST from './Constants';
+import API_URL from '../../environments/Environment-dev';
+import { setUserProfile } from './localStorageHelper';
+import axios from 'axios';
 
 const FirebaseRedirectHandler = () => {
 	const navigate = useNavigate();
@@ -33,6 +36,16 @@ const FirebaseRedirectHandler = () => {
 				switch (mode) {
 					case 'verifyEmail':
 						await firebase.VerifyEmail(oobCode);
+						const userData = {
+							idToken: await firebase.firebaseAuth.currentUser.getIdToken(),
+							emailVerified: true
+						};
+						/**** Send ID token + user profile data to backend ****/
+						await axios.post(`${API_URL}/user-registration`, userData);
+
+						/***** Set User Profile in Localstorage ****/
+						await setUserProfile(API_URL, firebase.firebaseAuth.currentUser.uid);
+
 						toast.success(CONST.emailVerified, {
 							position: 'top-right',
 							closeButton: true,

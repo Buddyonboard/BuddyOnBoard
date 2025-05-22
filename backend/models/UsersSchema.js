@@ -6,9 +6,9 @@ const usersSchema = new mongoose.Schema(
 		firstName: String,
 		middleName: String,
 		lastName: String,
-		dob: String,
+		dateOfBirth: String,
 		phoneNumber: { type: String, unique: true, sparse: true },
-		country: String,
+		countryOfResidence: String,
 		email: { type: String, unique: true },
 		role: {
 			type: String,

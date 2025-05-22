@@ -86,6 +86,8 @@ export default function UserRegistrationForm() {
 	/* Handling Form submission */
 	async function onSubmit(data) {
 		try {
+			// console.log('data >', data);
+
 			const idToken =
 				location?.state?.idToken ||
 				(await firebase.firebaseAuth.currentUser.getIdToken());
@@ -95,9 +97,9 @@ export default function UserRegistrationForm() {
 				firstName: data.firstName,
 				middleName: data.middleName,
 				lastName: data.lastName,
-				dob: data.dateOfBirth,
-				phoneNumber: data.phoneNumber || undefined,
-				country: data.countryOfResidence,
+				dateOfBirth: data.dateOfBirth,
+				phoneNumber: data.phoneNumber,
+				countryOfResidence: data.countryOfResidence,
 				privacyTerms: data.privacyTerms,
 				profileCompleted: true
 			};
@@ -109,15 +111,19 @@ export default function UserRegistrationForm() {
 			const user = firebase.firebaseAuth.currentUser;
 			await firebase.EmailVerification(user);
 
-			/* Set User Profile in Localstorage */
+			/***** Set User Profile in Localstorage *****/
 			await setUserProfile(API_URL, user.uid);
 
 			setFormError(null);
 			setEmailVerified(true);
 		} catch (error) {
-			const message = getFirebaseErrorMessage(error?.code);
-			setFormError(message);
-			console.log('Error: ', error);
+			if (error?.response.data.message === 'DuplicateKey') {
+				setFormError('Phone Number Already Exists');
+			} else {
+				const message = getFirebaseErrorMessage(error?.code);
+				setFormError(message);
+			}
+			// console.log('Error: ', error);
 		}
 	}
 

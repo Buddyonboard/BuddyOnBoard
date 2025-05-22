@@ -1,6 +1,7 @@
 const Users = require('../models/UsersSchema');
 const admin = require('../Config/firebase');
 
+/****** User Profile Registration/Update Controller ******/
 exports.userRegistration = async (req, res) => {
 	try {
 		const {
@@ -8,46 +9,67 @@ exports.userRegistration = async (req, res) => {
 			firstName,
 			middleName,
 			lastName,
-			dob,
+			dateOfBirth,
 			phoneNumber,
-			country,
+			countryOfResidence,
 			role,
 			privacyTerms,
-			profileCompleted
+			profileCompleted,
+			emailVerified
 		} = req.body;
 
-		/****** 1. Verify token *****/
+		/****** Verify token *****/
 		const decodedToken = await admin.auth().verifyIdToken(idToken);
-		const { uid, email, email_verified } = decodedToken;
+		const { uid, email } = decodedToken;
 
-		/****** 2. Save full user record to MongoDB *****/
+		const updateData = {
+			uid,
+			firstName,
+			middleName,
+			lastName,
+			dateOfBirth,
+			// phoneNumber,
+			countryOfResidence,
+			email,
+			role,
+			emailVerified,
+			privacyTerms,
+			profileCompleted,
+			updatedAt: new Date()
+		};
+
+		const updateUnset = {};
+
+		/****** Handle phoneNumber logic explicitly ******/
+		if (typeof phoneNumber !== 'undefined') {
+			if (phoneNumber && phoneNumber !== '') {
+				updateData.phoneNumber = phoneNumber;
+			} else {
+				updateUnset.phoneNumber = ''; // Unset the field in MongoDB
+			}
+		}
+
+		/****** Save user to MongoDB using $set and $unset ******/
+		const updatedPayload = {};
+		if (Object.keys(updateData).length > 0) updatedPayload.$set = updateData;
+		if (Object.keys(updateUnset).length > 0) updatedPayload.$unset = updateUnset;
+
+		/****** Save full user record to MongoDB *****/
 		const user = await Users.findOneAndUpdate(
 			{ uid },
-			{
-				uid,
-				firstName,
-				middleName,
-				lastName,
-				dob,
-				phoneNumber,
-				country,
-				email,
-				role,
-				email_verified,
-				privacyTerms,
-				profileCompleted,
-				updatedAt: new Date()
-			},
+			// { $set: updateData },
+			updatedPayload,
 			{ upsert: true, new: true }
 		);
 
 		res.status(200).json({ message: 'User saved', user });
 	} catch (err) {
 		console.error('Error saving user:', err);
-		res.status(401).json({ error: 'Unauthorized' });
+		res.status(401).json({ error: 'Unauthorized', message: err.codeName });
 	}
 };
 
+/****** Find User Profile based on uId ******/
 exports.findUserData = async (req, res) => {
 	try {
 		const { userUid } = req.params;

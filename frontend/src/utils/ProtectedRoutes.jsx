@@ -13,19 +13,21 @@ export function AuthRoute() {
 
 /*** User Registration Form Route Guard ***/
 export function RegistrationRoute() {
-	const hasCompletedRegistration = getuserProfile();
+	const userProfile = getuserProfile();
+	const hasCompletedRegistration = userProfile?.profileCompleted;
 
 	return !hasCompletedRegistration && getTokenDetails() ? (
 		<Outlet />
 	) : (
-		<Navigate to="/" replace />
+		<Navigate to="/user-profile" replace />
 	);
 }
 
 /***** Block App Access if Registration Not Completed *****/
 export function BlockOtherRoutesIfUnregistered() {
 	const location = useLocation();
-	const hasCompletedRegistration = getuserProfile();
+	const userProfile = getuserProfile();
+	const hasCompletedRegistration = userProfile?.profileCompleted;
 
 	/*** Allow /user-registration if profile incomplete ***/
 	if (!hasCompletedRegistration && location.pathname !== '/user-registration') {

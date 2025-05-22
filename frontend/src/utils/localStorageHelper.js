@@ -23,11 +23,13 @@ export function getTokenDetails() {
 	return userDetails.stsTokenManager.accessToken;
 }
 
+/***** Retrieve userProfile data from LocalStorage ****/
 export function getuserProfile() {
 	const userProfile = JSON.parse(localStorage.getItem('userProfile'))?.data;
-	return userProfile?.profileCompleted;
+	return userProfile;
 }
 
+/***** Set userProfile data Immediately After Submit in LocalStorage ****/
 export async function setUserProfile(apiUrl, userUid) {
 	const res = await axios.get(`${apiUrl}/users/${userUid}`);
 	localStorage.setItem('userProfile', JSON.stringify(res.data));
