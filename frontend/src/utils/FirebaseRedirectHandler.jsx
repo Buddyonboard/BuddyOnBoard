@@ -72,7 +72,6 @@ const FirebaseRedirectHandler = () => {
 						closeButton: true,
 						style: { backgroundColor: 'red' }
 					});
-					navigate('/');
 				} else {
 					toast.warning(CONST.somethingWentWrong, {
 						position: 'top-right',
@@ -80,6 +79,8 @@ const FirebaseRedirectHandler = () => {
 						style: { backgroundColor: 'red' }
 					});
 				}
+				navigate('/');
+				// console.log('Error >', err);
 			}
 		};
 

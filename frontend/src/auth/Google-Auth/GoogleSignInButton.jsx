@@ -1,11 +1,9 @@
 import { Button } from '@/components/ui/button';
 import { useFirebase } from '@/context/Firebase-Context';
-import {
-	HandleAuthToastMessage,
-	RedirectAuthHandler
-} from '@/utils/authHelper';
+import { HandleAuthToastMessage } from '@/utils/authHelper';
 import CONST from '@/utils/Constants';
 import { getFirebaseErrorMessage } from '@/utils/firebaseErrorHandler';
+import { getuserProfile } from '@/utils/localStorageHelper';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 
@@ -19,21 +17,29 @@ export default function GoogleSignInButton({ pathName }) {
 	/*** Google Sign in handler ***/
 	async function handleGoogleLogin() {
 		try {
+			/*** Google Authentication Handler ***/
 			const result = await firebase.GoogleAuthentication();
 			// console.log('result >', result);
 
-			// Check if it's a new user using `getAdditionalUserInfo`
+			/*** Check if it's a new user using `getAdditionalUserInfo` ***/
 			const isNewUser = firebase.GetAdditionalInfo(result);
-			localStorage.setItem('isNewUser', isNewUser);
+			// localStorage.setItem('isNewUser', isNewUser);
 			// console.log('isNewUser >', isNewUser);
 
-			/* Handling toast message to be shown conditionally */
+			/*** Handling toast message to be shown conditionally ***/
 			HandleAuthToastMessage(pathName, isNewUser);
 
-			// Redirect ONLY if it's a new user signing in
-			redirectTo && !isNewUser
+			/*** Get User Profile Data ***/
+			const fetchedData = getuserProfile();
+
+			/**
+			 * Redirect to search URL if user Profile exisits
+			 * If user profile not there redirect to user registration page
+			 **/
+			redirectTo && fetchedData
 				? navigate(redirectTo, { replace: true })
-				: RedirectAuthHandler(isNewUser, navigate);
+				: // : RedirectAuthHandler(fetchedData, navigate);
+				  navigate('/', { replace: true });
 		} catch (error) {
 			const message = getFirebaseErrorMessage(error?.code);
 			toast(message, {

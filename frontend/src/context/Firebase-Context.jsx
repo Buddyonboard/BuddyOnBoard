@@ -108,7 +108,7 @@ export default function FirebaseProvider(props) {
 			position: 'top-right',
 			closeButton: true
 		});
-		localStorage.removeItem('userProfile');
+		localStorage.clear();
 	};
 
 	/*** Sign-in authentication ***/

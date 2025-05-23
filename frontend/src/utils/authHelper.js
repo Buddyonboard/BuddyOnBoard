@@ -18,10 +18,10 @@ export function HandleAuthToastMessage(pathName, isNewUser) {
 	}
 }
 
-export function RedirectAuthHandler(isNewUser, navigate) {
-	if (isNewUser) {
-		return navigate('/user-registration', { replace: true });
-	} else {
+export function RedirectAuthHandler(fetchedData, navigate) {
+	if (fetchedData) {
 		return navigate('/', { replace: true });
+	} else {
+		return navigate('/user-registration', { replace: true });
 	}
 }

@@ -118,7 +118,7 @@ export default function UserRegistrationForm() {
 			setEmailVerified(true);
 		} catch (error) {
 			if (error?.response.data.message === 'DuplicateKey') {
-				setFormError('Phone Number Already Exists');
+				setFormError('Looks like a record already exists');
 			} else {
 				const message = getFirebaseErrorMessage(error?.code);
 				setFormError(message);

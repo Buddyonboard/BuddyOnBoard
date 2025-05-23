@@ -20,7 +20,7 @@ exports.userRegistration = async (req, res) => {
 
 		/****** Verify token *****/
 		const decodedToken = await admin.auth().verifyIdToken(idToken);
-		const { uid, email } = decodedToken;
+		const { uid, email, email_verified } = decodedToken;
 
 		const updateData = {
 			uid,
@@ -32,7 +32,7 @@ exports.userRegistration = async (req, res) => {
 			countryOfResidence,
 			email,
 			role,
-			emailVerified,
+			emailVerified: email_verified || emailVerified,
 			privacyTerms,
 			profileCompleted,
 			updatedAt: new Date()
