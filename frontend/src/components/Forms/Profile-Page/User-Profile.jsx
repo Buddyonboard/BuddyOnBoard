@@ -27,6 +27,7 @@ import { useFirebase } from '@/context/Firebase-Context';
 import axios from 'axios';
 import API_URL from '../../../../environments/Environment-dev';
 import { getFirebaseErrorMessage } from '@/utils/firebaseErrorHandler';
+import useCountries from '@/hooks/useCountries';
 
 /*** Months for Date Picker ***/
 const months = Array.from({ length: 12 }, (_, i) =>
@@ -62,6 +63,7 @@ export default function UserProfile() {
 	const [originalData, setOriginalData] = useState({});
 	const [formError, setFormError] = useState(null);
 	const [isLoaded, setIsLoaded] = useState(false);
+	const { data } = useCountries();
 	const firebase = useFirebase();
 
 	const selectedDate = new Date();
@@ -408,10 +410,11 @@ export default function UserProfile() {
 											<SelectContent>
 												<SelectGroup>
 													<SelectLabel>Country Of Residence</SelectLabel>
-													<SelectItem value="USA">USA</SelectItem>
-													<SelectItem value="Canada">Canada</SelectItem>
-													<SelectItem value="India">India</SelectItem>
-													<SelectItem value="Spain">Spain</SelectItem>
+													{data?.data.map((item, index) => (
+														<SelectItem key={index} value={item.Country}>
+															{item.Country}
+														</SelectItem>
+													))}
 												</SelectGroup>
 											</SelectContent>
 										</Select>

@@ -29,6 +29,7 @@ import { getFirebaseErrorMessage } from '@/utils/firebaseErrorHandler';
 import API_URL from '../../../environments/Environment-dev';
 import axios from 'axios';
 import { setUserProfile } from '@/utils/localStorageHelper';
+import useCountries from '@/hooks/useCountries';
 
 /* Months for Date Picker */
 const months = Array.from({ length: 12 }, (_, i) =>
@@ -70,6 +71,7 @@ export default function UserRegistrationForm() {
 	const [year, setYear] = useState(selectedDate.getFullYear());
 	const firebase = useFirebase();
 	const location = useLocation();
+	const { data } = useCountries();
 
 	const handleMonthChange = (value) => {
 		const newMonth = months.indexOf(value);
@@ -364,10 +366,11 @@ export default function UserRegistrationForm() {
 											<SelectContent>
 												<SelectGroup>
 													<SelectLabel>Country Of Residence</SelectLabel>
-													<SelectItem value="USA">USA</SelectItem>
-													<SelectItem value="Canada">Canada</SelectItem>
-													<SelectItem value="India">India</SelectItem>
-													<SelectItem value="Spain">Spain</SelectItem>
+													{data?.data.map((item, index) => (
+														<SelectItem key={index} value={item.Country}>
+															{item.Country}
+														</SelectItem>
+													))}
 												</SelectGroup>
 											</SelectContent>
 										</Select>

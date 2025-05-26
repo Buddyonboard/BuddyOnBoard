@@ -1,7 +1,7 @@
 import FeatureItem from '@/components/Landing/FeaturesSection/FeatureItem';
 import CONST from '@/utils/Constants';
 
-import TravelStressFree from '@/assets/Landing/Features/TravelStressFree.svg';
+import TravelStressFreeMedium from '@/assets/Landing/Features/TravelStressFreeMedium.svg';
 import TravelStressFreeLarge from '@/assets/Landing/Features/TravelStressFreeLarge.svg';
 import TravelStressFreeSmall from '@/assets/Landing/Features/TravelStressFreeSmall.svg';
 
@@ -42,7 +42,7 @@ export default function TravelBuddy() {
 					{/* Left Section - Image */}
 					<div className="relative w-full md:w-1/2 flex justify-center">
 						<img
-							src={TravelStressFree}
+							src={TravelStressFreeMedium}
 							alt="Travel Stress Free"
 							className="w-full md:w-[100%] max-w-[450px]"
 						/>

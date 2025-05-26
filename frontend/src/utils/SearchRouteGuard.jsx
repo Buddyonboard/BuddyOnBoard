@@ -1,9 +1,12 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams, Navigate, useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
+import { getuserProfile } from './localStorageHelper';
 
 export default function SearchRouteGuard({ children }) {
 	const isAuthenticated = localStorage.getItem('user');
+	const isUserProfileCompleted = getuserProfile();
+
 	const location = useLocation();
 	const isEmailVerified = JSON.parse(isAuthenticated)?.emailVerified;
 
@@ -42,6 +45,11 @@ export default function SearchRouteGuard({ children }) {
 	// If email not verified redirect
 	if (isAuthenticated && !isEmailVerified) {
 		return <Navigate to="/" replace />;
+	}
+
+	// If user profile not completed
+	if (isAuthenticated && !isUserProfileCompleted) {
+		return <Navigate to="/user-registration" replace />;
 	}
 
 	// If user not authenticated Redirect to login with original destination

@@ -1,7 +1,7 @@
 import FeatureItem from '@/components/Landing/FeaturesSection/FeatureItem';
 import CONST from '@/utils/Constants';
 
-import CourierEasily from '@/assets/Landing/Features/CourierEasily.svg';
+import CourierEasilyMedium from '@/assets/Landing/Features/CourierEasilyMedium.svg';
 import CourierEasilyLarge from '@/assets/Landing/Features/CourierEasilyLarge.svg';
 import CourierEasilySmall from '@/assets/Landing/Features/CourierEasilySmall.svg';
 
@@ -68,7 +68,7 @@ export default function CourierBuddy() {
 					{/* Right Section - Image */}
 					<div className="relative w-full md:w-1/2 flex justify-center">
 						<img
-							src={CourierEasily}
+							src={CourierEasilyMedium}
 							alt="Courier buddies"
 							className="w-full md:w-[100%] max-w-[450px]"
 						/>

@@ -1,4 +1,5 @@
 const Airports = require('../models/AirportSchema');
+const Country = require('../models/CountrySchema');
 
 /****** Retreive airport data based on query ******/
 exports.getAirports = async (req, res) => {
@@ -32,5 +33,16 @@ exports.getAirports = async (req, res) => {
 	} catch (err) {
 		console.error(err);
 		res.status(500).json({ error: 'Failed to search airports' });
+	}
+};
+
+/*** Retreive List of all the Country Data ***/
+exports.getAllCountries = async (req, res) => {
+	try {
+		const countries = await Country.find({});
+		res.status(200).json({ data: countries });
+	} catch (error) {
+		console.error(err);
+		res.status(500).json({ error: 'Failed to fetch countries list' });
 	}
 };

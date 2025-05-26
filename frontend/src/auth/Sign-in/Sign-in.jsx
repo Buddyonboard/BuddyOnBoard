@@ -50,7 +50,12 @@ export default function SignIn() {
 				position: 'top-right',
 				closeButton: true
 			});
+
 			setFormError(null);
+
+			/**
+			 * Redirect to search URL if user Profile exisits
+			 **/
 			navigate(redirectTo);
 		} catch (error) {
 			const message = getFirebaseErrorMessage(error?.code);
