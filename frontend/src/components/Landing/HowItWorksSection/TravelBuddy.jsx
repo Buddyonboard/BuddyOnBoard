@@ -16,7 +16,7 @@ export default function TravelBuddy() {
 			<div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
 				{/* Left side - Image */}
 				<div className="relative lg:left-[15%] 2xl:left-[20%]">
-					<div className="w-full h-full">
+					<div className="w-full h-full lg:mb-14">
 						<img
 							src={TravelBuddyLarge}
 							alt="Travel Buddy"
@@ -27,7 +27,7 @@ export default function TravelBuddy() {
 							alt="Travel Buddy"
 							className="max-sm:hidden lg:hidden w-full"
 						/>
-						<img src={TravelBuddySmall} alt="Travel Buddy" className="md:hidden" />
+						<img src={TravelBuddySmall} alt="Travel Buddy" className="sm:hidden" />
 					</div>
 				</div>
 				{/* Right side - Cards */}

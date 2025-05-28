@@ -16,7 +16,7 @@ export default function CourierBuddy() {
 			<div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
 				{/* Left side - Image */}
 				<div className="relative lg:left-[15%] 2xl:left-[20%]">
-					<div className="w-full h-full">
+					<div className="w-full h-full lg:mb-18 2xl:mb-20">
 						<img
 							src={CourierBuddyLarge}
 							alt="Courier Buddy"
@@ -27,7 +27,7 @@ export default function CourierBuddy() {
 							alt="Courier Buddy"
 							className="max-sm:hidden lg:hidden w-full"
 						/>
-						<img src={CourierBuddySmall} alt="Courier Buddy" className="md:hidden" />
+						<img src={CourierBuddySmall} alt="Courier Buddy" className="sm:hidden" />
 					</div>
 				</div>
 				{/* Right side - Cards */}

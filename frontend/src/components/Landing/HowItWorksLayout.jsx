@@ -13,7 +13,10 @@ const HowItWorksLayout = forwardRef((props, ref) => {
 	const { tabOpen, toggle } = useTabToggle();
 
 	return (
-		<div ref={ref} className="w-full min-h-screen px-4 py-12 md:px-8 lg:px-16">
+		<div
+			ref={ref}
+			className="w-full max-xl:min-h-screen px-4 py-12 md:px-8 lg:px-16"
+		>
 			<div className="max-w-7xl mx-auto">
 				<div className="text-center">
 					<h1 className="text-3xl md:text-4xl font-merriweather font-medium text-bob-tiles-text-color mb-8">
