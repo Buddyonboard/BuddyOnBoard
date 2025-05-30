@@ -19,6 +19,8 @@ import CONST from '@/utils/Constants';
 import { CircleCheck, Paperclip } from 'lucide-react';
 import MessageAfterSubmit from '../ReUsable/MessageAfterSubmit';
 import PrivacyTermsCheckBox from '../ReUsable/Privacy-Terms-Checkbox';
+import API_URL from '../../../environments/Environment-dev';
+import axios from 'axios';
 
 export default function FeatureReqForm() {
 	const {
@@ -68,12 +70,34 @@ export default function FeatureReqForm() {
 
 	/* Handling Form submission */
 	async function onSubmit(data) {
-		// Here you would typically send the data to your API
-		await new Promise((resolve) => setTimeout(resolve, 3000));
-		// console.log('Consoling Data >', data);
+		try {
+			/**** Send form data to backend ****/
+			const formData = new FormData();
+			formData.append('fullName', data.fullName);
+			formData.append('email', data.email);
+			formData.append('categoryRequest', data.categoryRequest);
+			formData.append('yourMessage', data.yourMessage);
+			formData.append('requestCallBack', data.requestCallBack);
+			formData.append('privacyTerms', data.privacyTerms);
+			formData.append('phoneNumber', data.phoneNumber);
 
-		setFormError(null);
-		setSuccessMessage(true);
+			/*** If File has been uploaded, append file to form data ***/
+			if (data.uploadAttachment) {
+				formData.append('uploadAttachment', data.uploadAttachment);
+			}
+
+			await axios.post(`${API_URL}/service-requests`, formData, {
+				headers: {
+					'Content-Type': 'multipart/form-data'
+				}
+			});
+
+			setFormError(null);
+			setSuccessMessage(true);
+		} catch (error) {
+			setFormError(CONST.somethingWentWrong);
+			// console.log('Error: ', error);
+		}
 	}
 
 	useEffect(() => {
@@ -114,7 +138,10 @@ export default function FeatureReqForm() {
 									rules={{ required: true }}
 									render={({ field }) => (
 										<Input
-											className="shadow-sm"
+											className={`shadow-sm ${
+												errors?.fullName?.type === 'required' &&
+												'border-2 border-bob-error-color'
+											}`}
 											placeholder="Your full name"
 											{...field}
 										/>
@@ -137,7 +164,10 @@ export default function FeatureReqForm() {
 									rules={{ required: true }}
 									render={({ field }) => (
 										<Input
-											className="shadow-sm"
+											className={`shadow-sm ${
+												errors?.email?.type === 'required' &&
+												'border-2 border-bob-error-color'
+											}`}
 											type="email"
 											placeholder="Your email"
 											{...field}
@@ -147,8 +177,8 @@ export default function FeatureReqForm() {
 							</div>
 						</div>
 
-						{/* Category Request Input */}
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+							{/* Category Request Input */}
 							<div className="flex flex-col">
 								<label
 									className="font-medium text-sm text-bob-form-label-color"
@@ -169,7 +199,12 @@ export default function FeatureReqForm() {
 											}}
 											value={field.value} //Ensure selected value is controlled
 										>
-											<SelectTrigger className="w-full shadow-sm">
+											<SelectTrigger
+												className={`w-full shadow-sm ${
+													errors?.categoryRequest?.type === 'required' &&
+													'border-2 border-bob-error-color'
+												}`}
+											>
 												<SelectValue placeholder="Type of request" />
 											</SelectTrigger>
 											<SelectContent>
@@ -229,7 +264,7 @@ export default function FeatureReqForm() {
 										<div className="relative">
 											<Input
 												type="file"
-												// accept=".pdf"
+												accept=".pdf,.doc,.docx"
 												className="hidden"
 												id="uploadAttachment"
 												onChange={(e) => onFileChange(e, field)}
@@ -274,7 +309,10 @@ export default function FeatureReqForm() {
 								rules={{ required: true }}
 								render={({ field }) => (
 									<Textarea
-										className="shadow-sm"
+										className={`shadow-sm ${
+											errors?.yourMessage?.type === 'required' &&
+											'border-2 border-bob-error-color'
+										}`}
 										placeholder="Type your message here"
 										{...field}
 									/>
@@ -298,18 +336,19 @@ export default function FeatureReqForm() {
 									rules={{ pattern: /^[0-9]{10}$/g, required: true }}
 									render={({ field }) => (
 										<Input
-											className="shadow-sm"
+											className={`shadow-sm ${
+												errors?.phoneNumber?.type === 'pattern'
+													? 'border-2 border-bob-error-color'
+													: ''
+											}`}
 											placeholder="Your phone number"
 											{...field}
 										/>
 									)}
 								/>
-								{/**** For future reference ****/}
-								{/* {errors.phoneNumber?.type === 'pattern' && (
-									<p className="text-bob-error-color mt-2">
-										Enter Valid Phone Number
-									</p>
-								)} */}
+								{errors.phoneNumber?.type === 'pattern' && (
+									<p className="text-bob-error-color mt-2">Enter Valid Phone Number</p>
+								)}
 							</div>
 						)}
 

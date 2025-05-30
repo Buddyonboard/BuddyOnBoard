@@ -20,6 +20,8 @@ import { CircleCheck, Paperclip } from 'lucide-react';
 import MessageAfterSubmit from '../ReUsable/MessageAfterSubmit';
 import { Link } from 'react-router-dom';
 import PrivacyTermsCheckBox from '../ReUsable/Privacy-Terms-Checkbox';
+import API_URL from '../../../environments/Environment-dev';
+import axios from 'axios';
 
 export default function ReportIssueForm() {
 	const {
@@ -68,12 +70,43 @@ export default function ReportIssueForm() {
 
 	/* Handling Form submission */
 	async function onSubmit(data) {
-		// Here you would typically send the data to your API
-		await new Promise((resolve) => setTimeout(resolve, 3000));
-		console.log('Consoling Data >', data);
+		try {
+			/**** Send form data to backend ****/
+			const formData = new FormData();
+			// formData.append('fullName', data.fullName);
+			// formData.append('email', data.email);
+			formData.append('categoryRequest', data.typeOfIssue);
+			formData.append('yourMessage', data.yourMessage);
+			// formData.append('requestCallBack', data.requestCallBack);
+			formData.append('privacyTerms', data.privacyTerms);
+			// formData.append('phoneNumber', data.phoneNumber);
+			formData.append('anonymousTerms', data.anonymousTerms);
 
-		setFormError(null);
-		setSuccessMessage(true);
+			/*** If File has been uploaded, append file to form data ***/
+			if (data.uploadAttachment) {
+				formData.append('uploadAttachment', data.uploadAttachment);
+			}
+
+			/*** If User select anonymousTerms option, fields not to be passed to backend ***/
+			if (data.anonymousTerms !== true) {
+				formData.append('fullName', data.fullName);
+				formData.append('email', data.email);
+				formData.append('requestCallBack', data.requestCallBack);
+				formData.append('phoneNumber', data.phoneNumber);
+			}
+
+			await axios.post(`${API_URL}/report-issue`, formData, {
+				headers: {
+					'Content-Type': 'multipart/form-data'
+				}
+			});
+
+			setFormError(null);
+			setSuccessMessage(true);
+		} catch (error) {
+			setFormError(CONST.somethingWentWrong);
+			// console.log('Error: ', error);
+		}
 	}
 
 	useEffect(() => {
@@ -114,7 +147,10 @@ export default function ReportIssueForm() {
 									rules={{ required: true }}
 									render={({ field }) => (
 										<Input
-											className="shadow-sm"
+											className={`shadow-sm ${
+												errors?.fullName?.type === 'required' &&
+												'border-2 border-bob-error-color'
+											}`}
 											placeholder="Your full name"
 											{...field}
 										/>
@@ -137,7 +173,10 @@ export default function ReportIssueForm() {
 									rules={{ required: true }}
 									render={({ field }) => (
 										<Input
-											className="shadow-sm"
+											className={`shadow-sm ${
+												errors?.email?.type === 'required' &&
+												'border-2 border-bob-error-color'
+											}`}
 											type="email"
 											placeholder="Your email"
 											{...field}
@@ -169,7 +208,12 @@ export default function ReportIssueForm() {
 											}}
 											value={field.value} //Ensure selected value is controlled
 										>
-											<SelectTrigger className="w-full shadow-sm">
+											<SelectTrigger
+												className={`w-full shadow-sm ${
+													errors?.typeOfIssue?.type === 'required' &&
+													'border-2 border-bob-error-color'
+												}`}
+											>
 												<SelectValue placeholder="Choose your issue" />
 											</SelectTrigger>
 											<SelectContent>
@@ -228,7 +272,7 @@ export default function ReportIssueForm() {
 										<div className="relative">
 											<Input
 												type="file"
-												// accept=".pdf"
+												accept=".pdf,.doc,.docx"
 												className="hidden"
 												id="uploadAttachment"
 												onChange={(e) => onFileChange(e, field)}
@@ -273,7 +317,10 @@ export default function ReportIssueForm() {
 								rules={{ required: true }}
 								render={({ field }) => (
 									<Textarea
-										className="shadow-sm"
+										className={`shadow-sm ${
+											errors?.yourMessage?.type === 'required' &&
+											'border-2 border-bob-error-color'
+										}`}
 										placeholder="Type your message here"
 										{...field}
 									/>
@@ -297,18 +344,19 @@ export default function ReportIssueForm() {
 									rules={{ pattern: /^[0-9]{10}$/g, required: true }}
 									render={({ field }) => (
 										<Input
-											className="shadow-sm"
+											className={`shadow-sm ${
+												errors?.phoneNumber?.type === 'pattern'
+													? 'border-2 border-bob-error-color'
+													: ''
+											}`}
 											placeholder="Your phone number"
 											{...field}
 										/>
 									)}
 								/>
-								{/**** For future reference ****/}
-								{/* {errors.phoneNumber?.type === 'pattern' && (
-                    <p className="text-bob-error-color mt-2">
-                        Enter Valid Phone Number
-                    </p>
-                )} */}
+								{errors.phoneNumber?.type === 'pattern' && (
+									<p className="text-bob-error-color mt-2">Enter Valid Phone Number</p>
+								)}
 							</div>
 						)}
 

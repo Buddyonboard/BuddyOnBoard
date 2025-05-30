@@ -17,6 +17,9 @@ export default function SearchResultsLayout() {
 	const checkPackageType = params.get('packageType');
 	const checkServiceType = params.get('serviceType');
 	const userIdParam = params.get('selectedUserId');
+	const startDestination = params.get('from');
+	const endDestination = params.get('to');
+	const travelDate = params.get('date');
 
 	const serviceTypeValue =
 		checkServiceType === 'travel' ? 'Travel Buddy' : 'Courier Buddy';
