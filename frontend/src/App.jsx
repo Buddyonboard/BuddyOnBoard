@@ -22,6 +22,8 @@ import {
 import FirebaseRedirectHandler from './utils/FirebaseRedirectHandler';
 import { BookingCancellationProvider } from './context/Booking-Cancellation-Context';
 import SearchRouteGuard from './utils/SearchRouteGuard';
+// import ServiceProviderLayout from './components/ServiceProvider/ServiceProvider-Layout';
+// import BuddyRegistrationForm from './components/Forms/Service-Provider/BuddyRegistration';
 // import SendRequestForm from './pages/SendRequestForm-Layout';
 // import TermsOfUse from './pages/Common-pages/TermsOfUse';
 
@@ -61,6 +63,12 @@ const UserProfile = lazy(() =>
 const SendRequestForm = lazy(() => import('./pages/SendRequestForm-Layout'));
 const BookingsLayout = lazy(() => import('./pages/Bookings-Layout'));
 const SearchResultsLayout = lazy(() => import('./pages/Search-Results-Layout'));
+const BuddyRegistrationForm = lazy(() =>
+	import('./components/Forms/Service-Provider/BuddyRegistration')
+);
+const ServiceProviderLayout = lazy(() =>
+	import('./components/ServiceProvider/ServiceProvider-Layout')
+);
 
 function App() {
 	return (
@@ -102,7 +110,7 @@ function App() {
 
 										{/* Private Routes (Only Logged-in Users Can Access) */}
 										<Route element={<PrivateRoute />}>
-											{/* User Reigstration Page Route Guard */}
+											{/* User Reigstration Page Route Guard (Restricted for Registered Users) */}
 											<Route element={<RegistrationRoute />}>
 												<Route
 													path="user-registration"
@@ -122,6 +130,11 @@ function App() {
 														</BookingCancellationProvider>
 													}
 												/>
+												<Route
+													path="buddy-registration"
+													element={<BuddyRegistrationForm />}
+												/>
+												<Route path="buddy-dashboard" element={<ServiceProviderLayout />} />
 											</Route>
 										</Route>
 

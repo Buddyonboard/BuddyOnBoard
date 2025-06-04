@@ -457,7 +457,14 @@ const CONST = Object.freeze({
 		'No worries — just click Forgot Password below to get a fresh reset link.',
 	emailVerificationTitle: "We've sent a verification link to your email.",
 	emailVerificationDescription:
-		'Please check your inbox (and spam folder just in case) to verify your account and get started!'
+		'Please check your inbox (and spam folder just in case) to verify your account and get started!',
+	serviceProviderModule: {
+		veriffPopupDialog: {
+			title: "You're almost there!",
+			description:
+				"We'll now redirect you to our trusted partner, Veriff, to securely verify your identity. Don't worry, Buddy on Board will not store any of your ID	details. Your information stays safe and private with Veriff."
+		}
+	}
 });
 
 export default CONST;

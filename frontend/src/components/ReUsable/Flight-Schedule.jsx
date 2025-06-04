@@ -6,15 +6,24 @@ export default function FlightSchedule({
 	departureLocation,
 	arrivalTime,
 	arrivalDate,
-	arrivalLocation
+	arrivalLocation,
+	page
 }) {
 	return (
 		<>
 			{/* Departure */}
 			<div className="text-left">
-				<div className="text-bob-travel-time-color font-bold">{departureTime}</div>
-				<div className="text-xs text-bob-travel-details-color">{departureDate}</div>
-				<div className="text-xs text-bob-travel-details-color">
+				<div
+					className={`text-bob-travel-time-color font-bold ${
+						page === 'buddy-dashboard' && '2xl:text-2xl'
+					}`}
+				>
+					{departureTime}
+				</div>
+				<div className="text-xs text-bob-travel-details-color 2xl:text-2xl">
+					{departureDate}
+				</div>
+				<div className="text-xs text-bob-travel-details-color 2xl:text-2xl">
 					{departureLocation}
 				</div>
 			</div>
@@ -26,9 +35,13 @@ export default function FlightSchedule({
 
 			{/* Arrival */}
 			<div className="text-right">
-				<div className="text-bob-travel-time-color font-bold">{arrivalTime}</div>
-				<div className="text-xs text-bob-travel-details-color">{arrivalDate}</div>
-				<div className="text-xs text-bob-travel-details-color">
+				<div className="text-bob-travel-time-color font-bold 2xl:text-2xl">
+					{arrivalTime}
+				</div>
+				<div className="text-xs text-bob-travel-details-color 2xl:text-2xl">
+					{arrivalDate}
+				</div>
+				<div className="text-xs text-bob-travel-details-color 2xl:text-2xl">
 					{arrivalLocation}
 				</div>
 			</div>

@@ -1,5 +1,6 @@
 const Users = require('../models/UsersSchema');
 const admin = require('../Config/firebase');
+const serviceProvider = require('../models/ServiceProviderSchema');
 
 /****** User Profile Registration/Update Controller ******/
 exports.userRegistration = async (req, res) => {
@@ -61,6 +62,26 @@ exports.userRegistration = async (req, res) => {
 			updatedPayload,
 			{ upsert: true, new: true }
 		);
+
+		/*** If buddy registration, insert into service_provider ***/
+		if (role === 'serviceProvider') {
+			await serviceProvider.findOneAndUpdate(
+				{ user_Id: user._id },
+				{
+					$set: {
+						user_Id: user._id,
+						userDetails: updateData
+					}
+				},
+				{ upsert: true, new: true }
+			);
+
+			// // Optional: update user role to 'service_provider'
+			// if (user.role !== 'service_provider') {
+			// 	user.role = 'service_provider';
+			// 	await user.save();
+			// }
+		}
 
 		res.status(200).json({ message: 'User saved', user });
 	} catch (err) {
