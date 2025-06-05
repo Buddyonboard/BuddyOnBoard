@@ -5,6 +5,7 @@ import { Menu, UserRound, X } from 'lucide-react';
 import CONST from '@/utils/constants';
 import { useFirebase } from '@/context/Firebase-Context';
 import FooterBrandImage from '@/assets/Common/FooterBrandImage.svg';
+import { getuserProfile } from '@/utils/localStorageHelper';
 
 const userProfileIcon = <UserRound size={18} />;
 
@@ -13,6 +14,15 @@ export default function HeaderSection({ scrollToSection, page }) {
 	const { user, logout } = useFirebase();
 	const location = useLocation();
 	const navigate = useNavigate();
+
+	const userProfileData = getuserProfile();
+	const isServiceProvider = userProfileData?.role === 'serviceProvider';
+
+	/*** Set page and route name for based on user role ***/
+	const buddyPageType = isServiceProvider ? 'Buddy dashboard' : 'Become a buddy';
+	const buddyRouteType = isServiceProvider
+		? 'buddy-dashboard'
+		: 'buddy-registration';
 
 	const toggleMenu = () => {
 		setIsMenuOpen((prev) => !prev);
@@ -56,6 +66,12 @@ export default function HeaderSection({ scrollToSection, page }) {
 					</Link>
 					{/****** Nav Links *****/}
 					<nav className="hidden md:flex items-center gap-6">
+						<Link
+							onClick={(e) => handleNavigation(e, buddyRouteType)}
+							className="2xl:text-xl md:text-base text-sm font-[600] font-dm-sans text-primary-color"
+						>
+							{buddyPageType}
+						</Link>
 						{item.navSection.map((opt) => (
 							<Link
 								onClick={(e) => handleNavigation(e, opt.href)}
@@ -116,7 +132,7 @@ export default function HeaderSection({ scrollToSection, page }) {
 
 					{/************************ Mobile View *************************/}
 					<div variant="none" className="md:hidden">
-						{/* Hamburger/User Icon */}
+						{/*** Hamburger/User Icon ***/}
 						<button onClick={toggleMenu} aria-label="Open Menu">
 							{user ? (
 								<Button
@@ -133,7 +149,7 @@ export default function HeaderSection({ scrollToSection, page }) {
 							)}
 						</button>
 
-						{/* Mobile menu opening Overlay with Low Opacity */}
+						{/*** Mobile menu opening Overlay with Low Opacity ***/}
 						{isMenuOpen && (
 							<div
 								className="fixed inset-0 bg-black/30 backdrop-opacity-100 transition-opacity duration-300 z-40"
@@ -141,7 +157,7 @@ export default function HeaderSection({ scrollToSection, page }) {
 							></div>
 						)}
 
-						{/* Mobile Menu with Transition */}
+						{/**** Mobile Menu with Transition ****/}
 						<div
 							className={`absolute ${
 								user &&
@@ -151,7 +167,18 @@ export default function HeaderSection({ scrollToSection, page }) {
 							}`}
 						>
 							<ul className="flex flex-col p-4 gap-2">
-								{/* Nav Links */}
+								{/**** Nav Links ****/}
+								<li>
+									<Link
+										onClick={(e) => {
+											handleNavigation(e, buddyRouteType);
+											setIsMenuOpen((prev) => !prev);
+										}}
+										className="text-left w-full rounded-md px-2 py-1 flex items-center gap-2 font-medium"
+									>
+										{buddyPageType}
+									</Link>
+								</li>
 								{(user ? item.loginNav : item.navSection).map((value) => (
 									<li>
 										<Link
@@ -167,7 +194,7 @@ export default function HeaderSection({ scrollToSection, page }) {
 										</Link>
 									</li>
 								))}
-								{/* Log-in button */}
+								{/**** Log-in button ****/}
 								<li className={`${user && 'hidden'}`}>
 									<Link
 										to={item.loginSection.href}

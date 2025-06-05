@@ -14,7 +14,7 @@ const CONST = Object.freeze({
 		{
 			brandName: { name: 'Buddy On Board', href: '/' },
 			navSection: [
-				{ name: 'Become a buddy', href: '' },
+				// { name: 'Become a buddy', href: 'buddy-registration' },
 				{ name: 'How it works', href: 'how-it-works' },
 				{ name: 'About us', href: 'about-us' }
 			],
@@ -459,6 +459,7 @@ const CONST = Object.freeze({
 	emailVerificationDescription:
 		'Please check your inbox (and spam folder just in case) to verify your account and get started!',
 	serviceProviderModule: {
+		reviewProfile: 'Please review your profile',
 		veriffPopupDialog: {
 			title: "You're almost there!",
 			description:
