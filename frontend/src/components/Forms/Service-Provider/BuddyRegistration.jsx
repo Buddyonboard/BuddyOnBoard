@@ -172,7 +172,7 @@ export default function BuddyRegistrationForm() {
 			{isLoaded ? (
 				<div className="w-full mx-auto p-6">
 					<h1 className="text-xl md:text-3xl font-normal font-merriweather mb-4 md:mb-8">
-						{CONST.serviceRequestForm.yourProfile}
+						{CONST.serviceProviderModule.reviewProfile}
 					</h1>
 
 					<form onSubmit={handleSubmit(onSubmit, onError)} className="space-y-6">

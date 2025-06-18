@@ -1,8 +1,11 @@
 import CONST from '@/utils/Constants';
 
-import TravelBuddyLarge from '@/assets/Landing/HowItWorks/TravelBuddyLarge.svg';
-import TravelBuddyMedium from '@/assets/Landing/HowItWorks/TravelBuddyMedium.svg';
-import TravelBuddySmall from '@/assets/Landing/HowItWorks/TravelBuddySmall.svg';
+import TravelBuddyLarge from '@/assets/Landing/HowItWorks/TravelBuddyLarge.png';
+// import TravelBuddyLarge from '@/assets/Landing/HowItWorks/TravelBuddyLarge.svg';
+import TravelBuddyMedium from '@/assets/Landing/HowItWorks/TravelBuddyMedium.png';
+// import TravelBuddyMedium from '@/assets/Landing/HowItWorks/TravelBuddyMedium.svg';
+import TravelBuddySmall from '@/assets/Landing/HowItWorks/TravelBuddySmall.png';
+// import TravelBuddySmall from '@/assets/Landing/HowItWorks/TravelBuddySmall.svg';
 
 import Flight from '@/assets/Landing/HowItWorks/Icons/Flight.svg';
 import HandShake from '@/assets/Landing/HowItWorks/Icons/HandShake.svg';
@@ -15,12 +18,12 @@ export default function TravelBuddy() {
 		<div className="relative mt-8 md:mt-12">
 			<div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
 				{/* Left side - Image */}
-				<div className="relative lg:left-[15%] 2xl:left-[20%]">
+				<div className="relative lg:left-[30%] 2xl:left-[20%]">
 					<div className="w-full h-full lg:mb-14">
 						<img
 							src={TravelBuddyLarge}
 							alt="Travel Buddy"
-							className="hidden lg:block"
+							className="hidden lg:block lg:size-9/10 2xl:size-full"
 						/>
 						<img
 							src={TravelBuddyMedium}

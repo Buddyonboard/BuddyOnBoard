@@ -1,8 +1,10 @@
 import FeatureItem from '@/components/Landing/FeaturesSection/FeatureItem';
 import CONST from '@/utils/Constants';
 
-import TravelStressFreeMedium from '@/assets/Landing/Features/TravelStressFreeMedium.svg';
-import TravelStressFreeLarge from '@/assets/Landing/Features/TravelStressFreeLarge.svg';
+import TravelStressFreeMedium from '@/assets/Landing/Features/TravelStressFreeMedium.png';
+// import TravelStressFreeMedium from '@/assets/Landing/Features/TravelStressFreeMedium.svg';
+import TravelStressFreeLarge from '@/assets/Landing/Features/TravelStressFreeLarge.png';
+// import TravelStressFreeLarge from '@/assets/Landing/Features/TravelStressFreeLarge.svg';
 import TravelStressFreeSmall from '@/assets/Landing/Features/TravelStressFreeSmall.svg';
 
 import User from '@/assets/Landing/Features/Users.svg';

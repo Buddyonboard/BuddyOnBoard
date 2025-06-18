@@ -5,7 +5,11 @@ import FlightStopType from '@/components/ReUsable/Service-Seeker/Flight-Stop-Typ
 import BuddyRequestTypeTag from '../BuddyRequestTypeTag';
 import { Separator } from '@/components/ui/separator';
 
-export default function ActiveListingsCard({ hasData, activeListings }) {
+export default function ActiveListingsCard({
+	hasData,
+	activeListings,
+	setActiveTab
+}) {
 	return (
 		<Card>
 			<CardHeader className="px-5">
@@ -47,10 +51,13 @@ export default function ActiveListingsCard({ hasData, activeListings }) {
 
 								{/**** Language/Courier Preferences ****/}
 								<div className="flex justify-items-start items-center gap-3">
-									<BuddyRequestTypeTag serviceType={listing.type} />
+									<BuddyRequestTypeTag serviceType={listing.serviceType} />
 									<BuddyRequestTypeTag productType={listing.tag} />
 								</div>
-								<Button className="bg-bob-color border-2 border-bob-border-color w-full rounded-2xl font-semibold 2xl:text-xl py-5">
+								<Button
+									className="bg-bob-color border-2 border-bob-border-color w-full rounded-2xl font-semibold 2xl:text-xl py-5"
+									onClick={() => setActiveTab('active-listings')}
+								>
 									View listing
 								</Button>
 
@@ -65,6 +72,7 @@ export default function ActiveListingsCard({ hasData, activeListings }) {
 							<Button
 								className="w-full font-bold 2xl:text-xl py-5 
                                 text-bob-color bg-white cursor-pointer"
+								onClick={() => setActiveTab('active-listings')}
 							>
 								View all
 							</Button>

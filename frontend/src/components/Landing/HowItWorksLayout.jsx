@@ -5,7 +5,9 @@ import useTabToggle from '@/hooks/useTabToggle';
 import TravelBuddy from './HowItWorksSection/TravelBuddy';
 import CourierBuddy from './HowItWorksSection/CourierBuddy';
 import { forwardRef } from 'react';
-import CourierBuddyLarge from '@/assets/Landing/HowItWorks/CourierBuddyLarge.svg';
+
+import CourierBuddyLarge from '@/assets/Landing/HowItWorks/CourierBuddyLarge.png';
+// import CourierBuddyLarge from '@/assets/Landing/HowItWorks/CourierBuddyLarge.svg';
 import CourierBuddyMedium from '@/assets/Landing/HowItWorks/CourierBuddyMedium.svg';
 import CourierBuddySmall from '@/assets/Landing/HowItWorks/CourierBuddySmall.svg';
 

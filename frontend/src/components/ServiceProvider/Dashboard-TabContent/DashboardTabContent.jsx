@@ -10,7 +10,8 @@ export default function DashboardTabContent({
 	upcomingTrip,
 	buddyRequests,
 	activeListings,
-	hasData
+	hasData,
+	setActiveTab
 }) {
 	return (
 		<>
@@ -25,10 +26,18 @@ export default function DashboardTabContent({
 				</div>
 
 				{/************* Buddy Requests Card *************/}
-				<BuddyRequestsCard hasData={hasData} buddyRequests={buddyRequests} />
+				<BuddyRequestsCard
+					hasData={hasData}
+					buddyRequests={buddyRequests}
+					setActiveTab={setActiveTab}
+				/>
 
 				{/************* Active Listings Card *************/}
-				<ActiveListingsCard hasData={hasData} activeListings={activeListings} />
+				<ActiveListingsCard
+					hasData={hasData}
+					activeListings={activeListings}
+					setActiveTab={setActiveTab}
+				/>
 			</div>
 
 			{/******************** Support Section ********************/}

@@ -1,8 +1,10 @@
 import FeatureItem from '@/components/Landing/FeaturesSection/FeatureItem';
 import CONST from '@/utils/Constants';
 
-import CourierEasilyMedium from '@/assets/Landing/Features/CourierEasilyMedium.svg';
-import CourierEasilyLarge from '@/assets/Landing/Features/CourierEasilyLarge.svg';
+// import CourierEasilyMedium from '@/assets/Landing/Features/CourierEasilyMedium.svg';
+import CourierEasilyMedium from '@/assets/Landing/Features/CourierEasilyMedium.png';
+// import CourierEasilyLarge from '@/assets/Landing/Features/CourierEasilyLarge.svg';
+import CourierEasilyLarge from '@/assets/Landing/Features/CourierEasilyLarge.png';
 import CourierEasilySmall from '@/assets/Landing/Features/CourierEasilySmall.svg';
 
 import ConnectUser from '@/assets/Landing/Features/ConnectUser.svg';
