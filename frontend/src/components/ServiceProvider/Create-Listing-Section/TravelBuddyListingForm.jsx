@@ -92,7 +92,7 @@ export default function TravelBuddyListingForm() {
 		3: ['price1', 'price2', 'price3']
 	};
 
-	const requiredFlag = false; // To set required field flag in the form
+	const requiredFlag = true; // To set required field flag in the form
 
 	/********* Handle Form Submission *********/
 	const onSubmit = (data) => {
