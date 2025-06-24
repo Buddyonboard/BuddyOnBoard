@@ -5,6 +5,7 @@ import BuddyRequestTabContent from './BuddyRequests-TabContent.jsx/BuddyRequestT
 import { useState } from 'react';
 import ActiveListingsTabContent from './ActiveListings-TabContent.jsx/ActiveListingsTabContent';
 import PreviousListingsTabContent from './PreviousListings-TabContent.jsx/PreviousListingsTabContent';
+import LayoutPageHeader from './LayoutPageHeader';
 
 export default function ServiceProviderLayout() {
 	const [activeTab, setActiveTab] = useState('dashboard');
@@ -371,17 +372,7 @@ export default function ServiceProviderLayout() {
 		<div className="min-h-screen">
 			<div className="mx-auto px-4 py-6">
 				{/************ Page Heading Section **************/}
-				<header className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-					<h1 className="2xl:text-5xl xl:text-4xl lg:text-3xl text-2xl font-normal font-merriweather text-bob-tiles-text-color">
-						Welcome back, Joe
-					</h1>
-					<Button
-						className="bg-bob-color border-2 border-bob-border-color max-sm:w-full
-                  		rounded-2xl 2xl:text-xl 2xl:py-6 2xl:px-5 py-5 px-3 font-semibold"
-					>
-						Create a listing
-					</Button>
-				</header>
+				<LayoutPageHeader />
 
 				{/************** Tabs Options Section ***************/}
 				<Tabs

@@ -22,6 +22,9 @@ import {
 import FirebaseRedirectHandler from './utils/FirebaseRedirectHandler';
 import { BookingCancellationProvider } from './context/Booking-Cancellation-Context';
 import SearchRouteGuard from './utils/SearchRouteGuard';
+// import CourierBuddyListingForm from './components/ServiceProvider/Create-Listing-Section/CourierBuddyListingForm';
+// import TravelBuddyListingForm from './components/ServiceProvider/Create-Listing-Section/TravelBuddyListingForm';
+// import CreateListingPage from './components/ServiceProvider/Create-Listing-Section/CreateListingPage';
 // import ServiceProviderLayout from './components/ServiceProvider/ServiceProvider-Layout';
 // import BuddyRegistrationForm from './components/Forms/Service-Provider/BuddyRegistration';
 // import SendRequestForm from './pages/SendRequestForm-Layout';
@@ -68,6 +71,19 @@ const BuddyRegistrationForm = lazy(() =>
 );
 const ServiceProviderLayout = lazy(() =>
 	import('./components/ServiceProvider/ServiceProvider-Layout')
+);
+const CreateListingPage = lazy(() =>
+	import('./components/ServiceProvider/Create-Listing-Section/CreateListingPage')
+);
+const TravelBuddyListingForm = lazy(() =>
+	import(
+		'./components/ServiceProvider/Create-Listing-Section/TravelBuddyListingForm'
+	)
+);
+const CourierBuddyListingForm = lazy(() =>
+	import(
+		'./components/ServiceProvider/Create-Listing-Section/CourierBuddyListingForm'
+	)
 );
 
 function App() {
@@ -135,6 +151,18 @@ function App() {
 													element={<BuddyRegistrationForm />}
 												/>
 												<Route path="buddy-dashboard" element={<ServiceProviderLayout />} />
+
+												{/* Create Listing Route and Sub-routes */}
+												<Route path="create-listing" element={<CreateListingPage />}>
+													<Route
+														path="travel-buddy-form"
+														element={<TravelBuddyListingForm />}
+													/>
+													<Route
+														path="courier-buddy-form"
+														element={<CourierBuddyListingForm />}
+													/>
+												</Route>
 											</Route>
 										</Route>
 
