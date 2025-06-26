@@ -5,8 +5,11 @@ import {
 	SelectTrigger,
 	SelectValue
 } from '@/components/ui/select';
+import useLanguages from '@/hooks/useLanguages';
 
 export default function LanguageSelection({ value, onChange }) {
+	const { data } = useLanguages();
+
 	return (
 		<>
 			<Select value={value} onValueChange={onChange}>
@@ -14,11 +17,11 @@ export default function LanguageSelection({ value, onChange }) {
 					<SelectValue />
 				</SelectTrigger>
 				<SelectContent>
-					<SelectItem value="English">English</SelectItem>
-					<SelectItem value="Spanish">Spanish</SelectItem>
-					<SelectItem value="French">French</SelectItem>
-					<SelectItem value="German">German</SelectItem>
-					<SelectItem value="Italian">Italian</SelectItem>
+					{data?.data.map((item, index) => (
+						<SelectItem key={index} value={item.Language}>
+							{item.Language}
+						</SelectItem>
+					))}
 				</SelectContent>
 			</Select>
 		</>

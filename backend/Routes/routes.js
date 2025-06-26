@@ -1,7 +1,8 @@
 const express = require('express');
 const {
 	getAirports,
-	getAllCountries
+	getAllCountries,
+	getAllLanguages
 } = require('../controllers/dataFetchController');
 const {
 	userRegistration,
@@ -19,6 +20,7 @@ const router = express.Router();
 router.get('/airportsList', getAirports);
 router.get('/users/:userUid', findUserData);
 router.get('/countriesList', getAllCountries);
+router.get('/languagesList', getAllLanguages);
 router.get('/serviceRequestsList', getServiceRequests);
 router.get('/issueReportsList', getIssueReports);
 

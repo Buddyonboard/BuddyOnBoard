@@ -1,24 +1,20 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { Minus, Plus } from 'lucide-react';
-import { useForm, Controller, useFieldArray } from 'react-hook-form';
-import AirportSearchDropdown from './AirportSelectionDropdown';
-import DateSelection from './DateSelection';
+import { useForm, Controller } from 'react-hook-form';
+import AirportSearchDropdown from '../AirportSelectionDropdown';
+import DateSelection from '../DateSelection';
 import { toast } from 'sonner';
 import CONST from '@/utils/Constants';
-import CompanionPreference from './Travel-Listing-Form/Step-2/CompanionPreference';
-import ListingPricingHelpAccordion from './Travel-Listing-Form/Step-3/ListingPricingHelpAccordion';
-import TravelAssistOptions from './Travel-Listing-Form/Step-2/TravelAssistOptions';
-import LanguageSelection from './Travel-Listing-Form/Step-2/LanguageSelection';
+import ListingPricingHelpAccordion from '../Travel-Listing-Form/Step-3/ListingPricingHelpAccordion';
 import { Link } from 'react-router-dom';
+import { Checkbox } from '@/components/ui/checkbox';
 
-export default function TravelBuddyListingForm() {
-	// const [date, setDate] = useState(undefined);
+export default function CourierBuddyListingForm() {
 	const [airportFromSelected, setAirportFromSelected] = useState(null);
 	const [airportToSelected, setAirportToSelected] = useState(null);
 	const [currentStep, setCurrentStep] = useState(1);
@@ -27,9 +23,7 @@ export default function TravelBuddyListingForm() {
 	const {
 		handleSubmit,
 		control,
-		watch,
 		setValue,
-		getValues,
 		trigger,
 		formState: { errors }
 	} = useForm({
@@ -41,17 +35,18 @@ export default function TravelBuddyListingForm() {
 			arrivalAirport: '',
 			arrivalDate: '',
 			arrivalTime: '',
-			stops: 0,
-			stopAirports: [],
-			travelAssitanceOptions: '',
-			companionPreference: '',
-			language1: '',
-			language2: '',
-			language3: '',
+			courierPreferences: [],
 			description: '',
-			price1: '',
-			price2: '',
-			price3: ''
+			documentPrice1: '',
+			documentPrice2: '',
+			documentPrice3: '',
+			clothesPrice1: '',
+			clothesPrice2: '',
+			clothesPrice3: '',
+			electronicsPrice1: '',
+			electronicsPrice2: '',
+			electronicsPrice3: '',
+			acceptCourierTerms: ''
 		}
 	});
 
@@ -64,11 +59,21 @@ export default function TravelBuddyListingForm() {
 			'departureTime',
 			'arrivalAirport',
 			'arrivalDate',
-			'arrivalTime',
-			'stopAirports'
+			'arrivalTime'
 		],
-		2: ['travelAssitanceOptions', 'companionPreference', 'language1'],
-		3: ['price1', 'price2', 'price3']
+		2: ['courierPreferences'],
+		3: [
+			'documentPrice1',
+			'documentPrice2',
+			'documentPrice3',
+			'clothesPrice1',
+			'clothesPrice2',
+			'clothesPrice3',
+			'electronicsPrice1',
+			'electronicsPrice2',
+			'electronicsPrice3'
+		],
+		4: ['acceptCourierTerms']
 	};
 
 	const requiredFlag = true; // To set required field flag in the form
@@ -78,41 +83,8 @@ export default function TravelBuddyListingForm() {
 		console.log('Submitted Data:', data);
 	};
 
-	/***************** Handling Airport Stops **********************/
-	const { fields, append, remove } = useFieldArray({
-		control,
-		name: 'stopAirports'
-	});
-	const stops = watch('stops') || 0;
-
-	useEffect(() => {
-		const currentFields = getValues('stopAirports') || [];
-
-		if (stops > currentFields.length) {
-			for (let i = currentFields.length; i < stops; i++) {
-				append('');
-			}
-		} else if (stops < currentFields.length) {
-			for (let i = currentFields.length - 1; i >= stops; i--) {
-				remove(i);
-			}
-		}
-	}, [stops]);
-
-	const handleStopsChange = (newStops) => {
-		const clampedStops = Math.max(0, Math.min(2, newStops));
-		setValue('stops', clampedStops);
-
-		const currentStops = getValues('stopAirports') || [];
-		const newArray = Array.from(
-			{ length: clampedStops },
-			(_, i) => currentStops[i] || ''
-		);
-		setValue('stopAirports', newArray);
-	};
-
 	/********* Handle Progress Tracker *********/
-	const totalSteps = 4;
+	const totalSteps = 5;
 	const progress = (currentStep / totalSteps) * 100;
 
 	/********* Handle Next Step Functionality *********/
@@ -343,194 +315,65 @@ export default function TravelBuddyListingForm() {
 				</div>
 			</div>
 
-			{/************* Stops Details **************/}
-			<div>
-				<div className="flex flex-row justify-between items-center">
-					<Label className="2xl:text-lg md:text-base text-sm text-bob-form-label-color font-medium">
-						How many stops does your trip have?
-					</Label>
-
-					<div className="flex items-center gap-4">
-						<Button
-							type="button"
-							variant="outline"
-							size="icon"
-							onClick={() => handleStopsChange(stops - 1)}
-							disabled={stops <= 0}
-							className="h-8 w-8 rounded-full"
-						>
-							<Minus className="h-4 w-4" />
-						</Button>
-
-						<span className="text-lg font-medium w-8 text-center">{stops}</span>
-
-						<Button
-							type="button"
-							variant="outline"
-							size="icon"
-							onClick={() => handleStopsChange(stops + 1)}
-							disabled={stops >= 2}
-							className="h-8 w-8 rounded-full"
-						>
-							<Plus className="h-4 w-4" />
-						</Button>
-					</div>
-				</div>
-
-				{/**** Airport Stops Details ****/}
-				{stops > 0 && (
-					<div className="space-y-4 mt-6">
-						{fields.map((field, index) => (
-							<div key={field.id} className="pb-4">
-								<h4 className="text-xl 2xl:text-3xl md:text-2xl font-semibold mb-3 text-bob-search-input-label-color">
-									{index === 0 ? 'First Stop' : 'Second Stop'}
-								</h4>
-								<div>
-									<Label
-										htmlFor={`stopAirports.${index}`}
-										className="text-sm lg:text-base 2xl:text-xl font-medium
-										text-bob-search-input-label-color"
-									>
-										Airport*
-									</Label>
-									<Controller
-										id={`stopAirports.${index}`}
-										name={`stopAirports.${index}`}
-										control={control}
-										rules={{ required: requiredFlag }}
-										render={({ field }) => (
-											<AirportSearchDropdown
-												{...field}
-												errors={errors} // includes value and onChange
-											/>
-										)}
-									/>
-								</div>
-							</div>
-						))}
-					</div>
-				)}
-			</div>
-
 			{formError && (
 				<p className="text-center mt-10 text-bob-error-color">{formError}</p>
 			)}
 		</div>
 	);
 
-	/********************* 2. Travel Preferences Step ***********************/
+	/********************* 2. Courier Preferences Step ***********************/
 	const renderStep2 = () => (
 		<div className="space-y-6">
 			{/********* Travel Preferences *********/}
 			<div>
 				<h2 className="text-xl 2xl:text-3xl md:text-2xl font-semibold mb-2 text-bob-search-input-label-color">
-					Add your travel preferences
+					Add your courier preferences*
 				</h2>
 
 				<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-					{/**** Assist Travellers With ****/}
-					<div>
-						<Label
-							className="text-sm lg:text-base 2xl:text-xl font-medium
-							text-bob-search-input-label-color block"
-						>
-							Can assist the travelers with:*
-						</Label>
-						<Controller
-							id="travelAssitanceOptions"
-							name="travelAssitanceOptions"
-							control={control}
-							rules={{ required: requiredFlag }}
-							render={({ field }) => (
-								<TravelAssistOptions value={field.value} onChange={field.onChange} />
-							)}
-						/>
-					</div>
+					<Controller
+						name="courierPreferences"
+						control={control}
+						rules={{ required: requiredFlag }}
+						render={({ field }) => {
+							const COURIER_OPTIONS = [
+								'Documents',
+								'Clothes',
+								'Electronics (Open box with invoice)',
+								'Electronics (Open box without invoice)'
+							];
 
-					{/**** Comfortable accompanying ****/}
-					<div>
-						<Label
-							className="text-sm lg:text-base 2xl:text-xl font-medium
-							text-bob-search-input-label-color block"
-						>
-							Comfortable accompanying:*
-						</Label>
-						<Controller
-							id="companionPreference"
-							name="companionPreference"
-							control={control}
-							rules={{ required: requiredFlag }}
-							render={({ field }) => (
-								<CompanionPreference value={field.value} onChange={field.onChange} />
-							)}
-						/>
-					</div>
-				</div>
-			</div>
+							const { value, onChange } = field;
 
-			{/*********** Languages Preferences ************/}
-			<div>
-				<h2 className="text-xl 2xl:text-3xl md:text-2xl font-semibold mb-2 text-bob-search-input-label-color">
-					Languages you speak (add up to 3)
-				</h2>
+							const toggleOption = (option) => {
+								if (value.includes(option)) {
+									onChange(value.filter((item) => item !== option));
+								} else {
+									onChange([...value, option]);
+								}
+							};
 
-				<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-					{/**** Language Option 1 ****/}
-					<div>
-						<Label
-							className="text-sm lg:text-base 2xl:text-xl font-medium
-							text-bob-search-input-label-color block"
-						>
-							Language 1*
-						</Label>
-						<Controller
-							id="language1"
-							name="language1"
-							control={control}
-							rules={{ required: requiredFlag }}
-							render={({ field }) => (
-								<LanguageSelection value={field.value} onChange={field.onChange} />
-							)}
-						/>
-					</div>
-
-					{/**** Language Option 2 ****/}
-					<div>
-						<Label
-							className="text-sm lg:text-base 2xl:text-xl font-medium
-							text-bob-search-input-label-color block"
-						>
-							Language 2
-						</Label>
-						<Controller
-							id="language2"
-							name="language2"
-							control={control}
-							// rules={{ required: true }}
-							render={({ field }) => (
-								<LanguageSelection value={field.value} onChange={field.onChange} />
-							)}
-						/>
-					</div>
-
-					{/**** Language Option 3 ****/}
-					<div>
-						<Label
-							className="text-sm lg:text-base 2xl:text-xl font-medium
-							text-bob-search-input-label-color block"
-						>
-							Language 3
-						</Label>
-						<Controller
-							id="language3"
-							name="language3"
-							control={control}
-							// rules={{ required: true }}
-							render={({ field }) => (
-								<LanguageSelection value={field.value} onChange={field.onChange} />
-							)}
-						/>
-					</div>
+							return (
+								<div className="flex flex-col gap-3">
+									{COURIER_OPTIONS.map((option) => (
+										<label
+											key={option}
+											className="flex items-center space-x-2 text-sm sm:text-base cursor-pointer"
+										>
+											<Checkbox
+												checked={value.includes(option)}
+												onCheckedChange={() => toggleOption(option)}
+												className="text-primary-color 
+												data-[state=checked]:bg-bob-color 
+												border-secondary-color cursor-pointer"
+											/>
+											<span className="text-bob-filters-placeholder-color">{option}</span>
+										</label>
+									))}
+								</div>
+							);
+						}}
+					/>
 				</div>
 			</div>
 
@@ -572,31 +415,31 @@ export default function TravelBuddyListingForm() {
 		</div>
 	);
 
-	/********************* 3. Travel Pricing Step ***********************/
+	/********************* 3. Courier Preferences Pricing Step ***********************/
 	const renderStep3 = () => (
 		<div className="space-y-6">
-			{/********* Traveller Pricing Details *********/}
+			{/********* Documents Pricing Details *********/}
 			<div>
 				<h2 className="text-xl 2xl:text-3xl md:text-2xl font-semibold mb-2 text-bob-search-input-label-color">
-					Set your pricing based on group size
+					Set your pricing for documents
 				</h2>
 
 				<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-					{/*** 1 Traveller Price ***/}
+					{/*** Price 1 ***/}
 					<div>
 						<Label
 							className="text-sm lg:text-base 2xl:text-xl font-medium
 							text-bob-search-input-label-color block"
 						>
-							1 Traveler*
+							Below 500 grams*
 						</Label>
 						<div className="relative">
 							<span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-bob-search-input-label-color block">
 								$
 							</span>
 							<Controller
-								name="price1"
-								id="price1"
+								name="documentPrice1"
+								id="documentPrice1"
 								control={control}
 								rules={{ required: requiredFlag, pattern: /^[0-9]{1,4}$/ }}
 								render={({ field }) => (
@@ -615,21 +458,21 @@ export default function TravelBuddyListingForm() {
 						</div>
 					</div>
 
-					{/*** 2 Traveller Price ***/}
+					{/***  Price 2 ***/}
 					<div>
 						<Label
 							className="text-sm lg:text-base 2xl:text-xl font-medium
 							text-bob-search-input-label-color block"
 						>
-							2 Travelers*
+							Above 500 grams, but below 1000 grams*
 						</Label>
 						<div className="relative">
 							<span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-bob-search-input-label-color block">
 								$
 							</span>
 							<Controller
-								name="price2"
-								id="price2"
+								name="documentPrice2"
+								id="documentPrice2"
 								control={control}
 								rules={{ required: requiredFlag, pattern: /^[0-9]{1,4}$/ }}
 								render={({ field }) => (
@@ -648,21 +491,237 @@ export default function TravelBuddyListingForm() {
 						</div>
 					</div>
 
-					{/*** 3 Traveller Price ***/}
+					{/***  Price 3 ***/}
 					<div>
 						<Label
 							className="text-sm lg:text-base 2xl:text-xl font-medium
 							text-bob-search-input-label-color block"
 						>
-							3 Travelers*
+							Above 1000 grams*
 						</Label>
 						<div className="relative">
 							<span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-bob-search-input-label-color block">
 								$
 							</span>
 							<Controller
-								name="price3"
-								id="price3"
+								name="documentPrice3"
+								id="documentPrice3"
+								control={control}
+								rules={{ required: requiredFlag, pattern: /^[0-9]{1,4}$/ }}
+								render={({ field }) => (
+									<Input
+										className={`mt-2 pl-8 shadow-sm ${
+											errors?.firstName?.type === 'required' &&
+											'border-2 border-bob-error-color'
+										}`}
+										{...field}
+										placeholder="50"
+										minLength={1}
+										maxLength={4}
+									/>
+								)}
+							/>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			{/********* Clothes Pricing Details *********/}
+			<div>
+				<h2 className="text-xl 2xl:text-3xl md:text-2xl font-semibold mb-2 text-bob-search-input-label-color">
+					Set your pricing for clothes
+				</h2>
+
+				<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+					{/*** Price 1 ***/}
+					<div>
+						<Label
+							className="text-sm lg:text-base 2xl:text-xl font-medium
+							text-bob-search-input-label-color block"
+						>
+							Below 1000 grams*
+						</Label>
+						<div className="relative">
+							<span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-bob-search-input-label-color block">
+								$
+							</span>
+							<Controller
+								name="clothesPrice1"
+								id="clothesPrice1"
+								control={control}
+								rules={{ required: requiredFlag, pattern: /^[0-9]{1,4}$/ }}
+								render={({ field }) => (
+									<Input
+										className={`mt-2 pl-8 shadow-sm ${
+											errors?.firstName?.type === 'required' &&
+											'border-2 border-bob-error-color'
+										}`}
+										{...field}
+										placeholder="50"
+										minLength={1}
+										maxLength={4}
+									/>
+								)}
+							/>
+						</div>
+					</div>
+
+					{/*** Price 2 ***/}
+					<div>
+						<Label
+							className="text-sm lg:text-base 2xl:text-xl font-medium
+							text-bob-search-input-label-color block"
+						>
+							Above 1000 grams, but below 3000 grams*
+						</Label>
+						<div className="relative">
+							<span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-bob-search-input-label-color block">
+								$
+							</span>
+							<Controller
+								name="clothesPrice2"
+								id="clothesPrice2"
+								control={control}
+								rules={{ required: requiredFlag, pattern: /^[0-9]{1,4}$/ }}
+								render={({ field }) => (
+									<Input
+										className={`mt-2 pl-8 shadow-sm ${
+											errors?.firstName?.type === 'required' &&
+											'border-2 border-bob-error-color'
+										}`}
+										{...field}
+										placeholder="50"
+										minLength={1}
+										maxLength={4}
+									/>
+								)}
+							/>
+						</div>
+					</div>
+
+					{/*** Price 3 ***/}
+					<div>
+						<Label
+							className="text-sm lg:text-base 2xl:text-xl font-medium
+							text-bob-search-input-label-color block"
+						>
+							Above 3000 grams*
+						</Label>
+						<div className="relative">
+							<span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-bob-search-input-label-color block">
+								$
+							</span>
+							<Controller
+								name="clothesPrice3"
+								id="clothesPrice3"
+								control={control}
+								rules={{ required: requiredFlag, pattern: /^[0-9]{1,4}$/ }}
+								render={({ field }) => (
+									<Input
+										className={`mt-2 pl-8 shadow-sm ${
+											errors?.firstName?.type === 'required' &&
+											'border-2 border-bob-error-color'
+										}`}
+										{...field}
+										placeholder="50"
+										minLength={1}
+										maxLength={4}
+									/>
+								)}
+							/>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			{/********* Electronics Pricing Details *********/}
+			<div>
+				<h2 className="text-xl 2xl:text-3xl md:text-2xl font-semibold mb-2 text-bob-search-input-label-color">
+					Set your pricing for electronics
+				</h2>
+
+				<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+					{/*** Price 1 ***/}
+					<div>
+						<Label
+							className="text-sm lg:text-base 2xl:text-xl font-medium
+							text-bob-search-input-label-color block"
+						>
+							Below 1000 grams*
+						</Label>
+						<div className="relative">
+							<span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-bob-search-input-label-color block">
+								$
+							</span>
+							<Controller
+								name="electronicsPrice1"
+								id="electronicsPrice1"
+								control={control}
+								rules={{ required: requiredFlag, pattern: /^[0-9]{1,4}$/ }}
+								render={({ field }) => (
+									<Input
+										className={`mt-2 pl-8 shadow-sm ${
+											errors?.firstName?.type === 'required' &&
+											'border-2 border-bob-error-color'
+										}`}
+										{...field}
+										placeholder="50"
+										minLength={1}
+										maxLength={4}
+									/>
+								)}
+							/>
+						</div>
+					</div>
+
+					{/*** Price 2 ***/}
+					<div>
+						<Label
+							className="text-sm lg:text-base 2xl:text-xl font-medium
+							text-bob-search-input-label-color block"
+						>
+							Above 1000 grams, but below 3000 grams*
+						</Label>
+						<div className="relative">
+							<span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-bob-search-input-label-color block">
+								$
+							</span>
+							<Controller
+								name="electronicsPrice2"
+								id="electronicsPrice2"
+								control={control}
+								rules={{ required: requiredFlag, pattern: /^[0-9]{1,4}$/ }}
+								render={({ field }) => (
+									<Input
+										className={`mt-2 pl-8 shadow-sm ${
+											errors?.firstName?.type === 'required' &&
+											'border-2 border-bob-error-color'
+										}`}
+										{...field}
+										placeholder="50"
+										minLength={1}
+										maxLength={4}
+									/>
+								)}
+							/>
+						</div>
+					</div>
+
+					{/*** Price 3 ***/}
+					<div>
+						<Label
+							className="text-sm lg:text-base 2xl:text-xl font-medium
+							text-bob-search-input-label-color block"
+						>
+							Above 3000 grams*
+						</Label>
+						<div className="relative">
+							<span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-bob-search-input-label-color block">
+								$
+							</span>
+							<Controller
+								name="electronicsPrice3"
+								id="electronicsPrice3"
 								control={control}
 								rules={{ required: requiredFlag, pattern: /^[0-9]{1,4}$/ }}
 								render={({ field }) => (
@@ -684,7 +743,7 @@ export default function TravelBuddyListingForm() {
 			</div>
 
 			{/************* Need Help With Pricing Accordion ************/}
-			<ListingPricingHelpAccordion serviceType="travel" />
+			<ListingPricingHelpAccordion serviceType="courier" />
 
 			<div className="space-y-2 text-sm text-bob-search-input-label-color font-bold">
 				<p>
@@ -703,8 +762,73 @@ export default function TravelBuddyListingForm() {
 		</div>
 	);
 
-	/********************* 4. Form Submission Success Step ***********************/
+	/********************* 4. Accept Courier Services Terms ***********************/
 	const renderStep4 = () => (
+		<div className="text-left space-y-6 pt-8">
+			<div className="space-y-4">
+				<h2 className="text-2xl md:text-3xl 2xl:text-5xl font-normal font-merriweather text-bob-tiles-text-color">
+					Before you proceed, please review and acknowledge the following:
+				</h2>
+
+				<p
+					className="text-bob-buddy-listing-accordion-color font-normal text-base 
+					md:text-xl 2xl:text-2xl"
+				>
+					As a Courier Buddy, you agree to carry only documents and clearly
+					permissible items such as clothes and light electronics, preferably
+					accompanied by a valid invoice.
+				</p>
+
+				<p
+					className="text-bob-buddy-listing-accordion-color font-normal text-base 
+					md:text-xl 2xl:text-2xl"
+				>
+					Transporting restricted or prohibited items is strictly not allowed. By
+					continuing, you acknowledge that you assume full responsibility and
+					liability in the event of any issues with law enforcement, airline staff,
+					or immigration authorities related to the items you are carrying.
+				</p>
+			</div>
+
+			<div className="flex flex-col gap-4">
+				<div className="flex flex-row gap-4 items-center">
+					<Controller
+						name="acceptCourierTerms"
+						id="acceptCourierTerms"
+						control={control}
+						rules={{ required: true }}
+						render={({ field }) => (
+							<Checkbox
+								checked={field.value} //Correctly control checked state
+								onCheckedChange={(checked) => {
+									setValue('acceptCourierTerms', checked); //Update form state
+									field.onChange(checked);
+								}}
+								className="border border-bob-outline-color 
+								data-[state=checked]:bg-bob-color cursor-pointer"
+							/>
+						)}
+					/>
+					<label
+						className="font-medium text-sm text-bob-link-placeholder-color"
+						htmlFor="acceptCourierTerms"
+					>
+						I have read and understood the above, and I accept full liability for the
+						items I choose to carry.
+					</label>
+				</div>
+
+				{errors?.acceptCourierTerms?.type === 'required' && (
+					<p className="text-center text-bob-error-color">
+						Please accept the terms of service to confirm registration.
+					</p>
+				)}
+			</div>
+		</div>
+	);
+
+	/********************* 5. Form Submission Success Step ***********************/
+	const renderStep5 = () => (
 		<div className="text-center space-y-6 pt-8">
 			<div className="space-y-4">
 				<h2 className="text-2xl md:text-3xl 2xl:text-5xl font-normal font-merriweather text-bob-tiles-text-color">
@@ -718,19 +842,9 @@ export default function TravelBuddyListingForm() {
 			</div>
 
 			<div className="space-y-4 2xl:max-w-xl max-w-md mx-auto">
-				<Link to="/create-listing/courier-buddy-form">
-					<Button
-						className="w-full border-2 border-bob-border-color bg-bob-color text-primary-color font-semibold rounded-2xl md:px-10 px-0 2xl:py-7
-						2xl:text-2xl cursor-pointer"
-					>
-						Create a courier buddy listing
-					</Button>
-				</Link>
-
 				<Link to="/buddy-dashboard">
 					<Button
-						variant="outline"
-						className="w-full border-2 border-bob-border-color bg-primary-color text-bob-color font-semibold rounded-2xl md:px-10 px-0 2xl:py-7 2xl:text-2xl
+						className="w-full border-2 border-bob-border-color bg-bob-color text-primary-color font-semibold rounded-2xl md:px-10 px-0 2xl:py-7 2xl:text-2xl
 						cursor-pointer mt-5"
 					>
 						Go back to dashboard
@@ -748,13 +862,12 @@ export default function TravelBuddyListingForm() {
 					{currentStep < 4 && (
 						<>
 							<h1 className="text-2xl md:text-3xl 2xl:text-5xl font-normal text-bob-tiles-text-color font-merriweather">
-								Create your travel buddy listing
+								Create your courier buddy listing
 							</h1>
 
 							<p className="text-bob-tabs-text-color font-normal 2xl:text-2xl md:text-xl">
 								{currentStep === 1 && 'Add your travel details before you proceed.'}
-								{currentStep === 2 &&
-									'Add your preferences so that we can match you with the right travelers!'}
+								{currentStep === 2 && 'Add your Courier preferences.'}
 								{currentStep === 3 && 'Add your pricing preferences before publishing.'}
 							</p>
 						</>
@@ -763,23 +876,24 @@ export default function TravelBuddyListingForm() {
 
 				{/******************* Form Input Section ********************/}
 				<form onSubmit={handleSubmit(onSubmit)}>
-					{currentStep !== 4 && (
+					{currentStep !== 5 && (
 						<Card className="w-full shadow-md">
 							<CardContent className="pb-6">
 								{currentStep === 1 && renderStep1()}
 								{currentStep === 2 && renderStep2()}
 								{currentStep === 3 && renderStep3()}
+								{currentStep === 4 && renderStep4()}
 							</CardContent>
 						</Card>
 					)}
 
 					{/***** Post Form Submission Success Message *****/}
-					{currentStep === 4 && renderStep4()}
+					{currentStep === 5 && renderStep5()}
 
 					{/***************** Action Buttons *****************/}
 					<div
 						className={`flex flex-col sm:flex-row justify-evenly items-center sm:gap-2 gap-5 py-6 ${
-							currentStep === 4 && 'hidden'
+							currentStep === 5 && 'hidden'
 						}`}
 					>
 						<Button
@@ -796,12 +910,12 @@ export default function TravelBuddyListingForm() {
 						</div>
 
 						<Button
-							type={currentStep < 4 ? 'button' : 'submit'}
+							type={currentStep < 5 ? 'button' : 'submit'}
 							onClick={nextStep}
 							className="w-full sm:w-auto order-2 sm:order-3 border-2 border-bob-border-color text-primary-color bg-bob-color 
 								font-semibold rounded-lg md:px-10 px-0 2xl:py-7 2xl:text-2xl"
 						>
-							{currentStep === 4 ? 'Submit' : 'Next'}
+							{currentStep === 5 ? 'Submit' : 'Next'}
 						</Button>
 					</div>
 				</form>

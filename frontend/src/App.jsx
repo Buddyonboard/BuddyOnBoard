@@ -82,7 +82,7 @@ const TravelBuddyListingForm = lazy(() =>
 );
 const CourierBuddyListingForm = lazy(() =>
 	import(
-		'./components/ServiceProvider/Create-Listing-Section/CourierBuddyListingForm'
+		'./components/ServiceProvider/Create-Listing-Section/Courier-Listing-Form/CourierBuddyListingForm'
 	)
 );
 
