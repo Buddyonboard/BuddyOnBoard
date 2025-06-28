@@ -16,6 +16,9 @@ import ListingPricingHelpAccordion from './Travel-Listing-Form/Step-3/ListingPri
 import TravelAssistOptions from './Travel-Listing-Form/Step-2/TravelAssistOptions';
 import LanguageSelection from './Travel-Listing-Form/Step-2/LanguageSelection';
 import { Link } from 'react-router-dom';
+import { getuserProfile } from '@/utils/localStorageHelper';
+import API_URL from '../../../../environments/Environment-dev';
+import axios from 'axios';
 
 export default function TravelBuddyListingForm() {
 	// const [date, setDate] = useState(undefined);
@@ -74,8 +77,18 @@ export default function TravelBuddyListingForm() {
 	const requiredFlag = true; // To set required field flag in the form
 
 	/********* Handle Form Submission *********/
-	const onSubmit = (data) => {
-		console.log('Submitted Data:', data);
+	const onSubmit = async (data) => {
+		const user_id = getuserProfile()._id;
+
+		const formData = {
+			...data,
+			serviceType: 'Travel Buddy',
+			listingStatus: 'active',
+			user_id: user_id
+		};
+
+		/**** Send ID token + user profile data to backend ****/
+		await axios.post(`${API_URL}/buddy-listings-registration`, formData);
 	};
 
 	/***************** Handling Airport Stops **********************/

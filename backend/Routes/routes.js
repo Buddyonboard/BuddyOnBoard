@@ -15,6 +15,10 @@ const {
 	reportIssueUpload,
 	getIssueReports
 } = require('../controllers/serviceRequestController');
+const {
+	buddyListingRegistration
+} = require('../controllers/buddyListingController');
+
 const router = express.Router();
 
 router.get('/airportsList', getAirports);
@@ -35,5 +39,6 @@ router.post(
 	upload.single('uploadAttachment'),
 	reportIssueUpload
 );
+router.post('/buddy-listings-registration', buddyListingRegistration);
 
 module.exports = router;
