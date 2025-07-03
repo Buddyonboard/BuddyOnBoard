@@ -15,17 +15,21 @@ import CompanionPreference from './Travel-Listing-Form/Step-2/CompanionPreferenc
 import ListingPricingHelpAccordion from './Travel-Listing-Form/Step-3/ListingPricingHelpAccordion';
 import TravelAssistOptions from './Travel-Listing-Form/Step-2/TravelAssistOptions';
 import LanguageSelection from './Travel-Listing-Form/Step-2/LanguageSelection';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import { getuserProfile } from '@/utils/localStorageHelper';
 import API_URL from '../../../../environments/Environment-dev';
 import axios from 'axios';
 
 export default function TravelBuddyListingForm() {
-	// const [date, setDate] = useState(undefined);
 	const [airportFromSelected, setAirportFromSelected] = useState(null);
 	const [airportToSelected, setAirportToSelected] = useState(null);
+	const [airportStopSelected, setAirportStopSelected] = useState([]);
 	const [currentStep, setCurrentStep] = useState(1);
 	const [formError, setFormError] = useState(null);
+
+	const { id } = useParams();
+	const { pathname } = useLocation();
+	const mode = pathname.split('/')[1];
 
 	const {
 		handleSubmit,
@@ -34,6 +38,7 @@ export default function TravelBuddyListingForm() {
 		setValue,
 		getValues,
 		trigger,
+		reset,
 		formState: { errors }
 	} = useForm({
 		defaultValues: {
@@ -87,8 +92,20 @@ export default function TravelBuddyListingForm() {
 			user_id: user_id
 		};
 
-		/**** Send ID token + user profile data to backend ****/
-		await axios.post(`${API_URL}/buddy-listings-registration`, formData);
+		if (mode === 'edit-listing' && id) {
+			const editedFormData = {
+				...data,
+				serviceType: 'Travel Buddy',
+				user_id: user_id,
+				listing_id: id
+			};
+
+			/**** API to Update Listing data in backend ****/
+			await axios.post(`${API_URL}/edit-Buddy-Listing`, editedFormData);
+		} else {
+			/**** Send ID token + user profile data to backend ****/
+			await axios.post(`${API_URL}/buddy-listings-registration`, formData);
+		}
 	};
 
 	/***************** Handling Airport Stops **********************/
@@ -123,6 +140,44 @@ export default function TravelBuddyListingForm() {
 		);
 		setValue('stopAirports', newArray);
 	};
+
+	/********** Edit Listing Logic ************/
+	useEffect(() => {
+		const fetchBuddyListing = async () => {
+			const user_id = getuserProfile()._id;
+
+			try {
+				const response = await axios.get(`${API_URL}/getBuddyListings/${user_id}`);
+
+				const buddyListingData = response.data.data.buddy_Listing_Details;
+
+				/***** Segregate based on listing type ****/
+				const travel = Array.isArray(buddyListingData?.travel_listing)
+					? buddyListingData.travel_listing
+					: [];
+				const courier = Array.isArray(buddyListingData?.courier_listing)
+					? buddyListingData.courier_listing
+					: [];
+
+				/**** Combine Data of Travel and Courier Listing ****/
+				const combinedData = [...travel, ...courier];
+
+				/******* Filter Data based on listing id ********/
+				const filtered = combinedData.filter((item) => item.listing_id === `${id}`);
+
+				reset(filtered[0]);
+				setAirportFromSelected(filtered[0].departureAirport);
+				setAirportToSelected(filtered[0].arrivalAirport);
+				setAirportStopSelected(filtered[0].stopAirports);
+			} catch (error) {
+				// console.error('Error fetching listings:', error);
+			}
+		};
+
+		if (mode === 'edit-listing' && id) {
+			fetchBuddyListing();
+		}
+	}, [id, mode, reset]);
 
 	/********* Handle Progress Tracker *********/
 	const totalSteps = 4;
@@ -228,6 +283,7 @@ export default function TravelBuddyListingForm() {
 									{...field}
 									errors={errors} // includes value and onChange
 									setAirportFromSelected={setAirportFromSelected}
+									airportFromSelected={airportFromSelected}
 								/>
 							)}
 						/>
@@ -305,6 +361,7 @@ export default function TravelBuddyListingForm() {
 									{...field}
 									errors={errors} // includes value and onChange
 									setAirportToSelected={setAirportToSelected}
+									airportToSelected={airportToSelected}
 								/>
 							)}
 						/>
@@ -415,6 +472,9 @@ export default function TravelBuddyListingForm() {
 											<AirportSearchDropdown
 												{...field}
 												errors={errors} // includes value and onChange
+												setAirportStopSelected={setAirportStopSelected}
+												airportStopSelected={airportStopSelected?.[index]}
+												index={index}
 											/>
 										)}
 									/>

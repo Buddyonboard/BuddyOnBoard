@@ -1,14 +1,18 @@
-import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import DashboardTabContent from './Dashboard-TabContent/DashboardTabContent';
 import BuddyRequestTabContent from './BuddyRequests-TabContent.jsx/BuddyRequestTabContent';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ActiveListingsTabContent from './ActiveListings-TabContent.jsx/ActiveListingsTabContent';
 import PreviousListingsTabContent from './PreviousListings-TabContent.jsx/PreviousListingsTabContent';
 import LayoutPageHeader from './LayoutPageHeader';
+import API_URL from '../../../environments/Environment-dev';
+import { getuserProfile } from '@/utils/localStorageHelper';
+import axios from 'axios';
 
 export default function ServiceProviderLayout() {
 	const [activeTab, setActiveTab] = useState('dashboard');
+	const [activeListingsMain, setActiveListingsMain] = useState([]);
+	const [previousListingsMain, setPreviousListingsMain] = useState([]);
 
 	// Sample data for the dashboard
 	const upcomingTrip = {
@@ -205,165 +209,49 @@ export default function ServiceProviderLayout() {
 		}
 	];
 
-	const activeListings = [
-		{
-			id: 1,
-			providerId: 'SP_123',
-			departure: {
-				time: '08:30 AM',
-				date: '22 August, 2024',
-				location: 'LAX, USA'
-			},
-			arrival: {
-				time: '12:15 PM',
-				date: '22 August, 2024',
-				location: 'YVR, Canada'
-			},
-			serviceType: 'Travel Buddy',
-			// languagesPreferences: ['English, Tamil'],
-			tag: 'Speaks English, Tamil, Telugu',
-			priceStarts: 423.21,
-			listingStatus: 'active'
-		},
-		{
-			id: 2,
-			departure: {
-				time: '08:30 AM',
-				date: '22 August, 2024',
-				location: 'LAX, USA'
-			},
-			arrival: {
-				time: '12:15 PM',
-				date: '22 August, 2024',
-				location: 'YVR, Canada'
-			},
-			serviceType: 'Courier Buddy',
-			// courierPreferences: ['Documents'],
-			tag: 'Prefers Documents',
-			priceStarts: 422.2,
-			listingStatus: 'active'
-		}
-	];
+	/********* To Fetch All Active Buddy Listings Data *********/
+	useEffect(() => {
+		const fetchActiveBuddyListings = async () => {
+			const user_id = getuserProfile()._id;
 
-	const previousListings = [
-		{
-			id: 1,
-			providerId: 'SP_123',
-			departure: {
-				time: '08:30 AM',
-				date: '22 August, 2024',
-				location: 'LAX, USA'
-			},
-			arrival: {
-				time: '12:15 PM',
-				date: '22 August, 2024',
-				location: 'YVR, Canada'
-			},
-			serviceType: 'Travel Buddy',
-			// languagesPreferences: ['English, Tamil'],
-			tag: 'Speaks English, Tamil, Telugu',
-			priceStarts: 423.21,
-			listingStatus: 'completed',
-			requestDetails: [
-				{
-					age: '12',
-					gender: 'Male'
-				},
-				{
-					age: '69',
-					gender: 'Female'
-				},
-				{
-					age: '71',
-					gender: 'No Preference'
-				}
-			],
-			serviceSeekerDetails: {
-				name: 'Aman',
-				isVerified: true
-			},
-			totalPassenger: '2',
-			serviceType: 'Travel Buddy',
-			totalPrice: 90
-		},
-		{
-			id: 2,
-			providerId: 'SP_123',
-			departure: {
-				time: '08:30 AM',
-				date: '22 August, 2024',
-				location: 'LAX, USA'
-			},
-			arrival: {
-				time: '12:15 PM',
-				date: '22 August, 2024',
-				location: 'YVR, Canada'
-			},
-			serviceType: 'Courier Buddy',
-			// courierPreferences: ['Documents'],
-			tag: 'Prefers Documents',
-			priceStarts: 422.2,
-			listingStatus: 'completed',
-			requestDetails: [
-				{
-					item: 'Documents',
-					itemWeight: '200',
-					itemDescription: 'These contain important papers.'
-				},
-				{
-					item: 'Electronics (Open box without invoice)',
-					itemWeight: '1200',
-					itemDescription:
-						'I do not have an invoice but I hope the serial number images work. I am sending out earphones.'
-				}
-			],
-			serviceSeekerDetails: {
-				name: 'Aarav',
-				isVerified: false
-			},
-			totalWeight: '1400',
-			totalItems: '3',
-			totalPrice: 190
-		},
-		{
-			id: 3,
-			providerId: 'SP_123',
-			departure: {
-				time: '08:30 AM',
-				date: '22 August, 2024',
-				location: 'LAX, USA'
-			},
-			arrival: {
-				time: '12:15 PM',
-				date: '22 August, 2024',
-				location: 'YVR, Canada'
-			},
-			serviceType: 'Courier Buddy',
-			// courierPreferences: ['Documents'],
-			tag: 'Prefers Documents',
-			priceStarts: 422.2,
-			listingStatus: 'expired'
-		},
-		{
-			id: 4,
-			providerId: 'SP_123',
-			departure: {
-				time: '08:30 PM',
-				date: '23 August, 2024',
-				location: 'LAX, USA'
-			},
-			arrival: {
-				time: '12:15 PM',
-				date: '24 August, 2024',
-				location: 'YVR, Canada'
-			},
-			serviceType: 'Travel Buddy',
-			// languagesPreferences: ['English, Tamil'],
-			tag: 'Speaks English',
-			priceStarts: 423.21,
-			listingStatus: 'deleted'
-		}
-	];
+			try {
+				const response = await axios.get(`${API_URL}/getBuddyListings/${user_id}`);
+
+				const buddyListingData = response.data.data.buddy_Listing_Details;
+
+				/***** Segregate based on listing type ****/
+				const travel = Array.isArray(buddyListingData?.travel_listing)
+					? buddyListingData.travel_listing
+					: [];
+				const courier = Array.isArray(buddyListingData?.courier_listing)
+					? buddyListingData.courier_listing
+					: [];
+				const previousListing = Array.isArray(buddyListingData?.previous_listings)
+					? buddyListingData.previous_listings
+					: [];
+
+				/**** Combine Data of Travel and Courier Listing ****/
+				const combinedData = [...travel, ...courier];
+
+				/******* Filter Data based on active listing status ********/
+				const activeListingFiltered = combinedData.filter(
+					(item) => item.listingStatus === 'active'
+				);
+
+				/******* Filter Data based on deleted listing status ********/
+				const previousListingFiltered = previousListing.filter(
+					(item) => item.listingStatus === 'deleted'
+				);
+
+				setActiveListingsMain(activeListingFiltered);
+				setPreviousListingsMain(previousListingFiltered);
+			} catch (error) {
+				// console.error('Error fetching listings:', error);
+			}
+		};
+
+		fetchActiveBuddyListings();
+	}, []);
 
 	// Toggle between populated and empty states
 	const hasData = true;
@@ -424,7 +312,7 @@ export default function ServiceProviderLayout() {
 						<DashboardTabContent
 							upcomingTrip={upcomingTrip}
 							buddyRequests={buddyRequests}
-							activeListings={activeListings}
+							activeListings={activeListingsMain}
 							hasData={hasData}
 							setActiveTab={setActiveTab}
 						/>
@@ -445,8 +333,8 @@ export default function ServiceProviderLayout() {
 
 					{/******* Buddy Active Listings Tab Content ******/}
 					<TabsContent value="active-listings">
-						{activeListings.length > 0 ? (
-							activeListings.map((activeListingsList) => (
+						{activeListingsMain.length > 0 ? (
+							activeListingsMain.map((activeListingsList) => (
 								<ActiveListingsTabContent activeListingsList={activeListingsList} />
 							))
 						) : (
@@ -458,8 +346,8 @@ export default function ServiceProviderLayout() {
 
 					{/******* Buddy Previous Listings Tab Content ******/}
 					<TabsContent value="previous-listings">
-						{previousListings.length > 0 ? (
-							previousListings.map((previousListingsList) => (
+						{previousListingsMain.length > 0 ? (
+							previousListingsMain.map((previousListingsList) => (
 								<PreviousListingsTabContent
 									previousListingsList={previousListingsList}
 								/>

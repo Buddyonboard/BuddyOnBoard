@@ -34,7 +34,6 @@ export default function DashboardTabContent({
 
 				{/************* Active Listings Card *************/}
 				<ActiveListingsCard
-					hasData={hasData}
 					activeListings={activeListings}
 					setActiveTab={setActiveTab}
 				/>

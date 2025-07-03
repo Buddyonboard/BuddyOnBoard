@@ -163,6 +163,18 @@ function App() {
 														element={<CourierBuddyListingForm />}
 													/>
 												</Route>
+
+												{/* Edit Listing Route and Sub-routes */}
+												<Route path="edit-listing" element={<CreateListingPage />}>
+													<Route
+														path="travel-buddy-form/:id"
+														element={<TravelBuddyListingForm />}
+													/>
+													<Route
+														path="courier-buddy-form/:id"
+														element={<CourierBuddyListingForm />}
+													/>
+												</Route>
 											</Route>
 										</Route>
 

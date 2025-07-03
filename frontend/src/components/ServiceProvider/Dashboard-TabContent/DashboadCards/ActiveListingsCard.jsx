@@ -5,11 +5,7 @@ import FlightStopType from '@/components/ReUsable/Service-Seeker/Flight-Stop-Typ
 import BuddyRequestTypeTag from '../BuddyRequestTypeTag';
 import { Separator } from '@/components/ui/separator';
 
-export default function ActiveListingsCard({
-	hasData,
-	activeListings,
-	setActiveTab
-}) {
+export default function ActiveListingsCard({ activeListings, setActiveTab }) {
 	return (
 		<Card>
 			<CardHeader className="px-5">
@@ -18,56 +14,78 @@ export default function ActiveListingsCard({
 				</CardTitle>
 			</CardHeader>
 			<CardContent className="px-5">
-				{hasData ? (
+				{activeListings.length > 0 ? (
 					<div className="space-y-12">
-						{activeListings.map((listing) => (
-							<div key={listing.id} className="space-y-4">
-								{/******** Flight Details Section **********/}
-								<div className="flex flex-row md:items-center md:justify-between">
-									{/***** Departure *****/}
-									<div className="text-start">
-										<TripSchedule
-											time={listing.departure.time}
-											date={listing.departure.date}
-											location={listing.departure.location}
+						{activeListings.slice(0, 2).map((listing) => {
+							/****** List of Courier/Languages Preferences ******/
+							const isTravelBuddy = listing?.serviceType === 'Travel Buddy';
+							const selectionType = isTravelBuddy ? 'Speaks' : 'Prefers';
+
+							const preferencesList = isTravelBuddy
+								? [listing?.language1, listing?.language2, listing?.language3].filter(
+										Boolean
+								  )
+								: Array.from(
+										new Set(
+											(listing?.courierPreferences || []).map((item) =>
+												item.toLowerCase().startsWith('electronics') ? 'Electronics' : item
+											)
+										)
+								  );
+
+							return (
+								<div key={listing.listing_id} className="space-y-4">
+									{/******** Flight Details Section **********/}
+									<div className="flex flex-row md:items-center md:justify-between">
+										{/***** Departure *****/}
+										<div className="text-start">
+											<TripSchedule
+												time={listing?.departureTime}
+												date={listing?.departureDate}
+												location={listing?.departureAirport}
+											/>
+										</div>
+
+										{/**** Flight Connection Type ****/}
+										<FlightStopType
+											connectionType={listing?.connectionType}
+											connectionLocation={listing?.connectionLocation}
 										/>
+
+										{/***** Arrival *****/}
+										<div className="text-end">
+											<TripSchedule
+												time={listing?.arrivalTime}
+												date={listing?.arrivalDate}
+												location={listing?.arrivalAirport}
+											/>
+										</div>
 									</div>
 
-									{/**** Flight Connection Type ****/}
-									<FlightStopType
-										connectionType={listing.connectionType}
-										connectionLocation={listing.connectionLocation}
+									{/**** Language/Courier Preferences ****/}
+									<div className="flex justify-items-start items-center gap-3">
+										<BuddyRequestTypeTag serviceType={listing?.serviceType} />
+
+										<BuddyRequestTypeTag
+											selectionType={selectionType}
+											preferencesList={preferencesList}
+										/>
+									</div>
+									<Button
+										className="bg-bob-color border-2 border-bob-border-color w-full rounded-2xl font-semibold 2xl:text-xl py-5"
+										onClick={() => setActiveTab('active-listings')}
+									>
+										View listing
+									</Button>
+
+									{/**** Line Separator ****/}
+									<Separator
+										orientation="Horizontal"
+										className="data-[orientation=horizontal]:h-1"
 									/>
-
-									{/***** Arrival *****/}
-									<div className="text-end">
-										<TripSchedule
-											time={listing.arrival.time}
-											date={listing.arrival.date}
-											location={listing.arrival.location}
-										/>
-									</div>
 								</div>
-
-								{/**** Language/Courier Preferences ****/}
-								<div className="flex justify-items-start items-center gap-3">
-									<BuddyRequestTypeTag serviceType={listing.serviceType} />
-									<BuddyRequestTypeTag productType={listing.tag} />
-								</div>
-								<Button
-									className="bg-bob-color border-2 border-bob-border-color w-full rounded-2xl font-semibold 2xl:text-xl py-5"
-									onClick={() => setActiveTab('active-listings')}
-								>
-									View listing
-								</Button>
-
-								{/**** Line Separator ****/}
-								<Separator
-									orientation="Horizontal"
-									className="data-[orientation=horizontal]:h-1"
-								/>
-							</div>
-						))}
+							);
+						})}
 						<div className="pt-5">
 							<Button
 								className="w-full font-bold 2xl:text-xl py-5 

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,7 +11,7 @@ import DateSelection from '../DateSelection';
 import { toast } from 'sonner';
 import CONST from '@/utils/Constants';
 import ListingPricingHelpAccordion from '../Travel-Listing-Form/Step-3/ListingPricingHelpAccordion';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import { Checkbox } from '@/components/ui/checkbox';
 import { getuserProfile } from '@/utils/localStorageHelper';
 import API_URL from '../../../../../environments/Environment-dev';
@@ -23,11 +23,16 @@ export default function CourierBuddyListingForm() {
 	const [currentStep, setCurrentStep] = useState(1);
 	const [formError, setFormError] = useState(null);
 
+	const { id } = useParams();
+	const { pathname } = useLocation();
+	const mode = pathname.split('/')[1];
+
 	const {
 		handleSubmit,
 		control,
 		setValue,
 		trigger,
+		reset,
 		formState: { errors }
 	} = useForm({
 		defaultValues: {
@@ -92,9 +97,58 @@ export default function CourierBuddyListingForm() {
 			user_id: user_id
 		};
 
-		/**** Send ID token + user profile data to backend ****/
-		await axios.post(`${API_URL}/buddy-listings-registration`, formData);
+		if (mode === 'edit-listing' && id) {
+			const editedFormData = {
+				...data,
+				serviceType: 'Courier Buddy',
+				user_id: user_id,
+				listing_id: id
+			};
+
+			/**** API to Update Listing data in backend ****/
+			await axios.post(`${API_URL}/edit-Buddy-Listing`, editedFormData);
+		} else {
+			/**** Send ID token + user profile data to backend ****/
+			await axios.post(`${API_URL}/buddy-listings-registration`, formData);
+		}
 	};
+
+	/********** Edit Listing Logic ************/
+	useEffect(() => {
+		const fetchBuddyListing = async () => {
+			const user_id = getuserProfile()._id;
+
+			try {
+				const response = await axios.get(`${API_URL}/getBuddyListings/${user_id}`);
+
+				const buddyListingData = response.data.data.buddy_Listing_Details;
+
+				/***** Segregate based on listing type ****/
+				const travel = Array.isArray(buddyListingData?.travel_listing)
+					? buddyListingData.travel_listing
+					: [];
+				const courier = Array.isArray(buddyListingData?.courier_listing)
+					? buddyListingData.courier_listing
+					: [];
+
+				/**** Combine Data of Travel and Courier Listing ****/
+				const combinedData = [...travel, ...courier];
+
+				/******* Filter Data based on listing id ********/
+				const filtered = combinedData.filter((item) => item.listing_id === `${id}`);
+
+				reset(filtered[0]);
+				setAirportFromSelected(filtered[0].departureAirport);
+				setAirportToSelected(filtered[0].arrivalAirport);
+			} catch (error) {
+				// console.error('Error fetching listings:', error);
+			}
+		};
+
+		if (mode === 'edit-listing' && id) {
+			fetchBuddyListing();
+		}
+	}, [id, mode, reset]);
 
 	/********* Handle Progress Tracker *********/
 	const totalSteps = 5;
@@ -200,6 +254,7 @@ export default function CourierBuddyListingForm() {
 									{...field}
 									errors={errors} // includes value and onChange
 									setAirportFromSelected={setAirportFromSelected}
+									airportFromSelected={airportFromSelected}
 								/>
 							)}
 						/>
@@ -277,6 +332,7 @@ export default function CourierBuddyListingForm() {
 									{...field}
 									errors={errors} // includes value and onChange
 									setAirportToSelected={setAirportToSelected}
+									airportToSelected={airportToSelected}
 								/>
 							)}
 						/>

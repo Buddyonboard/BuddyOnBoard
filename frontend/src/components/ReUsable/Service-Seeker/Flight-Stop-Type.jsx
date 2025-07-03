@@ -13,12 +13,12 @@ export default function FlightStopType({ connectionType, connectionLocation }) {
 					/>
 				</div>
 			</div>
-			{connectionType}
+			{/* {connectionType}
 			{connectionLocation && (
 				<div className="text-xs text-bob-travel-details-color">
 					{connectionLocation}
 				</div>
-			)}
+			)} */}
 		</div>
 	);
 }

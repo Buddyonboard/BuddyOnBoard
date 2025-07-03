@@ -16,7 +16,10 @@ const {
 	getIssueReports
 } = require('../controllers/serviceRequestController');
 const {
-	buddyListingRegistration
+	buddyListingRegistration,
+	getBuddyListings,
+	deleteBuddyListing,
+	editBuddyListing
 } = require('../controllers/buddyListingController');
 
 const router = express.Router();
@@ -27,6 +30,7 @@ router.get('/countriesList', getAllCountries);
 router.get('/languagesList', getAllLanguages);
 router.get('/serviceRequestsList', getServiceRequests);
 router.get('/issueReportsList', getIssueReports);
+router.get('/getBuddyListings/:user_id', getBuddyListings);
 
 router.post('/user-registration', userRegistration);
 router.post(
@@ -40,5 +44,7 @@ router.post(
 	reportIssueUpload
 );
 router.post('/buddy-listings-registration', buddyListingRegistration);
+router.post('/delete-buddy-listing', deleteBuddyListing);
+router.post('/edit-Buddy-Listing', editBuddyListing);
 
 module.exports = router;

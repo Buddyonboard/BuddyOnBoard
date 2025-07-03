@@ -6,7 +6,12 @@ export default function AirportSearchDropdown({
 	errors,
 	onChange,
 	setAirportFromSelected,
-	setAirportToSelected
+	setAirportToSelected,
+	airportFromSelected,
+	airportToSelected,
+	setAirportStopSelected,
+	airportStopSelected,
+	index
 }) {
 	const [query, setQuery] = useState('');
 	const [justSelected, setJustSelected] = useState(false);
@@ -32,6 +37,9 @@ export default function AirportSearchDropdown({
 
 						setFilteredOptions(data);
 						setShowDropdown(true);
+
+						setAirportFromSelected('');
+						setAirportToSelected('');
 					} catch (error) {
 						// console.error('Error fetching airport suggestions:', error);
 					}
@@ -52,6 +60,13 @@ export default function AirportSearchDropdown({
 
 		if (setAirportFromSelected) setAirportFromSelected(value);
 		if (setAirportToSelected) setAirportToSelected(value);
+		if (setAirportStopSelected) {
+			setAirportStopSelected((prev) => {
+				const updated = [...prev];
+				updated[index] = value;
+				return updated;
+			});
+		}
 
 		onChange?.(value); // Set to Form Value
 	};
@@ -65,7 +80,9 @@ export default function AirportSearchDropdown({
 					errors?.firstName?.type === 'required' && 'border-2 border-bob-error-color'
 				}`}
 				placeholder="Add an airport"
-				value={query}
+				value={
+					query || airportFromSelected || airportToSelected || airportStopSelected
+				}
 				onChange={(e) => {
 					setQuery(e.target.value);
 					setIsTyping(true);

@@ -7,6 +7,33 @@ import ListingsStatus from './ListingsStatus';
 // import ListingsActionButtons from './ListingsActionButtons';
 
 export default function PreviousListingsTabContent({ previousListingsList }) {
+	/****** List of Courier/Languages Preferences ******/
+	const languagesList = [
+		previousListingsList?.language1,
+		previousListingsList?.language2,
+		previousListingsList?.language3
+	].filter((lang) => lang !== undefined && lang !== null && lang !== '');
+
+	const courierItemsList = Array.from(
+		new Set(
+			(previousListingsList?.courierPreferences || []).map((item) => {
+				if (item.toLowerCase().startsWith('electronics')) {
+					return 'Electronics';
+				}
+
+				return item; // fallback for anything else
+			})
+		)
+	);
+
+	const preferencesList =
+		previousListingsList?.serviceType === 'Travel Buddy'
+			? languagesList
+			: courierItemsList;
+
+	const selectionType =
+		previousListingsList?.serviceType === 'Travel Buddy' ? 'Speaks' : 'Prefers';
+
 	return (
 		<Card className="overflow-hidden rounded-2xl shadow-xl py-0 mb-5">
 			<div className="flex flex-col md:flex-row items-center md:max-lg:justify-between max-sm:gap-5 lg:my-2.5">
@@ -16,24 +43,24 @@ export default function PreviousListingsTabContent({ previousListingsList }) {
 						{/**** Departure ****/}
 						<div className="text-start">
 							<TripSchedule
-								time={previousListingsList.departure?.time}
-								date={previousListingsList.departure?.date}
-								location={previousListingsList.departure?.location}
+								time={previousListingsList?.departureTime}
+								date={previousListingsList?.departureDate}
+								location={previousListingsList?.departureAirport}
 							/>
 						</div>
 
 						{/**** Flight Connection Type ****/}
 						<FlightStopType
-							connectionType={previousListingsList?.connectionType}
-							connectionLocation={previousListingsList?.connectionLocation}
+							connectionType={previousListingsList?.stops}
+							connectionLocation={previousListingsList?.stopAirports}
 						/>
 
 						{/**** Arrival ****/}
 						<div className="text-end">
 							<TripSchedule
-								time={previousListingsList.arrival?.time}
-								date={previousListingsList.arrival?.date}
-								location={previousListingsList.arrival?.location}
+								time={previousListingsList?.arrivalTime}
+								date={previousListingsList?.arrivalDate}
+								location={previousListingsList?.arrivalAirport}
 							/>
 						</div>
 					</div>
@@ -60,7 +87,10 @@ export default function PreviousListingsTabContent({ previousListingsList }) {
 						<span>{previousListingsList?.serviceType}</span>
 					</div>
 					<div className="mt-3 flex items-center gap-1 rounded-full bg-bob-language-badge-color xl:px-4 px-3 py-1 2xl:text-xl text-xs text-secondary-color w-fit">
-						<span>{previousListingsList?.tag}</span>
+						{selectionType}
+						{preferencesList.map((item, index) => (
+							<span key={index}>{item}</span>
+						))}
 					</div>
 				</div>
 
@@ -72,8 +102,6 @@ export default function PreviousListingsTabContent({ previousListingsList }) {
 				/>
 
 				{/********* Actions Buttons **********/}
-
-				{/* <ListingsActionButtons price={previousListingsList.priceStarts} /> */}
 				<ListingsStatus previousListingsList={previousListingsList} />
 			</div>
 		</Card>

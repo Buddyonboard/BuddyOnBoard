@@ -2,12 +2,26 @@ import { Button } from '@/components/ui/button';
 import CONST from '@/utils/Constants';
 import { useState } from 'react';
 import DeleteActiveListingPopup from './DeleteActiveListingPopup';
+import { useNavigate } from 'react-router-dom';
 
-export default function ListingsActionButtons({ price }) {
+export default function ListingsActionButtons({
+	price,
+	listing_id,
+	serviceType
+}) {
 	const [open, setOpen] = useState(false);
+	const navigate = useNavigate();
 
 	const handleClose = () => {
 		setOpen(false);
+	};
+
+	/******** Handle Listing Edit Functionality ********/
+	const formType =
+		serviceType === 'Travel Buddy' ? 'travel-buddy-form' : 'courier-buddy-form';
+
+	const handleEdit = (listing_id) => {
+		navigate(`/edit-listing/${formType}/${listing_id}`);
 	};
 
 	return (
@@ -24,6 +38,7 @@ export default function ListingsActionButtons({ price }) {
 					<Button
 						className="bg-bob-color border-2 border-bob-border-color
                     font-semibold 2xl:text-2xl lg:text-lg md:text-sm text-xs 2xl:px-16 lg:px-11 w-fit cursor-pointer rounded-2xl 2xl:py-7 lg:py-5"
+						onClick={() => handleEdit(listing_id)}
 					>
 						Edit
 					</Button>
@@ -43,6 +58,8 @@ export default function ListingsActionButtons({ price }) {
 				open={open}
 				setOpen={setOpen}
 				onClose={handleClose}
+				listing_id={listing_id}
+				serviceType={serviceType}
 			/>
 		</>
 	);
