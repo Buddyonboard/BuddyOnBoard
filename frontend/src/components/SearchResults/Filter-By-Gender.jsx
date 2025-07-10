@@ -7,11 +7,15 @@ import {
 } from '@/components/ui/select';
 import CONST from '@/utils/Constants';
 
-export default function FilterByGender() {
+export default function FilterByGender({ setSelectedGender }) {
+	const handleSelect = (value) => {
+		setSelectedGender(value);
+	};
+
 	return (
 		<div className="w-full">
-			<Select>
-				<SelectTrigger className="w-full justify-between bg-primary-color data-[placeholder]:text-bob-filters-placeholder-color max-sm:*:data-[slot=select-value]:text-xs">
+			<Select onValueChange={handleSelect}>
+				<SelectTrigger className="w-full justify-between bg-primary-color data-[placeholder]:text-bob-filters-placeholder-color max-sm:*:data-[slot=select-value]:text-xs 2xl:*:data-[slot=select-value]:text-xl">
 					<SelectValue placeholder={CONST.buddySearch.gender} />
 				</SelectTrigger>
 				<SelectContent className="w-full">

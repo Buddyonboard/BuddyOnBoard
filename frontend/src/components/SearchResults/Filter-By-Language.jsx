@@ -31,7 +31,7 @@ export default function FilterByLanguage({
 		<div className="w-full">
 			<DropdownMenu>
 				<DropdownMenuTrigger className="w-full justify-between" asChild>
-					<Button className="text-bob-filters-placeholder-color bg-primary-color">
+					<Button className="2xl:text-xl text-bob-filters-placeholder-color bg-primary-color">
 						{CONST.buddySearch.language}
 						<ChevronDownIcon
 							className="-me-1 opacity-60"
@@ -68,7 +68,7 @@ export default function FilterByLanguage({
 					</div>
 				)}
 
-				<DropdownMenuContent className="lg:min-w-[16rem] md:min-w-[20rem]">
+				<DropdownMenuContent className="2xl:min-w-[25rem] lg:min-w-[16rem] md:min-w-[20rem]">
 					{languages.sort().map((lang, index) => (
 						<DropdownMenuItem
 							key={index}
@@ -76,7 +76,7 @@ export default function FilterByLanguage({
 								e.preventDefault(); // Prevent dropdown from closing
 								toggleLanguage(lang);
 							}}
-							className="flex items-center gap-2 cursor-pointer"
+							className="2xl:text-xl flex items-center gap-2 cursor-pointer"
 						>
 							<Checkbox
 								className="data-[state=checked]:bg-bob-color cursor-pointer border-black"

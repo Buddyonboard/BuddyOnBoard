@@ -25,7 +25,12 @@ export default function SelectPackageType({
 			<SelectContent>
 				<SelectItem value="Documents">Documents</SelectItem>
 				<SelectItem value="Clothes">Clothes</SelectItem>
-				<SelectItem value="Electronics">Electronics</SelectItem>
+				<SelectItem value="Electronics (Open box with invoice)">
+					Electronics (Open box with invoice)
+				</SelectItem>
+				<SelectItem value="Electronics (Open box without invoice)">
+					Electronics (Open box without invoice)
+				</SelectItem>
 			</SelectContent>
 		</Select>
 	);

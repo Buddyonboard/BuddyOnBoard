@@ -9,6 +9,7 @@ import SelectPackageType from '../ReUsable/SearchBar/Select-Package-Type';
 import { useNavigate } from 'react-router-dom';
 import SearchButton from '../ReUsable/SearchBar/SearchButton';
 import { searchFunction } from '@/utils/searchHandler';
+import useSearchBuddyListings from '@/hooks/useSearchBuddyListings';
 
 export default function SearchSection() {
 	const { tabOpen, toggle, selectedTab, setSelectedTab } = useTabToggle();
@@ -20,7 +21,7 @@ export default function SearchSection() {
 
 	/**** Handle Search Button Functionality ****/
 	function handleSearch() {
-		searchFunction(
+		const params = searchFunction(
 			selectedTab,
 			airportFromSelected,
 			airportToSelected,
@@ -28,6 +29,13 @@ export default function SearchSection() {
 			selectedPackageType,
 			navigate
 		);
+
+		const serviceType =
+			selectedTab === 'travel' ? 'Travel Buddy' : 'Courier Buddy';
+
+		if (!params) return; // validation failed
+
+		navigate(`/search?${params.toString()}&serviceType=${serviceType}`);
 	}
 
 	return (

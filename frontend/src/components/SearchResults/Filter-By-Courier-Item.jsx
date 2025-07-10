@@ -9,11 +9,15 @@ import {
 } from '@/components/ui/select';
 import CONST from '@/utils/Constants';
 
-export default function CourierItemFilter() {
+export default function CourierItemFilter({ setSelectedCourierFilter }) {
+	const handleSelect = (value) => {
+		setSelectedCourierFilter(value);
+	};
+
 	return (
 		<div className="w-full">
-			<Select>
-				<SelectTrigger className="w-full justify-between bg-primary-color data-[placeholder]:text-bob-filters-placeholder-color max-sm:*:data-[slot=select-value]:text-xs">
+			<Select onValueChange={handleSelect}>
+				<SelectTrigger className="w-full justify-between bg-primary-color data-[placeholder]:text-bob-filters-placeholder-color max-sm:*:data-[slot=select-value]:text-xs 2xl:*:data-[slot=select-value]:text-xl">
 					<SelectValue placeholder={CONST.buddySearch.courierItem} />
 				</SelectTrigger>
 
@@ -26,10 +30,10 @@ export default function CourierItemFilter() {
 						<SelectLabel className="font-bold text-bob-form-label-color text-base">
 							Electronics
 						</SelectLabel>
-						<SelectItem value="Open-box-with-invoice">
+						<SelectItem value="Electronics (Open box with invoice)">
 							Open box with invoice
 						</SelectItem>
-						<SelectItem value="Open-box-without-invoice">
+						<SelectItem value="Electronics (Open box without invoice)">
 							Open box without invoice
 						</SelectItem>
 					</SelectGroup>

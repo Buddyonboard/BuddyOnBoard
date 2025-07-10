@@ -6,8 +6,8 @@ export function searchFunction(
 	airportFromSelected,
 	airportToSelected,
 	date,
-	selectedPackageType,
-	navigate
+	selectedPackageType
+	// navigate
 ) {
 	const isCourier = selectedTab === 'courier';
 
@@ -52,6 +52,7 @@ export function searchFunction(
 			params.append('packageType', selectedPackageType);
 		}
 
-		navigate(`/search?${params.toString()}`);
+		// navigate(`/search?${params.toString()}`);
+		return params;
 	}
 }

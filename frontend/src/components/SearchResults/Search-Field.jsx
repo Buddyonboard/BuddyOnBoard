@@ -57,7 +57,7 @@ export default function SearchField() {
 
 	/**** Handle Search Button Functionality ****/
 	function handleSearch() {
-		searchFunction(
+		const paramsValues = searchFunction(
 			selectedTab,
 			airportFromSelected,
 			airportToSelected,
@@ -65,12 +65,19 @@ export default function SearchField() {
 			selectedPackageType,
 			navigate
 		);
+
+		const serviceType =
+			selectedTab === 'travel' ? 'Travel Buddy' : 'Courier Buddy';
+
+		if (!paramsValues) return; // validation failed
+
+		navigate(`/search?${paramsValues.toString()}&serviceType=${serviceType}`);
 	}
 
 	return (
 		<div>
 			<section className="py-10">
-				<div className="container mx-auto">
+				<div className="max-lg:container max-lg:mx-auto">
 					{/**** Tabs selection ****/}
 					<div className="flex flex-col gap-1 items-baseline sm:flex-row sm:gap-5">
 						<p className="text-secondary-color font-bold lg:text-[20px] md:text-[14px]">

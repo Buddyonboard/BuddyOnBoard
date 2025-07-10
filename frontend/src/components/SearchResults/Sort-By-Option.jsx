@@ -6,9 +6,13 @@ import {
 	SelectValue
 } from '@/components/ui/select';
 
-export default function SortByOption() {
+export default function SortByOption({ setSortBy }) {
+	const handleSelect = (value) => {
+		setSortBy(value);
+	};
+
 	return (
-		<Select>
+		<Select onValueChange={handleSelect}>
 			<SelectTrigger className="w-auto text-nowrap justify-between shadow-none text-bob-filters-placeholder-color font-semibold max-sm:text-xs">
 				<SelectValue placeholder="Relevance" />
 			</SelectTrigger>

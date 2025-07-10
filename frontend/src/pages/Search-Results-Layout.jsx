@@ -1,6 +1,6 @@
-import WomenProfilePicPlaceholder from '@/assets/Common/WomenProfilePicPlaceholder.svg';
+// import WomenProfilePicPlaceholder from '@/assets/Common/WomenProfilePicPlaceholder.svg';
 import SearchField from '@/components/SearchResults/Search-Field';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BuddyListingCard } from '@/components/SearchResults/Buddy-Listing-Card';
 import CONST from '@/utils/Constants';
 import FilterByLanguage from '@/components/SearchResults/Filter-By-Language';
@@ -9,399 +9,96 @@ import SortByOption from '@/components/SearchResults/Sort-By-Option';
 import { useSearchParams } from 'react-router-dom';
 import FilterByCourierItem from '@/components/SearchResults/Filter-By-Courier-Item';
 import BuddyListingInfo from './Buddy-Listing-Info';
+import useSearchBuddyListings from '@/hooks/useSearchBuddyListings';
+import {
+	extractUniqueLanguages,
+	filterBuddyListing,
+	sortBuddyListings
+} from '@/utils/extractUniqueLanguageList';
+import ListingCardSkeleton from '@/components/Loaders/Listing-Card-Skeleton';
 
 export default function SearchResultsLayout() {
 	const [selectedLanguages, setSelectedLanguages] = useState([]);
+	const [selectedGender, setSelectedGender] = useState('');
+	const [selectedCourierFilter, setSelectedCourierFilter] = useState('');
+	const [sortBy, setSortBy] = useState('relevance');
+	const [exactMatchListingData, setExactMatchListingData] = useState([]);
+	const [flexiMatchListingData, setFlexiMatchListingData] = useState([]);
 	const [params] = useSearchParams();
+	const { results, loading, error, search } = useSearchBuddyListings();
+
+	/***** Convert URLSearchParams to plain object *****/
+	useEffect(() => {
+		const paramsObj = {};
+		params.forEach((value, key) => {
+			paramsObj[key] = value;
+		});
+
+		search(paramsObj);
+	}, [params]); // Runs whenever URL params change
 
 	const checkPackageType = params.get('packageType');
 	const checkServiceType = params.get('serviceType');
 	const userIdParam = params.get('selectedUserId');
-	const startDestination = params.get('from');
-	const endDestination = params.get('to');
-	const travelDate = params.get('date');
 
 	const serviceTypeValue =
 		checkServiceType === 'travel' ? 'Travel Buddy' : 'Courier Buddy';
 
-	/******* Full List of Languages *******/
-	const languages = [
-		'English',
-		'Hindi',
-		'Tamil',
-		'Spanish',
-		'French',
-		'Telugu',
-		'Arabic'
-	];
+	/************** Extract Full List of Languages ****************/
+	const languages = extractUniqueLanguages(results);
 
-	/******* Full List of Buddies Data *******/
-	const buddiesListingData = [
-		{
-			id: '1001',
-			name: 'Sarah T.',
-			avatar: '/placeholder.svg?height=40&width=40',
-			rating: 4.2,
-			languages: ['English', 'Hindi', 'Tamil'],
-			user: {
-				name: 'Sarah T.',
-				verified: true,
-				avatar: WomenProfilePicPlaceholder,
-				rating: 4.4,
-				type: 'Travel Buddy',
-				preferences: 'English, Hindi, Tamil'
-			},
-			departure: {
-				time: '08:30 AM',
-				date: '22 August, 2024',
-				location: 'LAX, USA'
-			},
-			arrival: {
-				time: '12:15 PM',
-				date: '22 August, 2024',
-				location: 'YVR, Canada'
-			},
-			price: 3000.81,
-			connectionType: 'Direct',
-			connectionLocation: ''
-		},
-		{
-			id: '1002',
-			name: 'Sarah T.',
-			avatar: '/placeholder.svg?height=40&width=40',
-			rating: 4.2,
-			languages: ['English', 'Hindi', 'Tamil'],
-			user: {
-				name: 'Sarah T.',
-				verified: true,
-				avatar: WomenProfilePicPlaceholder,
-				rating: 4.4,
-				type: 'Courier Buddy',
-				preferences: 'Documents, Electronics'
-			},
-			departure: {
-				time: '08:30 AM',
-				date: '22 August, 2024',
-				location: 'LAX, USA'
-			},
-			arrival: {
-				time: '12:15 PM',
-				date: '22 August, 2024',
-				location: 'YVR, Canada'
-			},
-			price: 10000,
-			connectionType: '1 Stop',
-			connectionLocation: 'LA'
-		},
-		{
-			id: '1003',
-			name: 'Sarah T.',
-			avatar: '/placeholder.svg?height=40&width=40',
-			rating: 4.2,
-			languages: ['English', 'Hindi', 'Tamil'],
-			user: {
-				name: 'Sarah T.',
-				verified: true,
-				avatar: WomenProfilePicPlaceholder,
-				rating: 4.4,
-				type: 'Courier Buddy',
-				preferences: 'Documents, Electronics'
-			},
-			departure: {
-				time: '08:30 AM',
-				date: '22 August, 2024',
-				location: 'LAX, USA'
-			},
-			arrival: {
-				time: '12:15 PM',
-				date: '22 August, 2024',
-				location: 'YVR, Canada'
-			},
-			price: 10000,
-			connectionType: '1 Stop',
-			connectionLocation: 'LA'
-		},
-		{
-			id: '1004',
-			name: 'Sarah T.',
-			avatar: '/placeholder.svg?height=40&width=40',
-			rating: 4.2,
-			languages: ['English', 'Hindi', 'Tamil'],
-			user: {
-				name: 'Sarah T.',
-				verified: true,
-				avatar: WomenProfilePicPlaceholder,
-				rating: 4.4,
-				type: 'Travel Buddy',
-				preferences: 'English, Hindi, Tamil'
-			},
-			departure: {
-				time: '08:30 AM',
-				date: '22 August, 2024',
-				location: 'LAX, USA'
-			},
-			arrival: {
-				time: '12:15 PM',
-				date: '22 August, 2024',
-				location: 'YVR, Canada'
-			},
-			price: 3000.81,
-			connectionType: 'Direct',
-			connectionLocation: ''
-		},
-		{
-			id: '1005',
-			name: 'Sarah T.',
-			avatar: '/placeholder.svg?height=40&width=40',
-			rating: 4.2,
-			languages: ['English', 'Hindi', 'Tamil'],
-			user: {
-				name: 'Sarah T.',
-				verified: true,
-				avatar: WomenProfilePicPlaceholder,
-				rating: 4.4,
-				type: 'Courier Buddy',
-				preferences: 'Documents, Electronics'
-			},
-			departure: {
-				time: '08:30 AM',
-				date: '22 August, 2024',
-				location: 'LAX, USA'
-			},
-			arrival: {
-				time: '12:15 PM',
-				date: '22 August, 2024',
-				location: 'YVR, Canada'
-			},
-			price: 10000,
-			connectionType: '1 Stop',
-			connectionLocation: 'LA'
-		},
-		{
-			id: '1006',
-			name: 'Sarah T.',
-			avatar: '/placeholder.svg?height=40&width=40',
-			rating: 4.2,
-			languages: ['English', 'Hindi', 'Tamil'],
-			user: {
-				name: 'Sarah T.',
-				verified: true,
-				avatar: WomenProfilePicPlaceholder,
-				rating: 4.4,
-				type: 'Courier Buddy',
-				preferences: 'Documents, Electronics'
-			},
-			departure: {
-				time: '08:30 AM',
-				date: '22 August, 2024',
-				location: 'LAX, USA'
-			},
-			arrival: {
-				time: '12:15 PM',
-				date: '22 August, 2024',
-				location: 'YVR, Canada'
-			},
-			price: 10000,
-			connectionType: '1 Stop',
-			connectionLocation: 'LA'
+	/********** To check if any filters applied ***********/
+	const isFilterApplied =
+		selectedLanguages.length > 0 ||
+		selectedGender !== '' ||
+		selectedCourierFilter !== '';
+
+	/************ To Retrive Buddy Data *************/
+	useEffect(() => {
+		if (!results) return;
+
+		let filteredExactMatches = results.exactMatches;
+		let filteredFlexibleMatches = results.flexibleDateMatches;
+
+		/*********** Apply filters if active ************/
+		if (isFilterApplied) {
+			filteredExactMatches = results.exactMatches.filter((item) =>
+				filterBuddyListing(
+					item,
+					selectedLanguages,
+					selectedGender,
+					selectedCourierFilter
+				)
+			);
+
+			filteredFlexibleMatches = results.flexibleDateMatches.filter((item) =>
+				filterBuddyListing(
+					item,
+					selectedLanguages,
+					selectedGender,
+					selectedCourierFilter
+				)
+			);
 		}
-	];
 
-	/******* Full List of Unfiltered exact match Buddies Data *******/
-	const unFilteredExactMatchTravelBuddies = [
-		{
-			id: '1001',
-			name: 'Sarah T.',
-			avatar: '/placeholder.svg?height=40&width=40',
-			rating: 4.2,
-			languages: ['English', 'Hindi'],
-			user: {
-				name: 'Sarah T.',
-				verified: true,
-				avatar: WomenProfilePicPlaceholder,
-				rating: 4.4,
-				type: 'Travel Buddy',
-				preferences: 'English, Hindi, Tamil'
-			},
-			departure: {
-				time: '08:30 AM',
-				date: '22 August, 2024',
-				location: 'LAX, USA'
-			},
-			arrival: {
-				time: '12:15 PM',
-				date: '22 August, 2024',
-				location: 'YVR, Canada'
-			},
-			price: 3000.81,
-			connectionType: 'Direct',
-			connectionLocation: ''
-		},
-		{
-			id: '1002',
-			name: 'Sarah T.',
-			avatar: '/placeholder.svg?height=40&width=40',
-			rating: 4.2,
-			languages: ['English', 'Hindi', 'Tamil'],
-			user: {
-				name: 'Sarah T.',
-				verified: true,
-				avatar: WomenProfilePicPlaceholder,
-				rating: 4.4,
-				type: 'Courier Buddy',
-				preferences: 'Documents, Electronics'
-			},
-			departure: {
-				time: '08:30 AM',
-				date: '22 August, 2024',
-				location: 'LAX, USA'
-			},
-			arrival: {
-				time: '12:15 PM',
-				date: '22 August, 2024',
-				location: 'YVR, Canada'
-			},
-			price: 10000,
-			connectionType: '1 Stop',
-			connectionLocation: 'LA'
-		},
-		{
-			id: '1003',
-			name: 'Sarah T.',
-			avatar: '/placeholder.svg?height=40&width=40',
-			rating: 4.2,
-			languages: ['English', 'Hindi', 'Tamil'],
-			user: {
-				name: 'Sarah T.',
-				verified: true,
-				avatar: WomenProfilePicPlaceholder,
-				rating: 4.4,
-				type: 'Courier Buddy',
-				preferences: 'Documents, Electronics'
-			},
-			departure: {
-				time: '08:30 AM',
-				date: '22 August, 2024',
-				location: 'LAX, USA'
-			},
-			arrival: {
-				time: '12:15 PM',
-				date: '22 August, 2024',
-				location: 'YVR, Canada'
-			},
-			price: 10000,
-			connectionType: '1 Stop',
-			connectionLocation: 'LA'
-		}
-	];
+		/*********** Apply sorting regardless of filters ************/
+		const sortedExact = sortBuddyListings(filteredExactMatches, sortBy);
+		const sortedFlexi = sortBuddyListings(filteredFlexibleMatches, sortBy);
 
-	/******* To filter exact match buddies based on serviceType *******/
-	const exactMatchTravelBuddies = unFilteredExactMatchTravelBuddies.filter(
-		(item) => item.user.type === serviceTypeValue
-	);
-
-	/******* Full List of Unfiltered same destination Buddies Data *******/
-	const unFilteredsameDestinationTravelBuddies = [
-		{
-			id: '1004',
-			name: 'Sarah T.',
-			avatar: '/placeholder.svg?height=40&width=40',
-			rating: 4.2,
-			languages: ['English', 'Hindi', 'Tamil'],
-			user: {
-				name: 'Sarah T.',
-				verified: true,
-				avatar: WomenProfilePicPlaceholder,
-				rating: 4.4,
-				type: 'Travel Buddy',
-				preferences: 'English, Hindi, Tamil'
-			},
-			departure: {
-				time: '08:30 AM',
-				date: '22 August, 2024',
-				location: 'LAX, USA'
-			},
-			arrival: {
-				time: '12:15 PM',
-				date: '22 August, 2024',
-				location: 'YVR, Canada'
-			},
-			price: 3000.81,
-			connectionType: 'Direct',
-			connectionLocation: ''
-		},
-		{
-			id: '1005',
-			name: 'Sarah T.',
-			avatar: '/placeholder.svg?height=40&width=40',
-			rating: 4.2,
-			languages: ['English', 'Hindi', 'Tamil'],
-			user: {
-				name: 'Sarah T.',
-				verified: true,
-				avatar: WomenProfilePicPlaceholder,
-				rating: 4.4,
-				type: 'Courier Buddy',
-				preferences: 'Documents, Electronics'
-			},
-			departure: {
-				time: '08:30 AM',
-				date: '22 August, 2024',
-				location: 'LAX, USA'
-			},
-			arrival: {
-				time: '12:15 PM',
-				date: '22 August, 2024',
-				location: 'YVR, Canada'
-			},
-			price: 10000,
-			connectionType: '1 Stop',
-			connectionLocation: 'LA'
-		},
-		{
-			id: '1006',
-			name: 'Sarah T.',
-			avatar: '/placeholder.svg?height=40&width=40',
-			rating: 4.2,
-			languages: ['English', 'Hindi', 'Tamil'],
-			user: {
-				name: 'Sarah T.',
-				verified: true,
-				avatar: WomenProfilePicPlaceholder,
-				rating: 4.4,
-				type: 'Courier Buddy',
-				preferences: 'Documents, Electronics'
-			},
-			departure: {
-				time: '08:30 AM',
-				date: '22 August, 2024',
-				location: 'LAX, USA'
-			},
-			arrival: {
-				time: '12:15 PM',
-				date: '22 August, 2024',
-				location: 'YVR, Canada'
-			},
-			price: 10000,
-			connectionType: '1 Stop',
-			connectionLocation: 'LA'
-		}
-	];
-
-	/******* To filter same destination buddies based on serviceType *******/
-	const sameDestinationTravelBuddies =
-		unFilteredsameDestinationTravelBuddies.filter(
-			(item) => item.user.type === serviceTypeValue
-		);
-
-	/******* To Find the selected user in search page from the buddies data *******/
-	const selectedBuddyInfo = buddiesListingData.find(
-		(item) => item.id === userIdParam
-	);
+		/*********** Update visible listings ************/
+		setExactMatchListingData(sortedExact);
+		setFlexiMatchListingData(sortedFlexi);
+	}, [
+		selectedLanguages,
+		selectedGender,
+		selectedCourierFilter,
+		results,
+		sortBy
+	]);
 
 	return (
 		<div className="min-h-screen">
-			<div className="container mx-auto">
+			<div className="max-lg:container max-lg:mx-auto">
 				{/********* Search Section ********/}
 				<SearchField />
 
@@ -411,7 +108,7 @@ export default function SearchResultsLayout() {
 						<div className="lg:col-span-1">
 							{/********* Language and Gender Filters ********/}
 							<div className="md:p-4">
-								<h3 className="text-sm font-semibold text-bob-outline-color mb-4">
+								<h3 className="2xl:text-xl text-sm font-semibold text-bob-outline-color mb-4">
 									{CONST.buddySearch.filters}
 								</h3>
 
@@ -427,12 +124,14 @@ export default function SearchResultsLayout() {
 											/>
 
 											{/*** Gender Filter ***/}
-											<FilterByGender />
+											<FilterByGender setSelectedGender={setSelectedGender} />
 										</>
 									) : (
 										<>
 											{/*** Courier Item Filter ***/}
-											<FilterByCourierItem />
+											<FilterByCourierItem
+												setSelectedCourierFilter={setSelectedCourierFilter}
+											/>
 										</>
 									)}
 								</div>
@@ -442,24 +141,26 @@ export default function SearchResultsLayout() {
 						<div className="lg:col-span-3">
 							{/****** Buddy With Exact Destination and Date ******/}
 							<div className="flex justify-between items-center mb-4 max-sm:flex-col-reverse max-sm:gap-4">
-								<p className="lg:text-base text-xs text-bob-tabs-text-color font-medium">
+								<p className="2xl:text-xl lg:text-base text-xs text-bob-tabs-text-color font-medium">
 									{CONST.buddySearch.exactMatch}
 								</p>
 
 								{/*** Sort By Option ***/}
 								<div className="flex flex-row items-center max-sm:self-baseline">
-									<p className="md:text-base text-xs mr-2 text-bob-filters-placeholder-color w-full">
+									<p className="2xl:text-xl md:text-base text-xs mr-2 text-bob-filters-placeholder-color w-full">
 										{CONST.buddySearch.sortBy}
 									</p>
-									<SortByOption />
+									<SortByOption setSortBy={setSortBy} />
 								</div>
 							</div>
 
 							<div className="space-y-4">
 								{/****** Buddy List With Exact Destination and Date ******/}
-								{exactMatchTravelBuddies.length > 0 ? (
-									exactMatchTravelBuddies.map((buddy) => (
-										<BuddyListingCard buddyList={buddy} />
+								{loading ? (
+									<ListingCardSkeleton />
+								) : exactMatchListingData.length > 0 ? (
+									exactMatchListingData.map((buddy) => (
+										<BuddyListingCard buddyList={buddy} serviceType={serviceTypeValue} />
 									))
 								) : (
 									<div className="flex justify-center text-2xl my-10 text-bob-form-label-color text-center">
@@ -468,14 +169,16 @@ export default function SearchResultsLayout() {
 								)}
 
 								{/******** Buddy With Same Destination Different Date ********/}
-								<div className="lg:text-base text-xs text-bob-tabs-text-color font-medium my-5">
+								<div className="2xl:text-xl lg:text-base text-xs text-bob-tabs-text-color font-medium my-5">
 									{CONST.buddySearch.sameDestination}
 								</div>
 
 								{/******** Buddy List With Same Destination Different Date ********/}
-								{sameDestinationTravelBuddies.length > 0 ? (
-									sameDestinationTravelBuddies.map((buddy) => (
-										<BuddyListingCard buddyList={buddy} />
+								{loading ? (
+									<ListingCardSkeleton />
+								) : flexiMatchListingData.length > 0 ? (
+									flexiMatchListingData.map((buddy) => (
+										<BuddyListingCard buddyList={buddy} serviceType={serviceTypeValue} />
 									))
 								) : (
 									<div className="flex justify-center text-2xl my-10 text-bob-form-label-color text-center">

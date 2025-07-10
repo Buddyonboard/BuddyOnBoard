@@ -1,7 +1,12 @@
 import VerifiedIcon from '@/assets/Common/VerifiedIcon.svg';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
-export default function VerifiedBuddyName({ userName, userId, page }) {
+export default function VerifiedBuddyName({
+	userName,
+	userId,
+	page,
+	isVerified
+}) {
 	const navigate = useNavigate();
 	const [params] = useSearchParams();
 
@@ -21,11 +26,13 @@ export default function VerifiedBuddyName({ userName, userId, page }) {
 			>
 				<span className="font-medium 2xl:text-2xl">{userName}</span>
 
-				<img
-					src={VerifiedIcon}
-					alt="VerifiedIcon"
-					className="h-6 w-6 2xl:h-8 2xl:w-8"
-				/>
+				{isVerified && (
+					<img
+						src={VerifiedIcon}
+						alt="VerifiedIcon"
+						className="h-6 w-6 2xl:h-8 2xl:w-8"
+					/>
+				)}
 			</div>
 		</div>
 	);

@@ -21,6 +21,7 @@ const {
 	deleteBuddyListing,
 	editBuddyListing
 } = require('../controllers/buddyListingController');
+const { searchBuddyListings } = require('../controllers/buddySearchController');
 
 const router = express.Router();
 
@@ -31,6 +32,7 @@ router.get('/languagesList', getAllLanguages);
 router.get('/serviceRequestsList', getServiceRequests);
 router.get('/issueReportsList', getIssueReports);
 router.get('/getBuddyListings/:user_id', getBuddyListings);
+router.get('/search-buddy-listings', searchBuddyListings);
 
 router.post('/user-registration', userRegistration);
 router.post(
