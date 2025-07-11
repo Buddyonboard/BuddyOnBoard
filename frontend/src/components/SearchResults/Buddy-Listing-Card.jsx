@@ -8,68 +8,23 @@ import CardVerticalSeparator from '../ReUsable/Card-Vertical-Separator';
 import CardHorizontalSeparator from '../ReUsable/Card-Horizontal-Separator';
 import FlightStopType from '../ReUsable/Service-Seeker/Flight-Stop-Type';
 import SendRequestButton from './Send-Request-Button';
+import {
+	getListingByServiceType,
+	getPreferencesList,
+	getStartingPrice
+} from '@/utils/listingPreferencesHelper';
 
 export function BuddyListingCard({ buddyList, serviceType }) {
 	const travelListing = buddyList?.buddy_Listing_Details?.travel_listing;
-	const courierListing = buddyList?.buddy_Listing_Details?.courier_listing;
 
-	const listingType =
-		serviceType === 'Travel Buddy' ? travelListing : courierListing;
+	/************** Retreive Travel/Courier Listing Type ************/
+	const listingType = getListingByServiceType(buddyList, serviceType);
 
 	/****** List of Courier/Languages Preferences ******/
-	const languagesList = [
-		listingType?.language1,
-		listingType?.language2,
-		listingType?.language3
-	].filter((lang) => lang !== undefined && lang !== null && lang !== '');
-
-	const courierItemsList = Array.from(
-		new Set(
-			(listingType?.courierPreferences || []).map((item) => {
-				if (item.toLowerCase().startsWith('electronics')) {
-					return 'Electronics';
-				}
-
-				return item; // fallback for anything else
-			})
-		)
-	);
-
-	const preferencesList =
-		serviceType === 'Travel Buddy' ? languagesList : courierItemsList;
+	const preferencesList = getPreferencesList(listingType, serviceType);
 
 	/****** Collect lowest starting price fields dynamically ******/
-	const prices = [];
-
-	// Add travel buddy prices if present
-	if (serviceType === 'Travel Buddy') {
-		prices.push(
-			Number(listingType?.price1 || Infinity),
-			Number(listingType?.price2 || Infinity),
-			Number(listingType?.price3 || Infinity)
-		);
-	}
-
-	// Add courier buddy prices if present
-	if (serviceType === 'Courier Buddy') {
-		prices.push(
-			Number(listingType?.documentPrice1 || Infinity),
-			Number(listingType?.documentPrice2 || Infinity),
-			Number(listingType?.documentPrice3 || Infinity),
-			Number(listingType?.clothesPrice1 || Infinity),
-			Number(listingType?.clothesPrice2 || Infinity),
-			Number(listingType?.clothesPrice3 || Infinity),
-			Number(listingType?.electronicsPrice1 || Infinity),
-			Number(listingType?.electronicsPrice2 || Infinity),
-			Number(listingType?.electronicsPrice3 || Infinity)
-		);
-	}
-
-	// Filter out Infinity (in case of missing fields)
-	const validPrices = prices.filter((p) => p !== Infinity);
-
-	// Return min price, or null if no valid price
-	const priceStarts = validPrices.length ? Math.min(...validPrices) : null;
+	const priceStarts = getStartingPrice(listingType, serviceType);
 
 	/****** Set User Name ******/
 	const firstName = buddyList?.serviceProviderDetails?.userDetails?.firstName;
@@ -91,7 +46,7 @@ export function BuddyListingCard({ buddyList, serviceType }) {
 							{/*** Profile Name & Verified Icon ***/}
 							<VerifiedBuddyName
 								userName={firstName}
-								userId={buddyList?.serviceProviderDetails?.user_Id}
+								userId={listingType?.listing_id}
 								isVerified={buddyList?.serviceProviderDetails?.isVerified}
 								page="search"
 							/>

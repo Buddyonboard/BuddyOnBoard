@@ -1,10 +1,13 @@
 import { format, parse } from 'date-fns';
 
 export default function BookingsSchedule({ time, date, location }) {
-	// To update date into DD MM, YYYY format
-	const formattedDate = format(new Date(date), 'dd MMMM, yyyy');
+	/******* To update date into DD MM, YYYY format ******/
+	let formattedDate = '';
+	if (date) {
+		formattedDate = format(new Date(date), 'dd MMMM, yyyy');
+	}
 
-	// To update time from 24H to 12H format
+	/******* To update time from 24H to 12H format ******/
 	let Time = '';
 
 	if (time) {

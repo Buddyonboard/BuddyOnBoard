@@ -24,10 +24,11 @@ export default function SearchResultsLayout() {
 	const [sortBy, setSortBy] = useState('relevance');
 	const [exactMatchListingData, setExactMatchListingData] = useState([]);
 	const [flexiMatchListingData, setFlexiMatchListingData] = useState([]);
+	const [selectedBuddyDetails, setSelectedBuddyDetails] = useState(null);
 	const [params] = useSearchParams();
 	const { results, loading, error, search } = useSearchBuddyListings();
 
-	/***** Convert URLSearchParams to plain object *****/
+	/******** Convert URLSearchParams to plain object ********/
 	useEffect(() => {
 		const paramsObj = {};
 		params.forEach((value, key) => {
@@ -53,7 +54,7 @@ export default function SearchResultsLayout() {
 		selectedGender !== '' ||
 		selectedCourierFilter !== '';
 
-	/************ To Retrive Buddy Data *************/
+	/************************** To Retrive Buddy Data ************************/
 	useEffect(() => {
 		if (!results) return;
 
@@ -95,6 +96,31 @@ export default function SearchResultsLayout() {
 		results,
 		sortBy
 	]);
+
+	/************ Search for the matching selected buddy listing_id *************/
+	const combinedSearchResults = [
+		...results.exactMatches,
+		...results.flexibleDateMatches
+	];
+
+	useEffect(() => {
+		if (!results || !userIdParam) return;
+
+		const matchedBuddy = combinedSearchResults.find(
+			(item) =>
+				(serviceTypeValue === 'Travel Buddy' &&
+					item?.buddy_Listing_Details?.travel_listing?.listing_id === userIdParam) ||
+				(serviceTypeValue === 'Courier Buddy' &&
+					item?.buddy_Listing_Details?.courier_listing?.listing_id === userIdParam)
+		);
+
+		setSelectedBuddyDetails(matchedBuddy);
+	}, [results, userIdParam, serviceTypeValue]);
+
+	/********* Selected Buddy Info Loading State **********/
+	if (userIdParam && !selectedBuddyDetails) {
+		return <div className="text-center mt-10">Loading buddy info...</div>;
+	}
 
 	return (
 		<div className="min-h-screen">
@@ -190,7 +216,10 @@ export default function SearchResultsLayout() {
 					</div>
 				) : (
 					/********* To Show Buddy Profile Info *********/
-					<BuddyListingInfo selectedBuddyInfo={selectedBuddyInfo} />
+					<BuddyListingInfo
+						selectedBuddyInfo={selectedBuddyDetails}
+						serviceType={serviceTypeValue}
+					/>
 				)}
 			</div>
 		</div>

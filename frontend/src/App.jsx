@@ -90,7 +90,7 @@ function App() {
 	return (
 		<>
 			<BrowserRouter>
-				<Suspense fallback={<div>Loading....</div>}>
+				<Suspense fallback={<div className="text-center mt-10">Loading....</div>}>
 					<ScrollToTop />
 					<Routes>
 						{/* Public Default Route */}
