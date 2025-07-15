@@ -2,11 +2,15 @@ import CONST from '@/utils/Constants';
 import { Button } from '../ui/button';
 import { useNavigate } from 'react-router-dom';
 
-export default function SendRequestButton({ price, buddyDetails }) {
+export default function SearchResultSendRequestButton({
+	price,
+	buddyDetails,
+	serviceType
+}) {
 	const navigate = useNavigate();
 
-	const handleSendRequest = (buddy) => {
-		navigate('/send-request', { state: { buddy } });
+	const handleSendRequest = (buddy, serviceType) => {
+		navigate('/send-request', { state: { buddy, serviceType } });
 	};
 
 	return (
@@ -20,7 +24,7 @@ export default function SendRequestButton({ price, buddyDetails }) {
 			<Button
 				className="w-full md:max-lg:w-[85%] max-sm:w-[70%] rounded-2xl border-2 font-semibold border-bob-border-color bg-bob-color 
 				cursor-pointer 2xl:text-xl 2xl:px-8"
-				onClick={() => handleSendRequest(buddyDetails)}
+				onClick={() => handleSendRequest(buddyDetails, serviceType)}
 			>
 				{CONST.buddySearch.sendRequest.name}
 			</Button>

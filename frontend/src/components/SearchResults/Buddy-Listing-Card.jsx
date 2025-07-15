@@ -7,12 +7,12 @@ import LanguageCourierTag from '../ReUsable/Service-Seeker/Language-Courier-Tag'
 import CardVerticalSeparator from '../ReUsable/Card-Vertical-Separator';
 import CardHorizontalSeparator from '../ReUsable/Card-Horizontal-Separator';
 import FlightStopType from '../ReUsable/Service-Seeker/Flight-Stop-Type';
-import SendRequestButton from './Send-Request-Button';
 import {
 	getListingByServiceType,
 	getPreferencesList,
 	getStartingPrice
 } from '@/utils/listingPreferencesHelper';
+import SearchResultSendRequestButton from './SearchResultSendRequestButton';
 
 export function BuddyListingCard({ buddyList, serviceType }) {
 	const travelListing = buddyList?.buddy_Listing_Details?.travel_listing;
@@ -104,7 +104,11 @@ export function BuddyListingCard({ buddyList, serviceType }) {
 					</div>
 
 					{/****** Actions or Status *******/}
-					<SendRequestButton price={priceStarts} buddyDetails={buddyList} />
+					<SearchResultSendRequestButton
+						price={priceStarts}
+						buddyDetails={buddyList}
+						serviceType={serviceType}
+					/>
 				</div>
 			</div>
 		</Card>

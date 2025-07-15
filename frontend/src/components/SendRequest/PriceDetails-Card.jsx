@@ -9,21 +9,40 @@ import {
 import CONST from '@/utils/Constants';
 import SendRequestButton from './SendRequest-Button';
 import { useMemo } from 'react';
-
-// const platformFees = CONST.sendRequestForm.platformFee;
+import { getBuddyPrice } from '@/utils/listingPreferencesHelper';
 
 export default function PriceDetailsCard({
 	buddyDetails,
+	serviceType,
 	passengerCount,
 	totalWeight,
 	formError,
-	handleRequestSubmit
+	handleRequestSubmit,
+	items,
+	setTotalAmount
 }) {
-	const buddyPrice = Number(buddyDetails.price.toFixed(2));
+	/********** To retreive buddy service fee ************/
+	const buddyPrice = useMemo(() => {
+		return getBuddyPrice(buddyDetails, passengerCount, items);
+	}, [buddyDetails, passengerCount, items]);
+
+	/********** To calculate platform fee ************/
 	const platformFees = useMemo(() => {
 		const fee = buddyPrice;
 		return Number((fee * 0.15).toFixed(2));
 	}, [buddyPrice]);
+
+	/********** To calculate Total Price of the request before taxes ************/
+	const totalAmount = useMemo(() => {
+		const amount = Number((platformFees + buddyPrice).toFixed(2));
+		setTotalAmount((prev) => ({
+			...prev,
+			totalPrice: amount,
+			buddyServiceFee: buddyPrice,
+			platformFee: platformFees
+		}));
+		return amount;
+	}, [platformFees, buddyPrice]);
 
 	return (
 		<div>
@@ -37,14 +56,12 @@ export default function PriceDetailsCard({
 						{/******** Total Passenger Count/Approximate Weight *********/}
 						<div>
 							<p className="2xl:text-xl text-sm text-bob-pricing-block-color font-semibold">
-								{buddyDetails.user.type === 'Travel Buddy'
+								{serviceType === 'Travel Buddy'
 									? CONST.sendRequestForm.totalPassengers
 									: CONST.sendRequestForm.approximateWeight}
 							</p>
 							<p className="2xl:text-2xl text-lg font-medium">
-								{buddyDetails.user.type === 'Travel Buddy'
-									? passengerCount
-									: totalWeight}
+								{serviceType === 'Travel Buddy' ? passengerCount : totalWeight}
 							</p>
 						</div>
 
@@ -91,9 +108,7 @@ export default function PriceDetailsCard({
 							<p className="2xl:text-xl text-sm text-bob-pricing-block-color font-semibold">
 								{CONST.sendRequestForm.totalPriceBeforeTaxes}
 							</p>
-							<p className="2xl:text-2xl text-lg font-medium">
-								{`$${platformFees + buddyPrice}`}
-							</p>
+							<p className="2xl:text-2xl text-lg font-medium">{`$${totalAmount}`}</p>
 						</div>
 
 						{/******** Send Request Button *********/}

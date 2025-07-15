@@ -27,6 +27,7 @@ export default function ProfileAboutSection({
 					pricingOptions={pricingOptions}
 					screenType="tabletMobile"
 					selectedBuddyInfo={selectedBuddyInfo}
+					serviceType={serviceType}
 				/>
 			</div>
 		</div>

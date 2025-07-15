@@ -84,3 +84,71 @@ export function getMinPricesForCourierItems(listingType = {}) {
 
 	return result;
 }
+
+/********* Calculates the buddy price based on service type and provided inputs ********/
+export function getBuddyPrice(
+	buddyDetails = {},
+	passengerCount = 1,
+	items = []
+) {
+	const travelListing = buddyDetails?.buddy_Listing_Details?.travel_listing;
+	const courierListing = buddyDetails?.buddy_Listing_Details?.courier_listing;
+
+	const weightPricingMap = {
+		Documents: [
+			{ max: 500, key: 'documentPrice1' },
+			{ max: 1000, key: 'documentPrice2' },
+			{ max: Infinity, key: 'documentPrice3' }
+		],
+		Clothes: [
+			{ max: 1000, key: 'clothesPrice1' },
+			{ max: 3000, key: 'clothesPrice2' },
+			{ max: Infinity, key: 'clothesPrice3' }
+		],
+		Electronics: [
+			{ max: 1000, key: 'electronicsPrice1' },
+			{ max: 3000, key: 'electronicsPrice2' },
+			{ max: Infinity, key: 'electronicsPrice3' }
+		]
+	};
+
+	if (travelListing) {
+		switch (passengerCount) {
+			case 1:
+				return Number(travelListing?.price1 || 0);
+			case 2:
+				return Number(travelListing?.price2 || 0);
+			case 3:
+				return Number(travelListing?.price3 || 0);
+			default:
+				return 0;
+		}
+	} else if (courierListing) {
+		let total = 0;
+
+		items.forEach(({ itemType, weight }) => {
+			if (!itemType || !weight) return;
+
+			const itemTypeNormalized = itemType
+				.toLowerCase()
+				.startsWith('electronics open-box')
+				? 'Electronics'
+				: itemType;
+
+			const weightNum = Number(weight);
+			const category = weightPricingMap[itemTypeNormalized];
+
+			if (!category) return;
+
+			const matched = category.find((rule) => weightNum <= rule.max);
+			if (matched) {
+				const priceKey = matched.key;
+				total += Number(courierListing[priceKey] || 0);
+			}
+		});
+
+		return total;
+	}
+
+	return 0;
+}

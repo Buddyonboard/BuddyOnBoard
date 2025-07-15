@@ -4,7 +4,8 @@ import SendRequestButton from './SendRequest-Button';
 export default function PricingSection({
 	pricingOptions,
 	screenType,
-	selectedBuddyInfo
+	selectedBuddyInfo,
+	serviceType
 }) {
 	return (
 		<div
@@ -26,7 +27,10 @@ export default function PricingSection({
 					))}
 
 					{/**** Send Request Button ****/}
-					<SendRequestButton selectedBuddyInfo={selectedBuddyInfo} />
+					<SendRequestButton
+						selectedBuddyInfo={selectedBuddyInfo}
+						serviceType={serviceType}
+					/>
 				</CardContent>
 			</Card>
 		</div>

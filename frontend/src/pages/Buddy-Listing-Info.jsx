@@ -64,6 +64,7 @@ export default function BuddyListingInfo({ selectedBuddyInfo, serviceType }) {
 					<PricingSection
 						pricingOptions={pricingOptions}
 						selectedBuddyInfo={selectedBuddyInfo}
+						serviceType={serviceType}
 					/>
 				</div>
 			</div>

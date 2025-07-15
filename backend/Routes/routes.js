@@ -22,6 +22,7 @@ const {
 	editBuddyListing
 } = require('../controllers/buddyListingController');
 const { searchBuddyListings } = require('../controllers/buddySearchController');
+const { sendBuddyRequest } = require('../controllers/sendRequestController');
 
 const router = express.Router();
 
@@ -48,5 +49,6 @@ router.post(
 router.post('/buddy-listings-registration', buddyListingRegistration);
 router.post('/delete-buddy-listing', deleteBuddyListing);
 router.post('/edit-Buddy-Listing', editBuddyListing);
+router.post('/send-buddy-request', sendBuddyRequest);
 
 module.exports = router;

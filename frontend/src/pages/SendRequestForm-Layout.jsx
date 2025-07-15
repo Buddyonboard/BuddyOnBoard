@@ -5,15 +5,31 @@ import BuddyInfoCard from '@/components/SendRequest/BuddyInfo-Card';
 import PassengersInfoCard from '@/components/SendRequest/PassengersInfo-Card';
 import PriceDetailsCard from '@/components/SendRequest/PriceDetails-Card';
 import RequestSubmitPopup from '@/components/SendRequest/RequestSubmit-Popup';
+import { getuserProfile } from '@/utils/localStorageHelper';
+import axios from 'axios';
+import API_URL from '../../environments/Environment-dev';
+import { toast } from 'sonner';
 
 export default function SendRequestForm() {
 	const [passengerCount, setPassengerCount] = useState(1);
 	const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+	const [totalAmount, setTotalAmount] = useState({
+		totalPrice: 0,
+		buddyServiceFee: 0,
+		platformFee: 0
+	});
 	const location = useLocation();
 	const navigate = useNavigate();
 	const [buddyDetails, setBuddyDetails] = useState(
 		location.state?.buddy || null
 	);
+	const [serviceType, setServiceType] = useState(
+		location.state?.serviceType || null
+	);
+
+	// console.log('buddyDetails >', buddyDetails);
+	// console.log('serviceType >', serviceType);
+
 	const itemList = {
 		age: '',
 		gender: '',
@@ -26,11 +42,9 @@ export default function SendRequestForm() {
 	const [items, setItems] = useState([{ ...itemList }]);
 	const [formError, setFormError] = useState('');
 
-	console.log('items >', items);
-
 	/********* Validate SendRequest Form Input Details ********/
 	function validateFormDetails() {
-		const buddyType = buddyDetails.user.type;
+		const buddyType = serviceType;
 		const errorMessage = CONST.sendRequestForm.formError;
 
 		if (buddyType === 'Travel Buddy') {
@@ -47,7 +61,7 @@ export default function SendRequestForm() {
 			const isValid = items.every((item) => {
 				if (!item.itemType || !item.weight || !item.itemDescription) return false;
 
-				if (item.itemType === 'Open-box-with-invoice') {
+				if (item.itemType === 'Electronics Open-box-with-invoice') {
 					return item.itemDocument;
 				}
 
@@ -109,12 +123,40 @@ export default function SendRequestForm() {
 	};
 
 	/********* Handle Send Request Form Submission ********/
-	const handleRequestSubmit = () => {
+	const handleRequestSubmit = async () => {
 		if (validateFormDetails()) {
-			// console.log('Form filled list >', items);
-			setShowSuccessDialog(true);
-		} else {
-			// console.log('Validation failed');
+			const ServiceSeekerUserId = getuserProfile()._id;
+
+			const payload = {
+				serviceProvider_id: buddyDetails?.serviceProviderDetails?.user_Id,
+				serviceSeeker_id: ServiceSeekerUserId,
+				requestStatus: 'pending',
+				serviceType: serviceType,
+				totalAmount: totalAmount,
+				buddyDetails: buddyDetails,
+				...items
+			};
+
+			if (serviceType === 'Courier Buddy') {
+				payload.totalItemsWeight = totalWeight;
+			}
+
+			/**** API to Upload Buddy Request data in backend ****/
+			const res = await axios.post(`${API_URL}/send-buddy-request`, payload);
+
+			/**** Handling API response based on status ****/
+			if (res?.status === 201) {
+				setShowSuccessDialog(true);
+			} else {
+				toast.warning(CONST.somethingWentWrong, {
+					position: 'top-right',
+					closeButton: true,
+					style: {
+						backgroundColor: 'red',
+						color: 'white'
+					}
+				});
+			}
 		}
 	};
 
@@ -127,14 +169,14 @@ export default function SendRequestForm() {
 			<div className="grid gap-6 lg:grid-cols-3">
 				<div className="lg:col-span-2">
 					{/*************** Buddy Info Card ****************/}
-					<BuddyInfoCard buddyDetails={buddyDetails} />
+					<BuddyInfoCard buddyDetails={buddyDetails} serviceType={serviceType} />
 
 					{/**************** Passenger Details Form ****************/}
 					<PassengersInfoCard
 						passengerCount={passengerCount}
 						decrementCount={decrementCount}
 						incrementCount={incrementCount}
-						buddyDetails={buddyDetails}
+						serviceType={serviceType}
 						setItems={setItems}
 						items={items}
 					/>
@@ -143,10 +185,13 @@ export default function SendRequestForm() {
 				{/***************** Price Details Section *****************/}
 				<PriceDetailsCard
 					buddyDetails={buddyDetails}
+					serviceType={serviceType}
 					passengerCount={passengerCount}
 					totalWeight={totalWeight}
 					formError={formError}
 					handleRequestSubmit={handleRequestSubmit}
+					items={items}
+					setTotalAmount={setTotalAmount}
 				/>
 			</div>
 

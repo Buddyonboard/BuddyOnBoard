@@ -20,7 +20,7 @@ export default function PassengersInfoCard({
 	passengerCount,
 	decrementCount,
 	incrementCount,
-	buddyDetails,
+	serviceType,
 	setItems,
 	items
 }) {
@@ -116,12 +116,12 @@ export default function PassengersInfoCard({
 							{/***** Number of Passenger/Items Allowed *****/}
 							<div>
 								<p className="font-medium text-base 2xl:text-xl">
-									{buddyDetails.user.type === 'Travel Buddy'
+									{serviceType === 'Travel Buddy'
 										? CONST.sendRequestForm.totalPassengers
 										: CONST.sendRequestForm.totalItems}
 								</p>
 								<p className="2xl:text-base md:text-sm text-xs font-normal text-[#A8A8A8] mt-1">
-									{buddyDetails.user.type === 'Travel Buddy'
+									{serviceType === 'Travel Buddy'
 										? CONST.sendRequestForm.passengersAllowed
 										: CONST.sendRequestForm.itemsAllowed}
 								</p>
@@ -155,7 +155,7 @@ export default function PassengersInfoCard({
 					</div>
 
 					{/********** Number Of Passengers and Details *************/}
-					{buddyDetails.user.type === 'Travel Buddy' &&
+					{serviceType === 'Travel Buddy' &&
 						Array.from({ length: passengerCount }).map((_, index) => (
 							<div key={index}>
 								{/****** Number Of Passengers display *****/}
@@ -223,7 +223,7 @@ export default function PassengersInfoCard({
 						))}
 
 					{/****************** Items Details ******************/}
-					{buddyDetails.user.type === 'Courier Buddy' &&
+					{serviceType === 'Courier Buddy' &&
 						Array.from({ length: passengerCount }).map((_, index) => (
 							<div key={index}>
 								<div className="flex flex-col">
@@ -257,10 +257,10 @@ export default function PassengersInfoCard({
 														<SelectLabel className="font-bold text-bob-form-label-color text-base">
 															Electronics
 														</SelectLabel>
-														<SelectItem value="Open-box-with-invoice">
+														<SelectItem value="Electronics Open-box-with-invoice">
 															Open box with invoice
 														</SelectItem>
-														<SelectItem value="Open-box-without-invoice">
+														<SelectItem value="Electronics Open-box-without-invoice">
 															Open box without invoice
 														</SelectItem>
 													</SelectGroup>
@@ -328,7 +328,7 @@ export default function PassengersInfoCard({
 										)}
 
 										{/**** Item Document/Invoice Input -  ****/}
-										{items[index].itemType === 'Open-box-with-invoice' && (
+										{items[index].itemType === 'Electronics Open-box-with-invoice' && (
 											<div>
 												<label className="mb-1 block 2xl:text-lg text-sm font-medium text-bob-search-input-label-color">
 													Upload Invoice/Documentation*
