@@ -1,22 +1,8 @@
-const { GridFsStorage } = require('multer-gridfs-storage');
-const multer = require('multer');
 const ServiceRequests = require('../models/ServiceRequestSchema');
 const { getGFS } = require('../Config/gridFs');
 const ReportIssue = require('../models/ReportIssueSchema');
 
-/***** Multer storage configuration ****/
-const storage = new GridFsStorage({
-	url: process.env.MONGO_URI,
-	file: (req, file) => {
-		return {
-			filename: `${Date.now()}-${file.originalname}`,
-			bucketName: 'file_uploads'
-		};
-	}
-});
-const upload = multer({ storage });
-
-/**** Handle serviceRequest file + form submission ****/
+/*************** Handle serviceRequest file + form submission ********************/
 const serviceRequestUpload = async (req, res) => {
 	try {
 		const {
@@ -56,7 +42,7 @@ const serviceRequestUpload = async (req, res) => {
 	}
 };
 
-/**** Handle reportIssue file + form submission ****/
+/***************** Handle reportIssue file + form submission ******************/
 const reportIssueUpload = async (req, res) => {
 	try {
 		const {
@@ -98,7 +84,7 @@ const reportIssueUpload = async (req, res) => {
 	}
 };
 
-/**** Get all Service requests list (with filename reference) ****/
+/*************** Get all Service requests list (with filename reference) ****************/
 const getServiceRequests = async (req, res) => {
 	try {
 		const requests = await ServiceRequests.find().sort({ createdAt: -1 });
@@ -113,7 +99,7 @@ const getServiceRequests = async (req, res) => {
 	}
 };
 
-/**** Get all Issue reports list (with filename reference) ****/
+/*************** Get all Issue reports list (with filename reference) ****************/
 const getIssueReports = async (req, res) => {
 	try {
 		const reports = await ReportIssue.find().sort({ createdAt: -1 });
@@ -128,7 +114,7 @@ const getIssueReports = async (req, res) => {
 	}
 };
 
-/**** Download file by filename ****/
+/******************* Download file by filename ***********************/
 const downloadFile = async (req, res) => {
 	const gfs = getGFS();
 	if (!gfs) return res.status(500).json({ error: 'GridFS not initialized' });
@@ -148,7 +134,6 @@ const downloadFile = async (req, res) => {
 };
 
 module.exports = {
-	upload,
 	serviceRequestUpload,
 	getServiceRequests,
 	downloadFile,

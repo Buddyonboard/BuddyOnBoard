@@ -10,7 +10,6 @@ const {
 } = require('../controllers/userController');
 const {
 	serviceRequestUpload,
-	upload,
 	getServiceRequests,
 	reportIssueUpload,
 	getIssueReports
@@ -22,7 +21,14 @@ const {
 	editBuddyListing
 } = require('../controllers/buddyListingController');
 const { searchBuddyListings } = require('../controllers/buddySearchController');
-const { sendBuddyRequest } = require('../controllers/sendRequestController');
+const {
+	sendBuddyRequest,
+	downloadBuddyRequestFile
+} = require('../controllers/sendRequestController');
+const {
+	service_request_upload,
+	buddy_request_upload
+} = require('../Middlewares/Upload');
 
 const router = express.Router();
 
@@ -34,21 +40,30 @@ router.get('/serviceRequestsList', getServiceRequests);
 router.get('/issueReportsList', getIssueReports);
 router.get('/getBuddyListings/:user_id', getBuddyListings);
 router.get('/search-buddy-listings', searchBuddyListings);
+router.get('/buddy-request-download/:filename', downloadBuddyRequestFile);
 
 router.post('/user-registration', userRegistration);
 router.post(
 	'/service-requests',
-	upload.single('uploadAttachment'),
+	service_request_upload.single('uploadAttachment'),
 	serviceRequestUpload
 );
 router.post(
 	'/report-issue',
-	upload.single('uploadAttachment'),
+	service_request_upload.single('uploadAttachment'),
 	reportIssueUpload
 );
 router.post('/buddy-listings-registration', buddyListingRegistration);
 router.post('/delete-buddy-listing', deleteBuddyListing);
 router.post('/edit-Buddy-Listing', editBuddyListing);
-router.post('/send-buddy-request', sendBuddyRequest);
+router.post(
+	'/send-buddy-request',
+	buddy_request_upload.any(),
+	// upload.fields([
+	// 	{ name: 'itemPicture', maxCount: 1 },
+	// 	{ name: 'itemDocument', maxCount: 1 }
+	// ]),
+	sendBuddyRequest
+);
 
 module.exports = router;

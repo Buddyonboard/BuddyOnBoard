@@ -1,6 +1,7 @@
 const serviceProvider = require('../models/ServiceProviderSchema');
 const Users = require('../models/UsersSchema');
 const BuddyRequestModal = require('../models/SendRequestSchema');
+const { getGridFSBucket } = require('../Config/gridFs');
 
 /************************** Create and Send Buddy Request ******************************/
 exports.sendBuddyRequest = async (req, res) => {
@@ -67,6 +68,55 @@ exports.sendBuddyRequest = async (req, res) => {
 				}
 			};
 		} else if (serviceType === 'Courier Buddy') {
+			// const uploadedPicture = req.files?.itemPicture?.[0];
+			// const uploadedDocument = req.files?.itemDocument?.[0];
+
+			// updateQuery = {
+			// 	$setOnInsert: {
+			// 		service_Seeker_Id: serviceSeeker_id,
+			// 		service_Seeker_Details: serviceSeekerDetails
+			// 	},
+			// 	$push: {
+			// 		'buddy_requests.courier_buddy_requests': {
+			// 			...baseRequestPayload,
+			// 			totalItemsWeight: totalItemsWeight,
+			// 			totalItems: parsedItems.length.toString(),
+			// 			courier_Items_List: parsedItems.map((item) => ({
+			// 				itemType: item.itemType,
+			// 				itemWeight: item.weight,
+			// 				itemPicture: item?.itemPicture?.files?.filename || '',
+			// 				itemDocument: item?.itemDocument?.files?.filename || '',
+			// 				itemDescription: item.itemDescription
+			// 			}))
+			// 		}
+			// 	}
+			// };
+
+			const courierItems = [];
+			Object.keys(requestDetails)
+				.filter((key) => !isNaN(key))
+				.forEach((key) => {
+					const item = requestDetails[key] || {};
+
+					const itemPictureField = `${key}[itemPicture]`;
+					const itemDocumentField = `${key}[itemDocument]`;
+
+					const itemPictureFile = req.files.find(
+						(f) => f.fieldname === itemPictureField
+					);
+					const itemDocumentFile = req.files.find(
+						(f) => f.fieldname === itemDocumentField
+					);
+
+					courierItems.push({
+						itemType: item.itemType || '',
+						itemWeight: item.weight || '',
+						itemPicture: itemPictureFile?.filename || '',
+						itemDocument: itemDocumentFile?.filename || '',
+						itemDescription: item.itemDescription || ''
+					});
+				});
+
 			updateQuery = {
 				$setOnInsert: {
 					service_Seeker_Id: serviceSeeker_id,
@@ -75,15 +125,9 @@ exports.sendBuddyRequest = async (req, res) => {
 				$push: {
 					'buddy_requests.courier_buddy_requests': {
 						...baseRequestPayload,
-						totalItemsWeight: totalItemsWeight,
-						totalItems: parsedItems.length.toString(),
-						courier_Items_List: parsedItems.map((item) => ({
-							itemType: item.itemType,
-							itemWeight: item.weight,
-							itemPicture: item.itemPicture,
-							itemDocument: item.itemDocument,
-							itemDescription: item.itemDescription
-						}))
+						totalItemsWeight,
+						totalItems: courierItems.length.toString(),
+						courier_Items_List: courierItems
 					}
 				}
 			};
@@ -102,5 +146,31 @@ exports.sendBuddyRequest = async (req, res) => {
 		return res
 			.status(500)
 			.json({ error: 'Internal server error', message: err.message });
+	}
+};
+
+/********************* Download Uploaded Courier Files *********************/
+exports.downloadBuddyRequestFile = async (req, res) => {
+	try {
+		const { filename } = req.params;
+
+		const bucket = getGridFSBucket('buddy_request_file_uploads');
+		const file = await bucket.find({ filename: filename }).toArray();
+
+		if (!file || file?.length === 0) {
+			return res.status(404).json({ message: 'File not found' });
+		}
+
+		res.set('Content-Type', file[0].contentType);
+		res.set(
+			'Content-Disposition',
+			'attachment; filename="' + file[0].filename + '"'
+		);
+
+		bucket.openDownloadStream(file[0]._id).pipe(res);
+	} catch (err) {
+		res
+			.status(500)
+			.json({ message: 'Error retrieving file', error: err.message });
 	}
 };

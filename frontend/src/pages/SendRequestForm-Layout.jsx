@@ -11,6 +11,7 @@ import API_URL from '../../environments/Environment-dev';
 import { toast } from 'sonner';
 
 export default function SendRequestForm() {
+	const [submitted, setSubmitted] = useState(false);
 	const [passengerCount, setPassengerCount] = useState(1);
 	const [showSuccessDialog, setShowSuccessDialog] = useState(false);
 	const [totalAmount, setTotalAmount] = useState({
@@ -125,29 +126,58 @@ export default function SendRequestForm() {
 	/********* Handle Send Request Form Submission ********/
 	const handleRequestSubmit = async () => {
 		if (validateFormDetails()) {
+			setSubmitted(true);
 			const ServiceSeekerUserId = getuserProfile()._id;
 
-			const payload = {
-				serviceProvider_id: buddyDetails?.serviceProviderDetails?.user_Id,
-				serviceSeeker_id: ServiceSeekerUserId,
-				requestStatus: 'pending',
-				serviceType: serviceType,
-				totalAmount: totalAmount,
-				buddyDetails: buddyDetails,
-				...items
-			};
+			const formData = new FormData();
+
+			// Static fields
+			formData.append(
+				'serviceProvider_id',
+				buddyDetails?.serviceProviderDetails?.user_Id
+			);
+			formData.append('serviceSeeker_id', ServiceSeekerUserId);
+			formData.append('requestStatus', 'pending');
+			formData.append('serviceType', serviceType);
+			formData.append('buddyDetails', JSON.stringify(buddyDetails));
+			formData.append('totalAmount', JSON.stringify(totalAmount));
 
 			if (serviceType === 'Courier Buddy') {
-				payload.totalItemsWeight = totalWeight;
+				formData.append('totalItemsWeight', totalWeight);
 			}
 
+			// Attach items dynamically
+			Object.keys(items).forEach((key) => {
+				const item = items[key];
+				if (!isNaN(key)) {
+					formData.append(`${key}[age]`, item.age || '');
+					formData.append(`${key}[gender]`, item.gender || '');
+					formData.append(`${key}[itemType]`, item.itemType || '');
+					formData.append(`${key}[weight]`, item.weight || '');
+					formData.append(`${key}[itemDescription]`, item.itemDescription || '');
+
+					if (item.itemPicture instanceof File) {
+						formData.append(`${key}[itemPicture]`, item.itemPicture);
+					}
+					if (item.itemDocument instanceof File) {
+						formData.append(`${key}[itemDocument]`, item.itemDocument);
+					}
+				}
+			});
+
 			/**** API to Upload Buddy Request data in backend ****/
-			const res = await axios.post(`${API_URL}/send-buddy-request`, payload);
+			const res = await axios.post(`${API_URL}/send-buddy-request`, formData, {
+				headers: {
+					'Content-Type': 'multipart/form-data'
+				}
+			});
 
 			/**** Handling API response based on status ****/
 			if (res?.status === 201) {
 				setShowSuccessDialog(true);
+				setSubmitted(false);
 			} else {
+				setSubmitted(false);
 				toast.warning(CONST.somethingWentWrong, {
 					position: 'top-right',
 					closeButton: true,
@@ -192,6 +222,7 @@ export default function SendRequestForm() {
 					handleRequestSubmit={handleRequestSubmit}
 					items={items}
 					setTotalAmount={setTotalAmount}
+					submitted={submitted}
 				/>
 			</div>
 

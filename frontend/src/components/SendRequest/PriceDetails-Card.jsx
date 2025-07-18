@@ -19,7 +19,8 @@ export default function PriceDetailsCard({
 	formError,
 	handleRequestSubmit,
 	items,
-	setTotalAmount
+	setTotalAmount,
+	submitted
 }) {
 	/********** To retreive buddy service fee ************/
 	const buddyPrice = useMemo(() => {
@@ -112,7 +113,10 @@ export default function PriceDetailsCard({
 						</div>
 
 						{/******** Send Request Button *********/}
-						<SendRequestButton handleRequestSubmit={handleRequestSubmit} />
+						<SendRequestButton
+							handleRequestSubmit={handleRequestSubmit}
+							submitted={submitted}
+						/>
 
 						{/******** Payment Info *********/}
 						<p className="text-center 2xl:text-lg text-sm text-bob-accordion-content-color font-medium">
