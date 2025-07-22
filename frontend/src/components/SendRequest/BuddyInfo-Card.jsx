@@ -12,17 +12,24 @@ import {
 	getPreferencesList
 } from '@/utils/listingPreferencesHelper';
 
-export default function BuddyInfoCard({ buddyDetails, serviceType }) {
+export default function BuddyInfoCard({
+	buddyDetails,
+	buddyRequestDetails,
+	serviceType
+}) {
 	const travelListing = buddyDetails?.buddy_Listing_Details?.travel_listing;
-
 	/************** Retreive Travel/Courier Listing Type ************/
-	const listingType = getListingByServiceType(buddyDetails, serviceType);
+	const listingType =
+		getListingByServiceType(buddyDetails, serviceType) ||
+		buddyRequestDetails?.trip_details;
 
 	/****** List of Courier/Languages Preferences ******/
 	const preferencesList = getPreferencesList(listingType, serviceType);
 
 	/****** Set User Name ******/
-	const firstName = buddyDetails?.serviceProviderDetails?.userDetails?.firstName;
+	const firstName =
+		buddyDetails?.serviceProviderDetails?.userDetails?.firstName ||
+		buddyRequestDetails?.service_Provider_Details?.userDetails?.firstName;
 
 	return (
 		<Card className="overflow-hidden rounded-2xl shadow-xl py-0 mb-6">

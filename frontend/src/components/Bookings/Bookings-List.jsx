@@ -5,7 +5,7 @@ export default function BookingsList({ noBookings, bookingsList }) {
 		<div className="space-y-4">
 			{bookingsList?.length > 0 ? (
 				bookingsList.map((booking) => (
-					<BookingCard key={booking.id} booking={booking} />
+					<BookingCard key={booking._id} booking={booking} />
 				))
 			) : (
 				/* Show message if no bookings there */

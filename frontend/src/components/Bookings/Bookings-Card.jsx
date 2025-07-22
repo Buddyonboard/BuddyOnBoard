@@ -1,22 +1,31 @@
 import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-
-import CarouselFlight from '@/assets/Landing/CarouselFlight.svg';
 import LineSeparator from '@/assets/Common/Line-Separator.svg';
-import UserPicOutline from '@/assets/Common/circle-user-round.svg';
-import ProfilePicPlaceholder from '@/assets/Common/Profile-Pic-Placeholder.svg';
-import VerifiedIcon from '@/assets/Common/VerifiedIcon.svg';
 import BookingsActionButtons from './Bookings-Action-Buttons';
 import BookingsSchedule from './Bookings-Schedule';
 import BookingStatusDetails from './BookingStatusDetails';
+import BuddyCardAvatar from '../ReUsable/Service-Seeker/Buddy-Card-Avatar';
+import { getPreferencesList } from '@/utils/listingPreferencesHelper';
+import VerifiedBuddyName from '../ReUsable/Service-Seeker/Verified-Buddy-Name';
+import ServiceCategoryTag from '../ReUsable/Service-Seeker/Service-Category-Tag';
+import LanguageCourierTag from '../ReUsable/Service-Seeker/Language-Courier-Tag';
+import FlightStopType from '../ReUsable/Service-Seeker/Flight-Stop-Type';
 
 export function BookingCard({ booking }) {
-	const isActive = booking.status === 'active';
-	const isCancelled = booking.status === 'cancelled';
-	const isCompleted = booking.status === 'completed';
-	const isPending = booking.status === 'pending';
-	const isAccepted = booking.status === 'accepted';
+	const isActive = booking?.listingStatus === 'active';
+	const isCancelled = booking?.listingStatus === 'cancelled';
+	const isCompleted = booking?.listingStatus === 'completed';
+	const isPending = booking?.listingStatus === 'pending';
+	const isAccepted = booking?.listingStatus === 'accepted';
+
+	/************** Retreive Travel/Courier Listing Type ************/
+	const serviceType = booking?.serviceType;
+
+	/****** List of Courier/Languages Preferences ******/
+	const preferencesList = getPreferencesList(booking?.trip_details, serviceType);
+
+	/****** Set User Name ******/
+	const firstName = booking?.service_Provider_Details?.userDetails?.firstName;
 
 	return (
 		<Card className="overflow-hidden rounded-2xl shadow-xl py-0">
@@ -26,52 +35,24 @@ export function BookingCard({ booking }) {
 					{/* Profile Pic and Verified Tag */}
 					<div className="flex items-center gap-3">
 						<div className="flex items-center gap-3 mt-4">
-							{/* Profile Pic */}
-							<img
-								src={booking.user.avatar || ProfilePicPlaceholder}
-								alt={booking.user.name}
-								className="rounded-full h-[42px] w-[42]"
+							{/*** Profile Pic ***/}
+							<BuddyCardAvatar userName={firstName} />
+							{/***** Profile Name & Verified Icon *****/}
+							<VerifiedBuddyName
+								userName={firstName}
+								isVerified={booking?.service_Provider_Details?.isVerified}
 							/>
-							<div>
-								{/* Profile Name & Verified Icon */}
-								<div className="flex items-center gap-2">
-									<span className="font-medium">{booking.user.name}</span>
-
-									<img src={VerifiedIcon} alt="VerifiedIcon" className="h-6 w-6" />
-								</div>
-							</div>
 						</div>
 					</div>
 
-					{/* Type of Booking - Travel/Courier */}
-					<div
-						className="mt-3 flex items-center gap-1 rounded-full bg-bob-color
-							px-2 py-1 text-xs text-primary-color w-fit"
-					>
-						<span>{booking.user.type}</span>
-					</div>
+					{/**** Type of Booking - Travel/Courier *****/}
+					<ServiceCategoryTag serviceType={serviceType} />
 
-					{/**** Ratings and Language/Courier Preferences ****/}
-					<div className="flex flex-row items-center gap-2">
-						{/* Ratings :: Not needed for MVP */}
-						{/* <div
-							className="mt-3 flex items-center gap-1 rounded-2xl 
-                     		bg-bob-higher-rating-color px-2 py-1 text-xs
-							text-primary-color w-fit"
-						>
-							<Star fill="white" size={12} />
-							<span>{booking.user.rating}</span>
-						</div> */}
-						{/* Languages/Courier Preferences */}
-						<div className="mt-2">
-							<Badge
-								variant="outline"
-								className="rounded-full bg-bob-language-badge-color text-secondary-color py-1 md:max-lg:w-[170px] max-w-fit md:max-lg:text-[10px]"
-							>
-								{booking.user.preferences}
-							</Badge>
-						</div>
-					</div>
+					{/**** Language/Courier Preferences ****/}
+					<LanguageCourierTag
+						serviceType={serviceType}
+						preferencesList={preferencesList}
+					/>
 				</div>
 
 				{/* Vertical Line Separator */}
@@ -90,37 +71,27 @@ export function BookingCard({ booking }) {
 					{/*** Flight Details Section ***/}
 					<div className="flex flex-1 flex-col lg:p-5 md:py-2.5 py-4 md:pr-10 md:px-0 px-4">
 						<div className="flex flex-row md:items-center md:justify-between">
-							{/* Departure */}
+							{/**** Departure ****/}
 							<div className="text-start">
 								<BookingsSchedule
-									time={booking.departure.time}
-									date={booking.departure.date}
-									location={booking.departure.location}
+									time={booking?.trip_details?.departureTime}
+									date={booking?.trip_details?.departureDate}
+									location={booking?.trip_details?.departureAirport}
 								/>
 							</div>
 
-							{/* Connection */}
-							<div className="my-4 flex flex-col items-center md:my-0 text-bob-travel-details-color">
-								<div className="relative flex w-20 items-center justify-center md:w-32">
-									{/* Journey Flight Icon */}
-									<div className="flex flex-col items-center mx-2">
-										<img src={CarouselFlight} alt="CarouselFlight" />
-									</div>
-								</div>
-								{booking.connectionType}
-								{booking.connectionLocation && (
-									<div className="text-xs text-bob-travel-details-color">
-										{booking.connectionLocation}
-									</div>
-								)}
-							</div>
+							{/**** Flight Connection Type ****/}
+							<FlightStopType
+								connectionType={booking?.trip_details?.stops}
+								connectionLocation={booking?.trip_details?.stopAirports}
+							/>
 
-							{/* Arrival */}
+							{/***** Arrival *****/}
 							<div className="text-end">
 								<BookingsSchedule
-									time={booking.arrival.time}
-									date={booking.arrival.date}
-									location={booking.arrival.location}
+									time={booking?.trip_details?.arrivalTime}
+									date={booking?.trip_details?.arrivalDate}
+									location={booking?.trip_details?.arrivalAirport}
 								/>
 							</div>
 						</div>
@@ -133,12 +104,12 @@ export function BookingCard({ booking }) {
 						alt="Line Separator"
 					/>
 
-					{/*** Actions or Status ***/}
+					{/******** Actions or Status ********/}
 					<div
 						className={`flex flex-col gap-2 ${
 							isActive
 								? 'md:flex-col md:justify-center items-center max-w-2xs'
-								: 'justify-center lg:max-w-2xs'
+								: 'justify-center lg:max-w-2xs max-w-fit'
 						}`}
 					>
 						{isActive ? (
@@ -149,6 +120,8 @@ export function BookingCard({ booking }) {
 								isCompleted={isCompleted}
 								isPending={isPending}
 								isAccepted={isAccepted}
+								booking={booking}
+								serviceType={serviceType}
 							/>
 						)}
 					</div>

@@ -1,19 +1,31 @@
 import CONST from '@/utils/Constants';
 import ReusableLink from '../ReUsable/ReusableLink';
 import { Button } from '../ui/button';
+import { formatDateTime } from '@/utils/formatDateTime';
 
 export default function BookingStatusDetails({
 	isCancelled,
 	isCompleted,
 	isPending,
-	isAccepted
+	isAccepted,
+	booking,
+	serviceType
 }) {
+	/*************** To Get Formatted Date and Time ***************/
+	const date = booking?.createdAt;
+	const { formattedDate } = formatDateTime(date);
+
+	const count =
+		serviceType === 'Travel Buddy'
+			? `${booking?.passengerCount} Passengers`
+			: `${booking?.totalItems} Items`;
+
 	return (
 		<>
 			{/*** Booking Status :: Completed/Cancelled ***/}
 			{(isCancelled || isCompleted) && (
 				<p
-					className="text-center text-sm font-bold text-bob-form-label-color
+					className="text-center 2xl:text-2xl text-sm font-bold text-bob-form-label-color
                     lg:pl-20 md:pl-30 pl-5"
 				>
 					{isCancelled && CONST.bookings.cancelledTrip}
@@ -23,19 +35,21 @@ export default function BookingStatusDetails({
 
 			{/*** Booking Status :: Pending ***/}
 			{isPending && (
-				<div className="flex flex-col md:max-lg:flex-row md:max-lg:mb-5 text-start gap-2 md:max-lg:gap-6 md:max-lg:px-0 px-2">
+				<div className="flex flex-col md:max-lg:flex-row md:max-lg:mb-5 text-start gap-2 md:max-lg:gap-6 md:max-lg:px-0 px-2 2xl:w-max 2xl:ml-8">
 					<div>
-						<p className="text-bob-form-label-color font-medium md:max-lg:text-sm">
-							Request sent on 16th January, 2025
+						<p className="text-bob-form-label-color font-medium md:max-lg:text-sm 2xl:text-2xl">
+							Request sent on {formattedDate}
 						</p>
-						<p className="text-bob-icon-placeholder-color text-sm font-normal">
-							2 passengers
+						<p className="text-bob-icon-placeholder-color 2xl:text-xl text-sm font-normal">
+							{count}
 						</p>
 					</div>
 					<ReusableLink
-						to="/"
+						type="editRequest"
 						linkName={CONST.bookings.editBookingRequest}
-						className="text-bob-color font-bold lg:text-xl text-sm"
+						serviceType={serviceType}
+						booking={booking}
+						className="text-bob-color font-bold 2xl:text-2xl lg:text-xl text-sm"
 					/>
 				</div>
 			)}
@@ -48,7 +62,7 @@ export default function BookingStatusDetails({
 							Request accepted!
 						</p>
 						<p className="text-bob-icon-placeholder-color text-sm font-normal">
-							2 passengers
+							{count}
 						</p>
 					</div>
 					<Button

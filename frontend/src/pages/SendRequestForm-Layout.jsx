@@ -24,11 +24,15 @@ export default function SendRequestForm() {
 	const [buddyDetails, setBuddyDetails] = useState(
 		location.state?.buddy || null
 	);
+	const [buddyRequestDetails, setBuddyRequestDetails] = useState(
+		location.state?.requestDetails || null
+	);
 	const [serviceType, setServiceType] = useState(
 		location.state?.serviceType || null
 	);
 
 	// console.log('buddyDetails >', buddyDetails);
+	// console.log('buddyRequestDetails >', buddyRequestDetails);
 	// console.log('serviceType >', serviceType);
 
 	const itemList = {
@@ -41,7 +45,52 @@ export default function SendRequestForm() {
 		itemDescription: ''
 	};
 	const [items, setItems] = useState([{ ...itemList }]);
+	const [selectedFile, setSelectedFile] = useState({});
+	const [selectedPicture, setSelectedPicture] = useState({});
 	const [formError, setFormError] = useState('');
+
+	/***************** Edit exisiting buddy request ********************/
+	useEffect(() => {
+		if (location.state?.isEdit && buddyRequestDetails) {
+			if (serviceType === 'Travel Buddy') {
+				const passengers = buddyRequestDetails.passengers_List.map((p) => ({
+					age: p.age,
+					gender: p.gender
+				}));
+				setItems(passengers);
+				setPassengerCount(passengers.length);
+			} else {
+				const courier = buddyRequestDetails.courier_Items_List.map((i) => ({
+					itemType: i.itemType,
+					weight: i.itemWeight,
+					itemPicture: i.itemPicture || null,
+					itemDocument: i.itemDocument || null,
+					itemDescription: i.itemDescription
+				}));
+
+				/***** Pre-fill selected file names (UI display only) *****/
+				const selectedPicturePrefill = {};
+				const selectedDocumentPrefill = {};
+
+				courier.forEach((item, index) => {
+					if (item.itemPicture) {
+						selectedPicturePrefill[index] = item.itemPicture.split('-').pop();
+					}
+					if (item.itemDocument) {
+						selectedDocumentPrefill[index] = item.itemDocument.split('-').pop();
+					}
+				});
+
+				setItems(courier);
+				setSelectedPicture(selectedPicturePrefill);
+				setSelectedFile(selectedDocumentPrefill);
+				setPassengerCount(courier.length);
+			}
+
+			/****** Prefill price card ******/
+			setTotalAmount(buddyRequestDetails.totalAmount);
+		}
+	}, [location.state?.isEdit, buddyRequestDetails, serviceType]);
 
 	/********* Validate SendRequest Form Input Details ********/
 	function validateFormDetails() {
@@ -88,11 +137,11 @@ export default function SendRequestForm() {
 	);
 
 	useEffect(() => {
-		if (!buddyDetails) {
+		if (!buddyDetails && !buddyRequestDetails) {
 			// Redirect if no data passed
 			navigate('/');
 		}
-	}, [buddyDetails, navigate]);
+	}, [buddyDetails, buddyRequestDetails, navigate]);
 
 	/***** Handling Increment of Items/Passengers ******/
 	const incrementCount = () => {
@@ -126,12 +175,15 @@ export default function SendRequestForm() {
 	/********* Handle Send Request Form Submission ********/
 	const handleRequestSubmit = async () => {
 		if (validateFormDetails()) {
+			let res;
+
 			setSubmitted(true);
 			const ServiceSeekerUserId = getuserProfile()._id;
+			const requestId = buddyRequestDetails?._id;
 
 			const formData = new FormData();
 
-			// Static fields
+			/***** Buddy Request form fields *****/
 			formData.append(
 				'serviceProvider_id',
 				buddyDetails?.serviceProviderDetails?.user_Id
@@ -165,16 +217,34 @@ export default function SendRequestForm() {
 				}
 			});
 
-			/**** API to Upload Buddy Request data in backend ****/
-			const res = await axios.post(`${API_URL}/send-buddy-request`, formData, {
-				headers: {
-					'Content-Type': 'multipart/form-data'
-				}
-			});
+			/********** API to Edit Buddy Request data in backend ***********/
+			if (location.state?.isEdit && requestId) {
+				res = await axios.post(
+					`${API_URL}/edit-buddy-request/${requestId}`,
+					formData,
+					{
+						headers: {
+							'Content-Type': 'multipart/form-data'
+						}
+					}
+				);
+			} else {
+				/********** API to Upload Buddy Request data in backend ***********/
+				res = await axios.post(`${API_URL}/send-buddy-request`, formData, {
+					headers: {
+						'Content-Type': 'multipart/form-data'
+					}
+				});
+			}
 
 			/**** Handling API response based on status ****/
-			if (res?.status === 201) {
-				setShowSuccessDialog(true);
+			if (res?.status === 201 || res?.status === 200) {
+				if (location.state?.isEdit) {
+					navigate('/bookings');
+					window.location.reload();
+				} else {
+					setShowSuccessDialog(true);
+				}
 				setSubmitted(false);
 			} else {
 				setSubmitted(false);
@@ -199,7 +269,11 @@ export default function SendRequestForm() {
 			<div className="grid gap-6 lg:grid-cols-3">
 				<div className="lg:col-span-2">
 					{/*************** Buddy Info Card ****************/}
-					<BuddyInfoCard buddyDetails={buddyDetails} serviceType={serviceType} />
+					<BuddyInfoCard
+						buddyDetails={buddyDetails}
+						buddyRequestDetails={buddyRequestDetails}
+						serviceType={serviceType}
+					/>
 
 					{/**************** Passenger Details Form ****************/}
 					<PassengersInfoCard
@@ -209,12 +283,17 @@ export default function SendRequestForm() {
 						serviceType={serviceType}
 						setItems={setItems}
 						items={items}
+						selectedFile={selectedFile}
+						setSelectedFile={setSelectedFile}
+						selectedPicture={selectedPicture}
+						setSelectedPicture={setSelectedPicture}
 					/>
 				</div>
 
 				{/***************** Price Details Section *****************/}
 				<PriceDetailsCard
 					buddyDetails={buddyDetails}
+					buddyRequestDetails={buddyRequestDetails}
 					serviceType={serviceType}
 					passengerCount={passengerCount}
 					totalWeight={totalWeight}

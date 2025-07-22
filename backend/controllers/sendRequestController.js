@@ -38,11 +38,12 @@ exports.sendBuddyRequest = async (req, res) => {
 
 		const baseRequestPayload = {
 			serviceType,
-			trip_details: buddyDetails?.buddy_Listing_Details?.[listingType] || {},
+			trip_details:
+				JSON.parse(buddyDetails)?.buddy_Listing_Details?.[listingType] || {},
 			listingStatus: requestStatus,
-			service_Provider_Details: buddyDetails?.serviceProviderDetails,
+			service_Provider_Details: JSON.parse(buddyDetails)?.serviceProviderDetails,
 			service_Provider_Id: serviceProvider_id,
-			totalAmount,
+			totalAmount: JSON.parse(totalAmount),
 			createdAt: new Date(),
 			updatedAt: new Date()
 		};
@@ -172,5 +173,121 @@ exports.downloadBuddyRequestFile = async (req, res) => {
 		res
 			.status(500)
 			.json({ message: 'Error retrieving file', error: err.message });
+	}
+};
+
+/****************** Get Buddy Listings : Service Seeker ********************/
+exports.getBookingRequestsBySeekerId = async (req, res) => {
+	try {
+		const { seekerId } = req.params;
+
+		const bookingRequests = await BuddyRequestModal.findOne({
+			service_Seeker_Id: seekerId
+		});
+
+		if (!bookingRequests) {
+			return res.status(404).json({
+				message: 'No bookings found for this service seeker',
+				data: null
+			});
+		}
+
+		res.status(200).json({
+			message: 'Data retrieved successfully',
+			data: bookingRequests
+		});
+	} catch (err) {
+		console.error('Error fetching booking requests:', err);
+		res
+			.status(500)
+			.json({ error: 'Internal server error', message: err.message });
+	}
+};
+
+/******************** Update Buddy Request ************************/
+exports.updateBuddyRequest = async (req, res) => {
+	try {
+		const { requestId } = req.params;
+		const {
+			serviceSeeker_id,
+			serviceType,
+			totalAmount,
+			totalItemsWeight,
+			...requestDetails
+		} = req.body;
+
+		/************ Extract Request Details **************/
+		const parsedItems = Object.keys(requestDetails)
+			.filter((key) => !isNaN(key))
+			.map((key) => requestDetails[key]);
+
+		/************** Choose which array field to update *************/
+		const arrayName =
+			serviceType === 'Travel Buddy'
+				? 'buddy_requests.travel_buddy_requests'
+				: 'buddy_requests.courier_buddy_requests';
+
+		/************ Prepare the $set object ***********/
+		const setObj = {};
+
+		if (serviceType === 'Travel Buddy') {
+			(setObj[`${arrayName}.$.passengers_List`] = parsedItems.map((item) => ({
+				age: item.age,
+				gender: item.gender
+			}))),
+				(setObj[`${arrayName}.$.passengerCount`] = parsedItems.length.toString()),
+				(setObj[`${arrayName}.$.totalAmount`] = JSON.parse(req.body.totalAmount));
+			setObj[`${arrayName}.$.updatedAt`] = new Date();
+		} else if (serviceType === 'Courier Buddy') {
+			const courierItems = [];
+
+			Object.keys(requestDetails)
+				.filter((key) => !isNaN(key))
+				.forEach((key) => {
+					const item = requestDetails[key] || {};
+
+					const itemPictureField = `${key}[itemPicture]`;
+					const itemDocumentField = `${key}[itemDocument]`;
+
+					const itemPictureFile = req.files.find(
+						(f) => f.fieldname === itemPictureField
+					);
+					const itemDocumentFile = req.files.find(
+						(f) => f.fieldname === itemDocumentField
+					);
+
+					courierItems.push({
+						itemType: item.itemType || '',
+						itemWeight: item.weight || '',
+						itemPicture: itemPictureFile?.filename || '',
+						itemDocument: itemDocumentFile?.filename || '',
+						itemDescription: item.itemDescription || ''
+					});
+				});
+
+			(setObj[`${arrayName}.$.totalItemsWeight`] = totalItemsWeight),
+				(setObj[`${arrayName}.$.totalItems`] = courierItems.length.toString()),
+				(setObj[`${arrayName}.$.courier_Items_List`] = courierItems),
+				(setObj[`${arrayName}.$.totalAmount`] = JSON.parse(totalAmount)),
+				(setObj[`${arrayName}.$.updatedAt`] = new Date());
+		}
+
+		const updated = await BuddyRequestModal.findOneAndUpdate(
+			{
+				service_Seeker_Id: serviceSeeker_id,
+				[`${arrayName}._id`]: requestId
+			},
+			{
+				$set: setObj
+			},
+			{ new: true }
+		);
+
+		if (!updated) return res.status(404).json({ message: 'Request not found' });
+		return res
+			.status(200)
+			.json({ message: 'Updated successfully', data: updated });
+	} catch (err) {
+		return res.status(500).json({ message: err.message });
 	}
 };

@@ -23,7 +23,9 @@ const {
 const { searchBuddyListings } = require('../controllers/buddySearchController');
 const {
 	sendBuddyRequest,
-	downloadBuddyRequestFile
+	downloadBuddyRequestFile,
+	getBookingRequestsBySeekerId,
+	updateBuddyRequest
 } = require('../controllers/sendRequestController');
 const {
 	service_request_upload,
@@ -40,6 +42,7 @@ router.get('/serviceRequestsList', getServiceRequests);
 router.get('/issueReportsList', getIssueReports);
 router.get('/getBuddyListings/:user_id', getBuddyListings);
 router.get('/search-buddy-listings', searchBuddyListings);
+router.get('/booking-requests/:seekerId', getBookingRequestsBySeekerId);
 router.get('/buddy-request-download/:filename', downloadBuddyRequestFile);
 
 router.post('/user-registration', userRegistration);
@@ -64,6 +67,11 @@ router.post(
 	// 	{ name: 'itemDocument', maxCount: 1 }
 	// ]),
 	sendBuddyRequest
+);
+router.post(
+	'/edit-buddy-request/:requestId',
+	buddy_request_upload.any(),
+	updateBuddyRequest
 );
 
 module.exports = router;

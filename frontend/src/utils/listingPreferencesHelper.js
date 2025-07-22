@@ -89,10 +89,16 @@ export function getMinPricesForCourierItems(listingType = {}) {
 export function getBuddyPrice(
 	buddyDetails = {},
 	passengerCount = 1,
-	items = []
+	items = [],
+	buddyRequestDetails = {},
+	serviceType
 ) {
-	const travelListing = buddyDetails?.buddy_Listing_Details?.travel_listing;
-	const courierListing = buddyDetails?.buddy_Listing_Details?.courier_listing;
+	const travelListing =
+		buddyDetails?.buddy_Listing_Details?.travel_listing ||
+		buddyRequestDetails?.trip_details;
+	const courierListing =
+		buddyDetails?.buddy_Listing_Details?.courier_listing ||
+		buddyRequestDetails?.trip_details;
 
 	const weightPricingMap = {
 		Documents: [
@@ -112,7 +118,7 @@ export function getBuddyPrice(
 		]
 	};
 
-	if (travelListing) {
+	if (travelListing && serviceType === 'Travel Buddy') {
 		switch (passengerCount) {
 			case 1:
 				return Number(travelListing?.price1 || 0);
@@ -123,7 +129,7 @@ export function getBuddyPrice(
 			default:
 				return 0;
 		}
-	} else if (courierListing) {
+	} else if (courierListing && serviceType === 'Courier Buddy') {
 		let total = 0;
 
 		items.forEach(({ itemType, weight }) => {

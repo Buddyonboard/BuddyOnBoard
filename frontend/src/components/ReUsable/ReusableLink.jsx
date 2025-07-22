@@ -1,9 +1,34 @@
 import { useFirebase } from '@/context/Firebase-Context';
 import CONST from '@/utils/Constants';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
-export default function ReusableLink({ to, className, linkName, type }) {
+export default function ReusableLink({
+	to,
+	className,
+	linkName,
+	type,
+	serviceType,
+	booking
+}) {
+	const navigate = useNavigate();
+
+	/********** To Switch to different methods based on type ***********/
+	const handleClick = (event) => {
+		switch (type) {
+			case 'verifyEmail':
+				handleResendVerifyEmail();
+				break;
+			case 'editRequest':
+				event.preventDefault();
+				handleEditRequest(serviceType, booking);
+				break;
+			default:
+				break;
+		}
+	};
+
+	/********** Verify Email Method Handler ***********/
 	const firebase = useFirebase();
 
 	async function handleResendVerifyEmail() {
@@ -17,12 +42,19 @@ export default function ReusableLink({ to, className, linkName, type }) {
 		});
 	}
 
+	/********** To Handle Edit Request Booking ***********/
+	function handleEditRequest(serviceType, requestDetails) {
+		navigate('/send-request', {
+			state: {
+				isEdit: true,
+				serviceType,
+				requestDetails
+			}
+		});
+	}
+
 	return (
-		<Link
-			to={to}
-			className={className}
-			onClick={type === 'verifyEmail' && handleResendVerifyEmail}
-		>
+		<Link to={to} className={className} onClick={(e) => handleClick(e)}>
 			{linkName}
 		</Link>
 	);

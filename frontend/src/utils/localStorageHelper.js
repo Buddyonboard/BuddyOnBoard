@@ -35,3 +35,9 @@ export async function setUserProfile(apiUrl, userUid) {
 	localStorage.setItem('userProfile', JSON.stringify(res.data));
 	return res;
 }
+
+/***** Retrieve userProfile _id data from LocalStorage ****/
+export function getSeekerId() {
+	const seekerId = getuserProfile()._id;
+	return seekerId;
+}

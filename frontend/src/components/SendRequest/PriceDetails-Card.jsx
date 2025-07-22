@@ -13,6 +13,7 @@ import { getBuddyPrice } from '@/utils/listingPreferencesHelper';
 
 export default function PriceDetailsCard({
 	buddyDetails,
+	buddyRequestDetails,
 	serviceType,
 	passengerCount,
 	totalWeight,
@@ -24,8 +25,14 @@ export default function PriceDetailsCard({
 }) {
 	/********** To retreive buddy service fee ************/
 	const buddyPrice = useMemo(() => {
-		return getBuddyPrice(buddyDetails, passengerCount, items);
-	}, [buddyDetails, passengerCount, items]);
+		return getBuddyPrice(
+			buddyDetails,
+			passengerCount,
+			items,
+			buddyRequestDetails,
+			serviceType
+		);
+	}, [buddyDetails, passengerCount, items, buddyRequestDetails, serviceType]);
 
 	/********** To calculate platform fee ************/
 	const platformFees = useMemo(() => {

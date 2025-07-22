@@ -22,11 +22,12 @@ export default function PassengersInfoCard({
 	incrementCount,
 	serviceType,
 	setItems,
-	items
+	items,
+	selectedFile,
+	setSelectedFile,
+	selectedPicture,
+	setSelectedPicture
 }) {
-	const [selectedFile, setSelectedFile] = useState({});
-	const [selectedPicture, setSelectedPicture] = useState({});
-
 	// File Validation Function
 	const validateFile = (file) => {
 		if (!file) return false;
@@ -177,7 +178,7 @@ export default function PassengersInfoCard({
 											id={`age-${index}`}
 											type="text"
 											maxLength={2}
-											// value={items[index].age}
+											value={items[index].age}
 											placeholder="Enter the age of the passenger"
 											className="w-full"
 											onChange={(e) => {
@@ -199,7 +200,7 @@ export default function PassengersInfoCard({
 											Gender*
 										</label>
 										<Select
-											// value={items[index].gender} // current item type from state
+											value={items[index].gender}
 											onValueChange={(value) => handleGenderChange(index, value)}
 										>
 											<SelectTrigger
@@ -238,7 +239,7 @@ export default function PassengersInfoCard({
 												Choose an item*
 											</label>
 											<Select
-												// value={items[index].itemType}
+												value={items[index].itemType}
 												onValueChange={(value) => handleItemTypeChange(index, value)}
 											>
 												<SelectTrigger
@@ -280,7 +281,7 @@ export default function PassengersInfoCard({
 												id={`itemWeight-${index}`}
 												placeholder="Courier item weight"
 												className="w-full"
-												// value={items[index].weight}
+												value={items[index].weight}
 												maxLength={5}
 												onChange={(e) => {
 													if (/^\d*$/.test(e.target.value)) {

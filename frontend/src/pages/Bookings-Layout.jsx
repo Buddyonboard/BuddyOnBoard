@@ -10,8 +10,8 @@ export default function BookingsLayout() {
 		<>
 			{!cancelConfirmed && (
 				<main className="min-h-screen p-2 md:p-6 lg:p-8">
-					<div className="mx-auto max-w-5xl">
-						<h1 className="mb-6 text-4xl font-merriweather font-normal">
+					<div className="mx-auto w-full">
+						<h1 className="mb-6 2xl:text-6xl text-4xl font-merriweather font-normal">
 							{CONST.bookings.yourBookings}
 						</h1>
 

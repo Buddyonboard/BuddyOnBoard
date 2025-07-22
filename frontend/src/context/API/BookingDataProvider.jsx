@@ -1,156 +1,34 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import WomenProfilePicPlaceholder from '@/assets/Common/WomenProfilePicPlaceholder.svg';
-// import axios from 'axios';
+import axios from 'axios';
+import API_URL from '../../../environments/Environment-dev';
+import { getSeekerId } from '@/utils/localStorageHelper';
 
 const BookingDataContext = createContext();
 
 export const BookingDataProvider = ({ children }) => {
-	const bookingsData = [
-		{
-			id: 1,
-			user: {
-				name: 'Sarah T.',
-				verified: true,
-				avatar: WomenProfilePicPlaceholder,
-				rating: 4.4,
-				type: 'Travel Buddy',
-				preferences: 'Speaks English, Hindi, Tamil'
-			},
-			departure: {
-				time: '08:30 AM',
-				date: '22 August, 2024',
-				location: 'LAX, USA'
-			},
-			arrival: {
-				time: '12:15 PM',
-				date: '22 August, 2024',
-				location: 'YVR, Canada'
-			},
-			status: 'active',
-			connectionType: 'Direct'
-		},
-		{
-			id: 2,
-			user: {
-				name: 'Sarah T.',
-				verified: true,
-				avatar: WomenProfilePicPlaceholder,
-				rating: 4.2,
-				type: 'Courier Buddy',
-				preferences: 'Prefers electronics, documents'
-			},
-			departure: {
-				time: '08:30 AM',
-				date: '22 August, 2024',
-				location: 'LAX, USA'
-			},
-			arrival: {
-				time: '12:15 PM',
-				date: '22 August, 2024',
-				location: 'YVR, Canada'
-			},
-			status: 'cancelled',
-			cancellationDate: '11th February, 2025',
-			connectionType: '1 stop',
-			connectionLocation: 'NYC'
-		},
-		{
-			id: 2,
-			user: {
-				name: 'Sarah T.',
-				verified: true,
-				avatar: WomenProfilePicPlaceholder,
-				rating: 4.2,
-				type: 'Courier Buddy',
-				preferences: 'Prefers electronics, documents'
-			},
-			departure: {
-				time: '08:30 AM',
-				date: '22 August, 2024',
-				location: 'LAX, USA'
-			},
-			arrival: {
-				time: '12:15 PM',
-				date: '22 August, 2024',
-				location: 'YVR, Canada'
-			},
-			status: 'pending',
-			cancellationDate: '11th February, 2025',
-			connectionType: '1 stop',
-			connectionLocation: 'NYC'
-		},
-		{
-			id: 2,
-			user: {
-				name: 'Sarah T.',
-				verified: true,
-				avatar: WomenProfilePicPlaceholder,
-				rating: 4.2,
-				type: 'Courier Buddy',
-				preferences: 'Prefers electronics, documents'
-			},
-			departure: {
-				time: '08:30 AM',
-				date: '22 August, 2024',
-				location: 'LAX, USA'
-			},
-			arrival: {
-				time: '12:15 PM',
-				date: '22 August, 2024',
-				location: 'YVR, Canada'
-			},
-			status: 'completed',
-			cancellationDate: '10th February, 2025',
-			connectionType: '1 stop',
-			connectionLocation: 'NYC'
-		},
-		{
-			id: 2,
-			user: {
-				name: 'Sarah T.',
-				verified: true,
-				avatar: WomenProfilePicPlaceholder,
-				rating: 4.2,
-				type: 'Courier Buddy',
-				preferences: 'Prefers electronics, documents'
-			},
-			departure: {
-				time: '08:30 AM',
-				date: '22 August, 2024',
-				location: 'LAX, USA'
-			},
-			arrival: {
-				time: '12:15 PM',
-				date: '22 August, 2024',
-				location: 'YVR, Canada'
-			},
-			status: 'accepted',
-			cancellationDate: '10th February, 2025',
-			connectionType: '1 stop',
-			connectionLocation: 'NYC'
-		}
-	];
-
 	const [bookings, setBookings] = useState([]);
-	// const [loading, setLoading] = useState(true);
+	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
-		// const fetchBookings = async () => {
-		const fetchBookings = () => {
+		const fetchBookings = async () => {
+			const seekerID = getSeekerId();
+			setLoading(true);
+
 			try {
-				// const response = await axios.get('/api/bookings');
-				const response = bookingsData; //Remove this once you get API
-				// setBookings(response.data);
-				setBookings(response); //Remove this once you get API
+				const response = await axios.get(`${API_URL}/booking-requests/${seekerID}`);
+
+				setBookings(response.data.data);
 			} catch (error) {
-				console.error('Error fetching bookings:', error);
+				// console.error('Error fetching bookings:', error);
+			} finally {
+				setLoading(false);
 			}
 		};
 		fetchBookings();
 	}, []);
 
 	return (
-		<BookingDataContext.Provider value={{ bookings }}>
+		<BookingDataContext.Provider value={{ bookings, loading }}>
 			{children}
 		</BookingDataContext.Provider>
 	);
