@@ -9,9 +9,11 @@ import { getuserProfile } from '@/utils/localStorageHelper';
 import axios from 'axios';
 import API_URL from '../../environments/Environment-dev';
 import { toast } from 'sonner';
+import { useBookings } from '@/context/API/BookingDataProvider';
 
 export default function SendRequestForm() {
 	const [submitted, setSubmitted] = useState(false);
+	const [copyPrevious, setCopyPrevious] = useState(false);
 	const [passengerCount, setPassengerCount] = useState(1);
 	const [showSuccessDialog, setShowSuccessDialog] = useState(false);
 	const [totalAmount, setTotalAmount] = useState({
@@ -30,10 +32,7 @@ export default function SendRequestForm() {
 	const [serviceType, setServiceType] = useState(
 		location.state?.serviceType || null
 	);
-
-	// console.log('buddyDetails >', buddyDetails);
-	// console.log('buddyRequestDetails >', buddyRequestDetails);
-	// console.log('serviceType >', serviceType);
+	const [isEdit, setIsEdit] = useState(location.state?.isEdit || false);
 
 	const itemList = {
 		age: '',
@@ -49,9 +48,38 @@ export default function SendRequestForm() {
 	const [selectedPicture, setSelectedPicture] = useState({});
 	const [formError, setFormError] = useState('');
 
+	/*********************** Get latest bookings ****************************/
+	const { bookings } = useBookings();
+	const allBookings = [
+		...(bookings?.buddy_requests?.courier_buddy_requests || []),
+		...(bookings?.buddy_requests?.travel_buddy_requests || [])
+	];
+	const pendingBookings = allBookings?.filter(
+		(item) =>
+			item.listingStatus === 'pending' && item.serviceType === `${serviceType}`
+	);
+	const latestBooking = pendingBookings.sort(
+		(a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+	)[0];
+
+	/************* To Populate data on click of Copy from previous bookings *************/
+	useEffect(() => {
+		if (copyPrevious && !isEdit) {
+			setBuddyRequestDetails(latestBooking);
+		}
+	}, [isEdit, copyPrevious, latestBooking]);
+
+	// console.log('buddyDetails >', buddyDetails);
+	// console.log('buddyRequestDetails >', buddyRequestDetails);
+	// console.log('serviceType >', serviceType);
+	// console.log('pendingBookings >', pendingBookings);
+	// console.log('latestBooking >', latestBooking);
+	// console.log('copyPrevious >', copyPrevious);
+	// console.log('isEdit >', isEdit);
+
 	/***************** Edit exisiting buddy request ********************/
 	useEffect(() => {
-		if (location.state?.isEdit && buddyRequestDetails) {
+		if (buddyRequestDetails) {
 			if (serviceType === 'Travel Buddy') {
 				const passengers = buddyRequestDetails.passengers_List.map((p) => ({
 					age: p.age,
@@ -90,7 +118,7 @@ export default function SendRequestForm() {
 			/****** Prefill price card ******/
 			setTotalAmount(buddyRequestDetails.totalAmount);
 		}
-	}, [location.state?.isEdit, buddyRequestDetails, serviceType]);
+	}, [isEdit, buddyRequestDetails, serviceType]);
 
 	/********* Validate SendRequest Form Input Details ********/
 	function validateFormDetails() {
@@ -136,6 +164,7 @@ export default function SendRequestForm() {
 		0
 	);
 
+	/************** If No data redirect to landing **************/
 	useEffect(() => {
 		if (!buddyDetails && !buddyRequestDetails) {
 			// Redirect if no data passed
@@ -218,7 +247,7 @@ export default function SendRequestForm() {
 			});
 
 			/********** API to Edit Buddy Request data in backend ***********/
-			if (location.state?.isEdit && requestId) {
+			if (isEdit && requestId) {
 				res = await axios.post(
 					`${API_URL}/edit-buddy-request/${requestId}`,
 					formData,
@@ -239,7 +268,7 @@ export default function SendRequestForm() {
 
 			/**** Handling API response based on status ****/
 			if (res?.status === 201 || res?.status === 200) {
-				if (location.state?.isEdit) {
+				if (isEdit) {
 					navigate('/bookings');
 					window.location.reload();
 				} else {
@@ -263,7 +292,7 @@ export default function SendRequestForm() {
 	return (
 		<div className="space-y-6">
 			<h1 className="2xl:text-4xl lg:text-3xl md:text-2xl text-xl font-normal font-merriweather text-secondary-color">
-				{CONST.sendRequestForm.sendARequest}
+				{CONST?.sendRequestForm?.sendARequest}
 			</h1>
 
 			<div className="grid gap-6 lg:grid-cols-3">
@@ -287,6 +316,9 @@ export default function SendRequestForm() {
 						setSelectedFile={setSelectedFile}
 						selectedPicture={selectedPicture}
 						setSelectedPicture={setSelectedPicture}
+						copyPrevious={copyPrevious}
+						setCopyPrevious={setCopyPrevious}
+						isEdit={isEdit}
 					/>
 				</div>
 

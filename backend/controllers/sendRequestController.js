@@ -2,6 +2,7 @@ const serviceProvider = require('../models/ServiceProviderSchema');
 const Users = require('../models/UsersSchema');
 const BuddyRequestModal = require('../models/SendRequestSchema');
 const { getGridFSBucket } = require('../Config/gridFs');
+const { default: mongoose } = require('mongoose');
 
 /************************** Create and Send Buddy Request ******************************/
 exports.sendBuddyRequest = async (req, res) => {
@@ -241,6 +242,17 @@ exports.updateBuddyRequest = async (req, res) => {
 		} else if (serviceType === 'Courier Buddy') {
 			const courierItems = [];
 
+			/*********** Fetch existing request for File Deletion ************/
+			// const existingRequest = await BuddyRequestModal.findOne({
+			// 	service_Seeker_Id: serviceSeeker_id,
+			// 	[`${arrayName}._id`]: requestId
+			// });
+
+			// const existingCourierItems =
+			// 	existingRequest?.buddy_requests?.courier_buddy_requests?.find(
+			// 		(r) => r._id.toString() === requestId
+			// 	)?.courier_Items_List || [];
+
 			Object.keys(requestDetails)
 				.filter((key) => !isNaN(key))
 				.forEach((key) => {
@@ -255,6 +267,14 @@ exports.updateBuddyRequest = async (req, res) => {
 					const itemDocumentFile = req.files.find(
 						(f) => f.fieldname === itemDocumentField
 					);
+
+					/******** Delete old file if a new one is uploaded ********/
+					// if (itemPictureFile && existingCourierItems[key]?.itemPicture) {
+					// 	deleteFileFromGridFS(existingCourierItems[key].itemPicture);
+					// }
+					// if (itemDocumentFile && existingCourierItems[key]?.itemDocument) {
+					// 	deleteFileFromGridFS(existingCourierItems[key].itemDocument);
+					// }
 
 					courierItems.push({
 						itemType: item.itemType || '',
@@ -291,3 +311,25 @@ exports.updateBuddyRequest = async (req, res) => {
 		return res.status(500).json({ message: err.message });
 	}
 };
+
+/************ Helper: Delete a file from GridFS *************/
+// const deleteFileFromGridFS = async (filename) => {
+// 	try {
+// 		const db = mongoose.connection.db;
+// 		const bucket = new mongoose.mongo.GridFSBucket(db, {
+// 			bucketName: 'buddy_request_file_uploads'
+// 		});
+
+// 		const files = await db
+// 			.collection('buddy_request_file_uploads.files')
+// 			.find({ filename })
+// 			.toArray();
+
+// 		for (const file of files) {
+// 			await bucket.delete(file._id);
+// 			console.log(`✅ Deleted file from GridFS: ${filename}`);
+// 		}
+// 	} catch (err) {
+// 		console.error(`Error deleting file ${filename} from GridFS:`, err);
+// 	}
+// };

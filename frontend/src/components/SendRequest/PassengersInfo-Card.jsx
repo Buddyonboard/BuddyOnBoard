@@ -15,6 +15,7 @@ import { Separator } from '@/components/ui/separator';
 import CONST from '@/utils/Constants';
 import { Textarea } from '../ui/textarea';
 import { useState } from 'react';
+import { Checkbox } from '../ui/checkbox';
 
 export default function PassengersInfoCard({
 	passengerCount,
@@ -26,7 +27,10 @@ export default function PassengersInfoCard({
 	selectedFile,
 	setSelectedFile,
 	selectedPicture,
-	setSelectedPicture
+	setSelectedPicture,
+	copyPrevious,
+	setCopyPrevious,
+	isEdit
 }) {
 	// File Validation Function
 	const validateFile = (file) => {
@@ -109,6 +113,25 @@ export default function PassengersInfoCard({
 				<h2 className="mb-6 2xl:text-2xl text-xl font-semibold text-bob-accordion-content-color">
 					{CONST.sendRequestForm.addYourDetails}
 				</h2>
+
+				{/********** Copy from prev booking checkbox *********/}
+				{!isEdit && (
+					<div className="flex flex-row gap-2 items-center mb-5">
+						<Checkbox
+							type="checkbox"
+							id="copyPrevious"
+							checked={copyPrevious}
+							onCheckedChange={(checked) => setCopyPrevious(checked)}
+							className="border border-bob-outline-color data-[state=checked]:bg-bob-color cursor-pointer"
+						/>
+						<label
+							htmlFor="copyPrevious"
+							className="2xl:text-lg sm:text-base text-sm font-normal text-bob-accordion-content-color"
+						>
+							Copy from previous booking request
+						</label>
+					</div>
+				)}
 
 				<div className="space-y-6">
 					<div>
