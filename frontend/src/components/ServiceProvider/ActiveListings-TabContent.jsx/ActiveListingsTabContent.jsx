@@ -4,67 +4,26 @@ import LineSeparator from '@/assets/Common/Line-Separator.svg';
 import FlightStopType from '@/components/ReUsable/Service-Seeker/Flight-Stop-Type';
 import TripSchedule from '../Dashboard-TabContent/TripSchedule';
 import ListingsActionButtons from './ListingsActionButtons';
+import {
+	getPreferencesList,
+	getStartingPrice
+} from '@/utils/listingPreferencesHelper';
 
 export default function ActiveListingsTabContent({ activeListingsList }) {
 	/****** List of Courier/Languages Preferences ******/
-	const languagesList = [
-		activeListingsList?.language1,
-		activeListingsList?.language2,
-		activeListingsList?.language3
-	].filter((lang) => lang !== undefined && lang !== null && lang !== '');
-
-	const courierItemsList = Array.from(
-		new Set(
-			(activeListingsList?.courierPreferences || []).map((item) => {
-				if (item.toLowerCase().startsWith('electronics')) {
-					return 'Electronics';
-				}
-
-				return item; // fallback for anything else
-			})
-		)
+	const preferencesList = getPreferencesList(
+		activeListingsList,
+		activeListingsList?.serviceType
 	);
 
-	const preferencesList =
-		activeListingsList?.serviceType === 'Travel Buddy'
-			? languagesList
-			: courierItemsList;
+	/****** Collect lowest starting price fields dynamically ******/
+	const priceStarts = getStartingPrice(
+		activeListingsList,
+		activeListingsList?.serviceType
+	);
 
 	const selectionType =
 		activeListingsList?.serviceType === 'Travel Buddy' ? 'Speaks' : 'Prefers';
-
-	/****** Collect lowest starting price fields dynamically ******/
-	const prices = [];
-
-	// Add travel buddy prices if present
-	if (activeListingsList?.serviceType === 'Travel Buddy') {
-		prices.push(
-			Number(activeListingsList?.price1 || Infinity),
-			Number(activeListingsList?.price2 || Infinity),
-			Number(activeListingsList?.price3 || Infinity)
-		);
-	}
-
-	// Add courier buddy prices if present
-	if (activeListingsList?.serviceType === 'Courier Buddy') {
-		prices.push(
-			Number(activeListingsList?.documentPrice1 || Infinity),
-			Number(activeListingsList?.documentPrice2 || Infinity),
-			Number(activeListingsList?.documentPrice3 || Infinity),
-			Number(activeListingsList?.clothesPrice1 || Infinity),
-			Number(activeListingsList?.clothesPrice2 || Infinity),
-			Number(activeListingsList?.clothesPrice3 || Infinity),
-			Number(activeListingsList?.electronicsPrice1 || Infinity),
-			Number(activeListingsList?.electronicsPrice2 || Infinity),
-			Number(activeListingsList?.electronicsPrice3 || Infinity)
-		);
-	}
-
-	// Filter out Infinity (in case of missing fields)
-	const validPrices = prices.filter((p) => p !== Infinity);
-
-	// Return min price, or null if no valid price
-	const priceStarts = validPrices.length ? Math.min(...validPrices) : null;
 
 	return (
 		<Card className="overflow-hidden rounded-2xl shadow-xl py-0 mb-5">

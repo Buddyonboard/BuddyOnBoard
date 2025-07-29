@@ -8,7 +8,7 @@ import VerifiedBuddyName from '@/components/ReUsable/Service-Seeker/Verified-Bud
 import RequestActionsButton from './RequestActionsButton';
 
 export default function BuddyRequestTabContent({ buddyRequestsList }) {
-	const passengersCount = buddyRequestsList?.totalPassenger;
+	const passengersCount = buddyRequestsList?.passengerCount;
 	const courierType = buddyRequestsList?.totalItems;
 	const RequestDetails = passengersCount
 		? `${passengersCount} Passengers`
@@ -43,13 +43,12 @@ export default function BuddyRequestTabContent({ buddyRequestsList }) {
 						</div>
 						{/*** Profile Pic ***/}
 						<BuddyCardAvatar
-							userAvatar={buddyRequestsList.serviceProviderDetails?.avatar}
-							altAvatarName={buddyRequestsList.serviceProviderDetails?.name}
+							userName={buddyRequestsList?.service_Seeker_Details?.firstName}
 						/>
 						{/*** Profile Name & Verified Icon ***/}
 						<VerifiedBuddyName
-							userName={buddyRequestsList.serviceProviderDetails?.name}
-							userId={buddyRequestsList?.id}
+							userName={buddyRequestsList?.service_Seeker_Details?.firstName}
+							isVerified={buddyRequestsList?.service_Seeker_Details?.emailVerified}
 						/>
 					</div>
 				</div>
@@ -73,24 +72,24 @@ export default function BuddyRequestTabContent({ buddyRequestsList }) {
 							{/**** Departure ****/}
 							<div className="text-start">
 								<TripSchedule
-									time={buddyRequestsList.departure?.time}
-									date={buddyRequestsList.departure?.date}
-									location={buddyRequestsList.departure?.location}
+									time={buddyRequestsList?.trip_details?.departureTime}
+									date={buddyRequestsList?.trip_details?.departureDate}
+									location={buddyRequestsList?.trip_details?.departureAirport}
 								/>
 							</div>
 
 							{/**** Flight Connection Type ****/}
 							<FlightStopType
-								connectionType={buddyRequestsList?.connectionType}
-								connectionLocation={buddyRequestsList?.connectionLocation}
+								connectionType={buddyRequestsList?.trip_details?.stops}
+								connectionLocation={buddyRequestsList?.trip_details?.stopAirports}
 							/>
 
 							{/**** Arrival ****/}
 							<div className="text-end">
 								<TripSchedule
-									time={buddyRequestsList.arrival?.time}
-									date={buddyRequestsList.arrival?.date}
-									location={buddyRequestsList.arrival?.location}
+									time={buddyRequestsList?.trip_details?.arrivalTime}
+									date={buddyRequestsList?.trip_details?.arrivalDate}
+									location={buddyRequestsList?.trip_details?.arrivalAirport}
 								/>
 							</div>
 						</div>
@@ -105,7 +104,10 @@ export default function BuddyRequestTabContent({ buddyRequestsList }) {
 
 					{/********* Actions Buttons **********/}
 					<div className="flex flex-col gap-2 justify-center lg:max-w-2xs">
-						<RequestActionsButton buddyRequestsList={buddyRequestsList} />
+						<RequestActionsButton
+							buddyRequestsList={buddyRequestsList}
+							type="requestTab"
+						/>
 					</div>
 				</div>
 			</div>

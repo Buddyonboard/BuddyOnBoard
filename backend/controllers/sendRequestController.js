@@ -205,6 +205,100 @@ exports.getBookingRequestsBySeekerId = async (req, res) => {
 	}
 };
 
+/****************** Get All Buddy Requests ********************/
+exports.getBuddyRequests = async (req, res) => {
+	try {
+		const allDocuments = await BuddyRequestModal.find({});
+
+		const allRequests = [];
+
+		for (const doc of allDocuments) {
+			const seekerDetails = doc.service_Seeker_Details;
+			const courier = doc?.buddy_requests?.courier_buddy_requests || [];
+			const travel = doc?.buddy_requests?.travel_buddy_requests || [];
+
+			const combined = [...courier, ...travel].map((req) => ({
+				...req._doc,
+				service_Seeker_Id: doc.service_Seeker_Id,
+				service_Seeker_Details: seekerDetails
+			}));
+
+			// console.log('combined >', combined);
+
+			allRequests.push(...combined);
+		}
+
+		res.status(200).json({
+			message: 'Buddy requests retrieved successfully.',
+			data: allRequests
+		});
+	} catch (error) {
+		res.status(500).json({
+			message: 'Error retrieving buddy requests.',
+			error: error.message
+		});
+	}
+};
+
+/****************** Update Buddy Requests Status ********************/
+exports.updateRequestStatus = async (req, res) => {
+	try {
+		const { serviceSeekerId, requestId, serviceType, action } = req.body;
+
+		const doc = await BuddyRequestModal.findOne({
+			service_Seeker_Id: serviceSeekerId
+		});
+
+		if (!doc)
+			return res.status(404).json({ message: 'Request document not found' });
+
+		const requestsArray =
+			serviceType === 'Courier Buddy'
+				? doc.buddy_requests.courier_buddy_requests
+				: doc.buddy_requests.travel_buddy_requests;
+
+		const requestIndex = requestsArray.findIndex(
+			(r) => r._id.toString() === requestId
+		);
+
+		if (requestIndex === -1) {
+			return res.status(404).json({ message: 'Buddy request not found' });
+		}
+
+		// Get the request object
+		const request = requestsArray[requestIndex];
+
+		if (action === 'accepted') {
+			request.listingStatus = 'accepted';
+			request.updatedAt = new Date();
+
+			await doc.save();
+			return res.status(200).json({ message: 'Request accepted' });
+		}
+
+		if (action === 'rejected') {
+			request.listingStatus = 'rejected';
+			request.updatedAt = new Date();
+
+			// Push to previous_requests
+			doc.buddy_requests.previous_requests.push(request);
+
+			// Remove from original array
+			requestsArray.splice(requestIndex, 1);
+
+			await doc.save();
+			return res
+				.status(200)
+				.json({ message: 'Request rejected and moved to previous_requests' });
+		}
+
+		res.status(400).json({ message: 'Invalid action' });
+	} catch (error) {
+		console.error('Error updating request status:', error);
+		res.status(500).json({ message: 'Internal server error' });
+	}
+};
+
 /******************** Update Buddy Request ************************/
 exports.updateBuddyRequest = async (req, res) => {
 	try {

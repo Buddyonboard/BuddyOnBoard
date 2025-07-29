@@ -3,6 +3,8 @@ import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import API_URL from '../../../../environments/Environment-dev';
 import axios from 'axios';
 import { getuserProfile } from '@/utils/localStorageHelper';
+import CONST from '@/utils/Constants';
+import { toast } from 'sonner';
 
 export default function DeleteActiveListingPopup({
 	open,
@@ -20,14 +22,19 @@ export default function DeleteActiveListingPopup({
 
 			const res = await axios.post(`${API_URL}/delete-buddy-listing`, payloadData);
 
-			if (res.status === 200) {
-				alert('Listing deleted successfully!');
-
+			if (res?.status === 200) {
 				window.location.reload();
 			}
 		} catch (err) {
 			// console.error('Delete failed', err);
-			alert('Error deleting listing. Please try again.');
+			toast.warning(CONST.somethingWentWrong, {
+				position: 'top-right',
+				closeButton: true,
+				style: {
+					backgroundColor: 'red',
+					color: 'white'
+				}
+			});
 		}
 	};
 

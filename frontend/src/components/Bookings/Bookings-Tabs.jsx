@@ -7,14 +7,14 @@ export default function BookingsTabs() {
 	const { bookings } = useBookings();
 
 	const allBookings = [
-		...bookings?.buddy_requests?.courier_buddy_requests,
-		...bookings?.buddy_requests?.travel_buddy_requests,
-		...bookings?.buddy_requests?.previous_requests
+		...(bookings?.buddy_requests?.courier_buddy_requests || []),
+		...(bookings?.buddy_requests?.travel_buddy_requests || []),
+		...(bookings?.buddy_requests?.previous_requests || [])
 	];
 
 	const previousBookings = allBookings?.filter(
 		(item) =>
-			item.listingStatus === 'cancelled' || item.listingStatus === 'completed'
+			item.listingStatus === 'rejected' || item.listingStatus === 'completed'
 	);
 
 	const upcomingBookings = allBookings?.filter(

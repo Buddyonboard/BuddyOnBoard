@@ -4,32 +4,14 @@ import LineSeparator from '@/assets/Common/Line-Separator.svg';
 import FlightStopType from '@/components/ReUsable/Service-Seeker/Flight-Stop-Type';
 import TripSchedule from '../Dashboard-TabContent/TripSchedule';
 import ListingsStatus from './ListingsStatus';
-// import ListingsActionButtons from './ListingsActionButtons';
+import { getPreferencesList } from '@/utils/listingPreferencesHelper';
 
 export default function PreviousListingsTabContent({ previousListingsList }) {
 	/****** List of Courier/Languages Preferences ******/
-	const languagesList = [
-		previousListingsList?.language1,
-		previousListingsList?.language2,
-		previousListingsList?.language3
-	].filter((lang) => lang !== undefined && lang !== null && lang !== '');
-
-	const courierItemsList = Array.from(
-		new Set(
-			(previousListingsList?.courierPreferences || []).map((item) => {
-				if (item.toLowerCase().startsWith('electronics')) {
-					return 'Electronics';
-				}
-
-				return item; // fallback for anything else
-			})
-		)
+	const preferencesList = getPreferencesList(
+		previousListingsList,
+		previousListingsList?.serviceType
 	);
-
-	const preferencesList =
-		previousListingsList?.serviceType === 'Travel Buddy'
-			? languagesList
-			: courierItemsList;
 
 	const selectionType =
 		previousListingsList?.serviceType === 'Travel Buddy' ? 'Speaks' : 'Prefers';

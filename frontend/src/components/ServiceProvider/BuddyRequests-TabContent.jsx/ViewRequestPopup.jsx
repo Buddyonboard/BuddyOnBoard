@@ -1,4 +1,3 @@
-import { Button } from '@/components/ui/button';
 import {
 	Dialog,
 	DialogContent,
@@ -17,17 +16,58 @@ import BuddyCardAvatar from '@/components/ReUsable/Service-Seeker/Buddy-Card-Ava
 import VerifiedBuddyName from '@/components/ReUsable/Service-Seeker/Verified-Buddy-Name';
 import TripSchedule from '../Dashboard-TabContent/TripSchedule';
 import FlightStopType from '@/components/ReUsable/Service-Seeker/Flight-Stop-Type';
+import RequestActionsButton from './RequestActionsButton';
+import API_URL from '../../../../environments/Environment-dev';
 
 export default function ViewRequestPopup({ open, onClose, buddyRequestsList }) {
-	const platFormFee = 10.0;
-
 	const serviceType = buddyRequestsList?.serviceType;
-	const departure = buddyRequestsList.departure?.location;
-	const arrival = buddyRequestsList.arrival?.location;
+	const departure = buddyRequestsList?.trip_details?.departureAirport;
+	const arrival = buddyRequestsList?.trip_details?.arrivalAirport;
 
 	const isCourierBuddy = serviceType === 'Courier Buddy';
 	const isTravelBuddy = serviceType === 'Travel Buddy';
+	const detailsType = isTravelBuddy ? 'passengers_List' : 'courier_Items_List';
 	const listType = isTravelBuddy ? 'Passenger' : 'Courier Item';
+
+	/********* Reusable Document/Picture UI render **********/
+	const renderAttachment = (file, label) => {
+		if (!file) return null;
+
+		return (
+			<div className="mb-3">
+				<div
+					className="2xl:text-base md:text-sm text-xs text-bob-pricing-block-color
+				 mb-1 font-semibold"
+				>
+					{isCourierBuddy && label}
+				</div>
+				<div
+					className={`flex items-center text-sm cursor-pointer 
+					text-bob-success-color`}
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="16"
+						height="16"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						strokeWidth="2"
+						strokeLinecap="round"
+						strokeLinejoin="round"
+						className="mr-1"
+					>
+						<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+						<polyline points="7 10 12 15 17 10"></polyline>
+						<line x1="12" y1="15" x2="12" y2="3"></line>
+					</svg>
+					<a href={`${API_URL}/buddy-request-download/${file}`}>
+						{file.split('-').pop()}
+					</a>
+				</div>
+			</div>
+		);
+	};
 
 	return (
 		<Dialog open={open} onOpenChange={onClose}>
@@ -50,7 +90,7 @@ export default function ViewRequestPopup({ open, onClose, buddyRequestsList }) {
 					{/***************** Passenger / Courier Details *******************/}
 					<div className="px-4 sm:px-6 py-4 overflow-y-auto">
 						{/************ Passengers / Items List *************/}
-						{buddyRequestsList.requestDetails?.map((item, index) => (
+						{buddyRequestsList?.[detailsType]?.map((item, index) => (
 							<div key={index} className="mb-6 border-b">
 								<div className="2xl:text-lg md:text-base text-sm font-semibold text-bob-search-input-label-color mb-3">
 									{listType} {index + 1}
@@ -64,7 +104,7 @@ export default function ViewRequestPopup({ open, onClose, buddyRequestsList }) {
 											{isTravelBuddy ? 'AGE' : 'ITEM'}
 										</div>
 										<div className="2xl:text-xl md:text-base text-sm font-normal text-bob-accordion-content-color">
-											{isTravelBuddy ? item.age : item.item}
+											{isTravelBuddy ? item.age : item.itemType}
 										</div>
 									</div>
 
@@ -90,33 +130,11 @@ export default function ViewRequestPopup({ open, onClose, buddyRequestsList }) {
 										</div>
 									</div>
 
-									{/**** Item Document / Pictures ****/}
-									{/* {buddyRequestsList.requestDetails?.image && ( */}
-									<div>
-										<div className="2xl:text-base md:text-sm text-xs text-bob-pricing-block-color mb-1 font-semibold">
-											{isCourierBuddy && 'IMAGE ATTACHMENT'}
-										</div>
-										{/* <div className="flex items-center text-primary text-sm">
-												<svg
-													xmlns="http://www.w3.org/2000/svg"
-													width="16"
-													height="16"
-													viewBox="0 0 24 24"
-													fill="none"
-													stroke="currentColor"
-													strokeWidth="2"
-													strokeLinecap="round"
-													strokeLinejoin="round"
-													className="mr-1"
-												>
-													<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-													<polyline points="7 10 12 15 17 10"></polyline>
-													<line x1="12" y1="15" x2="12" y2="3"></line>
-												</svg>
-												doc.jpg
-											</div> */}
-									</div>
-									{/* )} */}
+									{/******* Item Picture ********/}
+									{renderAttachment(item?.itemPicture, 'IMAGE ATTACHMENT')}
+
+									{/******* Item Document ********/}
+									{renderAttachment(item?.itemDocument, 'DOCUMENT ATTACHMENT')}
 								</div>
 							</div>
 						))}
@@ -130,8 +148,8 @@ export default function ViewRequestPopup({ open, onClose, buddyRequestsList }) {
 								</div>
 								<div className="2xl:text-xl md:text-base text-sm font-normal text-bob-accordion-content-color">
 									{isCourierBuddy
-										? buddyRequestsList.totalWeight
-										: buddyRequestsList.totalPassenger}
+										? buddyRequestsList?.totalItemsWeight
+										: buddyRequestsList?.passengerCount}
 								</div>
 							</div>
 
@@ -141,7 +159,7 @@ export default function ViewRequestPopup({ open, onClose, buddyRequestsList }) {
 									BUDDY SERVICE FEE (YOUR PAYOUT)
 								</div>
 								<div className="2xl:text-xl md:text-base text-sm font-normal text-bob-accordion-content-color">
-									{buddyRequestsList.totalPrice}
+									${buddyRequestsList?.totalAmount?.buddyServiceFee}
 								</div>
 							</div>
 						</div>
@@ -169,7 +187,7 @@ export default function ViewRequestPopup({ open, onClose, buddyRequestsList }) {
 									</TooltipProvider>
 								</div>
 								<div className="2xl:text-xl md:text-base text-sm font-normal text-bob-accordion-content-color">
-									${platFormFee}
+									${buddyRequestsList?.totalAmount?.platformFee}
 								</div>
 							</div>
 							<div>
@@ -177,7 +195,7 @@ export default function ViewRequestPopup({ open, onClose, buddyRequestsList }) {
 									TOTAL PRICE BEFORE TAXES
 								</div>
 								<div className="2xl:text-xl md:text-base text-sm font-normal text-bob-accordion-content-color">
-									${platFormFee + buddyRequestsList.totalPrice}
+									${buddyRequestsList?.totalAmount?.totalPrice}
 								</div>
 							</div>
 						</div>
@@ -188,13 +206,12 @@ export default function ViewRequestPopup({ open, onClose, buddyRequestsList }) {
 							<div className="flex items-center gap-3 mt-4">
 								{/*** Profile Pic ***/}
 								<BuddyCardAvatar
-									userAvatar={buddyRequestsList.requestDetails?.avatar}
-									altAvatarName={buddyRequestsList.requestDetails?.requestedBy}
+									userName={buddyRequestsList?.service_Seeker_Details?.firstName}
 								/>
 								{/*** Profile Name & Verified Icon ***/}
 								<VerifiedBuddyName
-									userName={buddyRequestsList.serviceProviderDetails?.name}
-									userId={buddyRequestsList.id}
+									userName={buddyRequestsList?.service_Seeker_Details?.firstName}
+									isVerified={buddyRequestsList?.service_Seeker_Details?.emailVerified}
 								/>
 							</div>
 
@@ -204,24 +221,24 @@ export default function ViewRequestPopup({ open, onClose, buddyRequestsList }) {
 									{/**** Departure ****/}
 									<div className="text-start">
 										<TripSchedule
-											time={buddyRequestsList.departure?.time}
-											date={buddyRequestsList.departure?.date}
-											location={buddyRequestsList.departure?.location}
+											time={buddyRequestsList?.trip_details?.departureTime}
+											date={buddyRequestsList?.trip_details?.departureDate}
+											location={buddyRequestsList?.trip_details?.departureAirport}
 										/>
 									</div>
 
 									{/**** Flight Connection Type ****/}
 									<FlightStopType
-										connectionType={buddyRequestsList?.connectionType}
-										connectionLocation={buddyRequestsList?.connectionLocation}
+										connectionType={buddyRequestsList?.trip_details?.stops}
+										connectionLocation={buddyRequestsList?.trip_details?.stopAirports}
 									/>
 
 									{/**** Arrival ****/}
 									<div className="text-end">
 										<TripSchedule
-											time={buddyRequestsList.arrival?.time}
-											date={buddyRequestsList.arrival?.date}
-											location={buddyRequestsList.arrival?.location}
+											time={buddyRequestsList?.trip_details?.arrivalTime}
+											date={buddyRequestsList?.trip_details?.arrivalDate}
+											location={buddyRequestsList?.trip_details?.arrivalAirport}
 										/>
 									</div>
 								</div>
@@ -230,22 +247,10 @@ export default function ViewRequestPopup({ open, onClose, buddyRequestsList }) {
 					</div>
 
 					{/*********** Request Accept / Decline Action Buttons ***********/}
-					<div className="p-6 space-y-6">
-						<div className="gap-5 flex lg:flex-row flex-col justify-evenly">
-							<Button
-								className="bg-bob-color border-2 border-bob-border-color
-                        font-semibold 2xl:text-3xl lg:text-xl md:text-base text-xs cursor-pointer rounded-2xl 2xl:py-7 lg:py-5 2xl:w-72 lg:w-60"
-							>
-								Accept request
-							</Button>
-							<Button
-								className="border-2 border-bob-border-color bg-primary-color
-                	   text-bob-color font-semibold 2xl:text-3xl lg:text-xl md:text-base text-xs cursor-pointer rounded-2xl 2xl:py-7 lg:py-5 2xl:w-72 lg:w-60"
-							>
-								Decline request
-							</Button>
-						</div>
-					</div>
+					<RequestActionsButton
+						buddyRequestsList={buddyRequestsList}
+						type="requestPopup"
+					/>
 				</div>
 			</DialogContent>
 		</Dialog>

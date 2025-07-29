@@ -27,7 +27,6 @@ export default function DashboardTabContent({
 
 				{/************* Buddy Requests Card *************/}
 				<BuddyRequestsCard
-					hasData={hasData}
 					buddyRequests={buddyRequests}
 					setActiveTab={setActiveTab}
 				/>

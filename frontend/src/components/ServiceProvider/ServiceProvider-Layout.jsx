@@ -6,210 +6,36 @@ import ActiveListingsTabContent from './ActiveListings-TabContent.jsx/ActiveList
 import PreviousListingsTabContent from './PreviousListings-TabContent.jsx/PreviousListingsTabContent';
 import LayoutPageHeader from './LayoutPageHeader';
 import API_URL from '../../../environments/Environment-dev';
-import { getuserProfile } from '@/utils/localStorageHelper';
 import axios from 'axios';
 
 export default function ServiceProviderLayout() {
 	const [activeTab, setActiveTab] = useState('dashboard');
 	const [activeListingsMain, setActiveListingsMain] = useState([]);
 	const [previousListingsMain, setPreviousListingsMain] = useState([]);
+	const [buddyRequestsList, setBuddyRequestsList] = useState([]);
 
-	// Sample data for the dashboard
-	const upcomingTrip = {
-		contact: {
-			name: 'Sarah T.',
-			avatar: '/placeholder-user.jpg',
-			type: 'Courier Buddy'
-		},
-		departure: {
-			time: '08:30 AM',
-			date: '22 August, 2024',
-			location: 'LAX, USA'
-		},
-		arrival: {
-			time: '12:15 PM',
-			date: '22 August, 2024',
-			location: 'YVR, Canada'
-		}
-	};
+	/*********************** Get latest buddy requests ****************************/
+	useEffect(() => {
+		const fetchBuddyRequests = async () => {
+			try {
+				const res = await axios.get(`${API_URL}/get-buddy-requests`);
 
-	const buddyRequests = [
-		{
-			id: 1,
-			departure: {
-				time: '08:30 PM',
-				date: '22 August, 2025',
-				location: 'Delhi, IND'
-			},
-			arrival: {
-				time: '12:15 PM',
-				date: '23 August, 2025',
-				location: 'YVR, Canada'
-			},
-			requestDetails: [
-				{
-					age: '12',
-					gender: 'Male'
-				},
-				{
-					age: '69',
-					gender: 'Female'
-				},
-				{
-					age: '71',
-					gender: 'No Preference'
-				}
-			],
-			serviceProviderDetails: {
-				name: 'Aman',
-				isVerified: true
-			},
-			totalPassenger: '2',
-			serviceType: 'Travel Buddy',
-			totalPrice: 90
-		},
-		{
-			id: 2,
-			departure: {
-				time: '08:30 PM',
-				date: '22 August, 2025',
-				location: 'LAX, USA'
-			},
-			arrival: {
-				time: '12:15 PM',
-				date: '23 August, 2025',
-				location: 'YVR, Canada'
-			},
-			requestDetails: [
-				{
-					item: 'Documents',
-					itemWeight: '200',
-					itemDescription: 'These contain important papers.'
-				},
-				{
-					item: 'Electronics (Open box without invoice)',
-					itemWeight: '1200',
-					itemDescription:
-						'I do not have an invoice but I hope the serial number images work. I am sending out earphones.'
-				}
-			],
-			serviceProviderDetails: {
-				name: 'Aarav',
-				isVerified: false
-			},
-			totalWeight: '1400',
-			totalItems: '3',
-			totalPrice: 190,
-			serviceType: 'Courier Buddy'
-		},
-		{
-			id: 3,
-			departure: {
-				time: '08:30 PM',
-				date: '22 August, 2025',
-				location: 'LAX, USA'
-			},
-			arrival: {
-				time: '12:15 PM',
-				date: '23 August, 2025',
-				location: 'YVR, Canada'
-			},
-			requestDetails: [
-				{
-					item: 'Documents',
-					itemWeight: '200',
-					itemDescription: 'These contain important papers.'
-				},
-				{
-					item: 'Electronics (Open box without invoice)',
-					itemWeight: '1200',
-					itemDescription:
-						'I do not have an invoice but I hope the serial number images work. I am sending out earphones.'
-				}
-			],
-			serviceProviderDetails: {
-				name: 'Aarav',
-				isVerified: false
-			},
-			totalWeight: '1400',
-			totalItems: '3',
-			totalPrice: 190,
-			serviceType: 'Courier Buddy'
-		}
-	];
+				const requestsList = res.data.data;
 
-	const buddyRequestsData = [
-		{
-			id: 1,
-			departure: {
-				time: '08:30 PM',
-				date: '22 August, 2025',
-				location: 'Delhi, IND'
-			},
-			arrival: {
-				time: '12:15 PM',
-				date: '23 August, 2025',
-				location: 'YVR, Canada'
-			},
-			requestDetails: [
-				{
-					age: '12',
-					gender: 'Male'
-				},
-				{
-					age: '69',
-					gender: 'Female'
-				},
-				{
-					age: '71',
-					gender: 'No Preference'
-				}
-			],
-			serviceProviderDetails: {
-				name: 'Aman',
-				isVerified: true
-			},
-			totalPassenger: '2',
-			serviceType: 'Travel Buddy',
-			totalPrice: 90
-		},
-		{
-			id: 2,
-			departure: {
-				time: '08:30 PM',
-				date: '22 August, 2025',
-				location: 'LAX, USA'
-			},
-			arrival: {
-				time: '12:15 PM',
-				date: '23 August, 2025',
-				location: 'YVR, Canada'
-			},
-			requestDetails: [
-				{
-					item: 'Documents',
-					itemWeight: '200',
-					itemDescription: 'These contain important papers.'
-				},
-				{
-					item: 'Electronics (Open box without invoice)',
-					itemWeight: '1200',
-					itemDescription:
-						'I do not have an invoice but I hope the serial number images work. I am sending out earphones.'
-				}
-			],
-			serviceProviderDetails: {
-				name: 'Aarav',
-				isVerified: false
-			},
-			totalWeight: '1400',
-			totalItems: '3',
-			totalPrice: 190,
-			serviceType: 'Courier Buddy'
-		}
-	];
+				const pendingBookings = requestsList?.filter(
+					(item) => item.listingStatus === 'pending'
+				);
 
-	/********* To Fetch All Active Buddy Listings Data *********/
+				setBuddyRequestsList(pendingBookings);
+			} catch (err) {
+				// console.error('Failed to fetch buddy requests:', err);
+			}
+		};
+
+		fetchBuddyRequests();
+	}, []);
+
+	/*************** To Fetch All Active Buddy Listings Data ******************/
 	useEffect(() => {
 		const fetchActiveBuddyListings = async () => {
 			const user_id = getuserProfile()._id;
@@ -252,6 +78,27 @@ export default function ServiceProviderLayout() {
 
 		fetchActiveBuddyListings();
 	}, []);
+
+	// console.log('buddyRequestsList >', buddyRequestsList);
+
+	// Sample data for the dashboard
+	const upcomingTrip = {
+		contact: {
+			name: 'Sarah T.',
+			avatar: '/placeholder-user.jpg',
+			type: 'Courier Buddy'
+		},
+		departure: {
+			time: '08:30 AM',
+			date: '22 August, 2024',
+			location: 'LAX, USA'
+		},
+		arrival: {
+			time: '12:15 PM',
+			date: '22 August, 2024',
+			location: 'YVR, Canada'
+		}
+	};
 
 	// Toggle between populated and empty states
 	const hasData = true;
@@ -311,7 +158,7 @@ export default function ServiceProviderLayout() {
 					<TabsContent value="dashboard">
 						<DashboardTabContent
 							upcomingTrip={upcomingTrip}
-							buddyRequests={buddyRequests}
+							buddyRequests={buddyRequestsList}
 							activeListings={activeListingsMain}
 							hasData={hasData}
 							setActiveTab={setActiveTab}
@@ -320,9 +167,9 @@ export default function ServiceProviderLayout() {
 
 					{/******* Buddy Requests Tab Content ******/}
 					<TabsContent value="buddy-requests" className="space-y-4">
-						{buddyRequestsData.length > 0 ? (
-							buddyRequestsData.map((buddyRequestsList) => (
-								<BuddyRequestTabContent buddyRequestsList={buddyRequestsList} />
+						{buddyRequestsList.length > 0 ? (
+							buddyRequestsList.map((requests) => (
+								<BuddyRequestTabContent buddyRequestsList={requests} />
 							))
 						) : (
 							<div className="text-center 2xl:text-3xl sm:text-2xl text-xl md:mt-[20%] mt-[50%] items-center content-center">

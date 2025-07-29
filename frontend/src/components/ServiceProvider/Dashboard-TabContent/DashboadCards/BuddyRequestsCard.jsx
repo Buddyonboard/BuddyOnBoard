@@ -9,17 +9,14 @@ import BuddyRequestTypeTag from '../BuddyRequestTypeTag';
 import ViewRequestPopup from '../../BuddyRequests-TabContent.jsx/ViewRequestPopup';
 import { useState } from 'react';
 
-export default function BuddyRequestsCard({
-	hasData,
-	buddyRequests,
-	setActiveTab
-}) {
+export default function BuddyRequestsCard({ buddyRequests, setActiveTab }) {
 	const [open, setOpen] = useState(false);
 	const [selectedViewRequest, setSelectedViewRequest] = useState([]);
 
 	const handleClose = () => {
 		setOpen(false);
 	};
+
 	return (
 		<>
 			<Card>
@@ -29,33 +26,33 @@ export default function BuddyRequestsCard({
 					</CardTitle>
 				</CardHeader>
 				<CardContent className="px-5 h-full flex flex-col justify-between">
-					{hasData ? (
+					{buddyRequests.length > 0 ? (
 						<div className="space-y-6 flex flex-col flex-grow">
-							{buddyRequests.slice(0, 2).map((request) => (
+							{buddyRequests?.slice(0, 2).map((request) => (
 								<div key={request.id} className="space-y-4">
 									{/******** Flight Details Section **********/}
 									<div className="flex flex-row md:items-center md:justify-between">
 										{/***** Departure *****/}
 										<div className="text-start">
 											<TripSchedule
-												time={request.departure.time}
-												date={request.departure.date}
-												location={request.departure.location}
+												time={request?.trip_details?.departureTime}
+												date={request?.trip_details?.departureDate}
+												location={request?.trip_details?.departureAirport}
 											/>
 										</div>
 
 										{/**** Flight Connection Type ****/}
 										<FlightStopType
-											connectionType={request.connectionType}
-											connectionLocation={request.connectionLocation}
+											connectionType={request?.trip_details?.stops}
+											connectionLocation={request?.trip_details?.stopAirports}
 										/>
 
 										{/***** Arrival *****/}
 										<div className="text-end">
 											<TripSchedule
-												time={request.arrival.time}
-												date={request.arrival.date}
-												location={request.arrival.location}
+												time={request?.trip_details?.arrivalTime}
+												date={request?.trip_details?.arrivalDate}
+												location={request?.trip_details?.arrivalAirport}
 											/>
 										</div>
 									</div>
@@ -64,13 +61,12 @@ export default function BuddyRequestsCard({
 										<div className="flex items-center gap-3 mt-4">
 											{/*** Profile Pic ***/}
 											<BuddyCardAvatar
-												userAvatar={request.serviceProviderDetails?.avatar}
-												altAvatarName={request.serviceProviderDetails?.name}
+												userName={request?.service_Seeker_Details?.firstName}
 											/>
 											{/*** Profile Name & Verified Icon ***/}
 											<VerifiedBuddyName
-												userName={request.serviceProviderDetails?.name}
-												userId={request.id}
+												userName={request?.service_Seeker_Details?.firstName}
+												isVerified={request?.service_Seeker_Details?.emailVerified}
 											/>
 										</div>
 

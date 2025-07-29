@@ -155,7 +155,7 @@ exports.deleteBuddyListing = async (req, res) => {
 				[`buddy_Listing_Details.${
 					serviceType === 'Courier Buddy' ? 'courier_listing' : 'travel_listing'
 				}`]: {
-					listing_id: mongoose.Types.ObjectId.createFromHexString(listing_id)
+					listing_id: new mongoose.Types.ObjectId(listing_id)
 				}
 			}
 		};

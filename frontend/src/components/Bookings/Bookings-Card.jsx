@@ -2,7 +2,6 @@ import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import LineSeparator from '@/assets/Common/Line-Separator.svg';
 import BookingsActionButtons from './Bookings-Action-Buttons';
-import BookingsSchedule from './Bookings-Schedule';
 import BookingStatusDetails from './BookingStatusDetails';
 import BuddyCardAvatar from '../ReUsable/Service-Seeker/Buddy-Card-Avatar';
 import { getPreferencesList } from '@/utils/listingPreferencesHelper';
@@ -10,10 +9,11 @@ import VerifiedBuddyName from '../ReUsable/Service-Seeker/Verified-Buddy-Name';
 import ServiceCategoryTag from '../ReUsable/Service-Seeker/Service-Category-Tag';
 import LanguageCourierTag from '../ReUsable/Service-Seeker/Language-Courier-Tag';
 import FlightStopType from '../ReUsable/Service-Seeker/Flight-Stop-Type';
+import TripSchedule from '../ServiceProvider/Dashboard-TabContent/TripSchedule';
 
 export function BookingCard({ booking }) {
 	const isActive = booking?.listingStatus === 'active';
-	const isCancelled = booking?.listingStatus === 'cancelled';
+	const isCancelled = booking?.listingStatus === 'rejected';
 	const isCompleted = booking?.listingStatus === 'completed';
 	const isPending = booking?.listingStatus === 'pending';
 	const isAccepted = booking?.listingStatus === 'accepted';
@@ -73,7 +73,7 @@ export function BookingCard({ booking }) {
 						<div className="flex flex-row md:items-center md:justify-between">
 							{/**** Departure ****/}
 							<div className="text-start">
-								<BookingsSchedule
+								<TripSchedule
 									time={booking?.trip_details?.departureTime}
 									date={booking?.trip_details?.departureDate}
 									location={booking?.trip_details?.departureAirport}
@@ -88,7 +88,7 @@ export function BookingCard({ booking }) {
 
 							{/***** Arrival *****/}
 							<div className="text-end">
-								<BookingsSchedule
+								<TripSchedule
 									time={booking?.trip_details?.arrivalTime}
 									date={booking?.trip_details?.arrivalDate}
 									location={booking?.trip_details?.arrivalAirport}

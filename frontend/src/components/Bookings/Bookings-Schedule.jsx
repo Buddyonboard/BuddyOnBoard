@@ -1,5 +1,4 @@
 import { formatDateTime } from '@/utils/formatDateTime';
-import { format, parse } from 'date-fns';
 
 export default function BookingsSchedule({ time, date, location }) {
 	/*************** To Get Formatted Date and Time ***************/
