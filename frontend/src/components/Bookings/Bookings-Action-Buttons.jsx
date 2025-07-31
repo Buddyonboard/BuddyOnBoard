@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import BookingCancellationPopup from './Bookings-Cancel-Popup';
 import { useState } from 'react';
 
-export default function BookingsActionButtons() {
+export default function BookingsActionButtons({ booking }) {
 	const [open, setOpen] = useState(false);
 
 	const handleClose = () => {
@@ -33,6 +33,7 @@ export default function BookingsActionButtons() {
 				open={open}
 				setOpen={setOpen}
 				onClose={handleClose}
+				booking={booking}
 			/>
 		</>
 	);

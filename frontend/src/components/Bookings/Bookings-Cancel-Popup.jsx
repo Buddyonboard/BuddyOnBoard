@@ -11,19 +11,22 @@ import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
 import { useState } from 'react';
 import CONST from '@/utils/Constants';
-import { useBookings } from '@/context/API/BookingDataProvider';
-import VerifiedIcon from '@/assets/Common/VerifiedIcon.svg';
-import { Badge } from '../ui/badge';
-import CarouselFlight from '@/assets/Landing/CarouselFlight.svg';
 import BookingsSchedule from './Bookings-Schedule';
 import { useBookingCancellation } from '@/context/Booking-Cancellation-Context';
-import UserPicOutline from '@/assets/Common/circle-user-round.svg';
-import ProfilePicPlaceholder from '@/assets/Common/Profile-Pic-Placeholder.svg';
+import ServiceCategoryTag from '../ReUsable/Service-Seeker/Service-Category-Tag';
+import VerifiedBuddyName from '../ReUsable/Service-Seeker/Verified-Buddy-Name';
+import BuddyCardAvatar from '../ReUsable/Service-Seeker/Buddy-Card-Avatar';
+import FlightStopType from '../ReUsable/Service-Seeker/Flight-Stop-Type';
 
-export default function BookingCancellationPopup({ open, setOpen, onClose }) {
+export default function BookingCancellationPopup({
+	open,
+	setOpen,
+	onClose,
+	booking
+}) {
 	const [reason, setReason] = useState(null);
+	const [customReason, setCustomReason] = useState(null);
 	const [step, setStep] = useState('reason');
-	const { bookings } = useBookings();
 	const { setCancelConfirmed } = useBookingCancellation();
 
 	/*** Handle confirmation logic here ***/
@@ -31,6 +34,8 @@ export default function BookingCancellationPopup({ open, setOpen, onClose }) {
 		setOpen(false);
 		setCancelConfirmed((prev) => !prev);
 	};
+
+	const firstName = booking?.service_Provider_Details?.userDetails?.firstName;
 
 	return (
 		<Dialog open={open} onOpenChange={onClose}>
@@ -102,8 +107,8 @@ export default function BookingCancellationPopup({ open, setOpen, onClose }) {
 						{reason === 'other' && (
 							<Textarea
 								placeholder="Add your reason here"
-								// value={customReason}
-								// onChange={(e) => setCustomReason(e.target.value)}
+								value={customReason}
+								onChange={(e) => setCustomReason(e.target.value)}
 								className="min-h-[100px]"
 							/>
 						)}
@@ -129,11 +134,15 @@ export default function BookingCancellationPopup({ open, setOpen, onClose }) {
 							<div className="flex justify-between">
 								<div>
 									<p className="text-base text-bob-form-label-color">You paid</p>
-									<p className="text-xl font-medium">$100.00</p>
+									<p className="text-xl font-medium">
+										${booking?.totalAmount?.totalPrice}
+									</p>
 								</div>
 								<div className="text-left">
 									<p className="text-base text-bob-form-label-color">Your refund</p>
-									<p className="text-xl font-medium">$90.00</p>
+									<p className="text-xl font-medium">
+										${booking?.totalAmount?.buddyServiceFee}
+									</p>
 								</div>
 							</div>
 						</div>
@@ -146,65 +155,44 @@ export default function BookingCancellationPopup({ open, setOpen, onClose }) {
 							<div className="flex items-center justify-between">
 								<div className="flex items-center gap-3">
 									<div className="flex items-center gap-3 mt-4">
-										{/* Profile Pic */}
-										<img
-											src={bookings[0].user.avatar || ProfilePicPlaceholder}
-											alt={bookings[0].user.name}
-											className="rounded-full h-[42px] w-[42]"
-										/>
-										<div>
-											{/* Profile Name & Verified Icon */}
-											<div className="flex items-center gap-2">
-												<span className="font-medium">{bookings[0].user.name}</span>
+										{/**** Profile Pic ****/}
+										<BuddyCardAvatar userName={firstName} />
 
-												<img src={VerifiedIcon} alt="VerifiedIcon" className="h-6 w-6" />
-											</div>
-										</div>
+										{/*** Profile Name & Verified Icon ***/}
+										<VerifiedBuddyName
+											userName={firstName}
+											isVerified={booking?.service_Provider_Details?.isVerified}
+										/>
 									</div>
 								</div>
-								{/* Travel/Courier Buddy */}
-								<Badge
-									className="mt-3 flex items-center gap-1 rounded-full bg-bob-color px-2 py-1 text-xs
-									text-primary-color w-fit"
-								>
-									{bookings[0].user.type}
-								</Badge>
+								{/******* Travel/Courier Buddy ******/}
+								<ServiceCategoryTag serviceType={booking?.serviceType} />
 							</div>
 
-							{/* Travel Details */}
+							{/******** Travel Details ********/}
 							<div className="flex flex-1 flex-col lg:p-5 md:py-2.5 py-4 md:px-0 px-4">
 								<div className="flex flex-row md:items-center md:justify-between">
-									{/* Departure */}
+									{/******** Departure ********/}
 									<div className="text-start">
 										<BookingsSchedule
-											time={bookings[0].departure.time}
-											date={bookings[0].departure.date}
-											location={bookings[0].departure.location}
+											time={booking?.trip_details?.departureTime}
+											date={booking?.trip_details?.departureDate}
+											location={booking?.trip_details?.departureAirport}
 										/>
 									</div>
 
-									{/* Connection */}
-									<div className="my-4 flex flex-col items-center md:my-0 text-bob-travel-details-color">
-										<div className="relative flex w-20 items-center justify-center md:w-32">
-											{/* Journey Flight Icon */}
-											<div className="flex flex-col items-center mx-2">
-												<img src={CarouselFlight} alt="CarouselFlight" />
-											</div>
-										</div>
-										{bookings[0].connectionType}
-										{bookings[0].connectionLocation && (
-											<div className="text-xs text-bob-travel-details-color">
-												{bookings[0].connectionLocation}
-											</div>
-										)}
-									</div>
+									{/**** Flight Connection Type ****/}
+									<FlightStopType
+										connectionType={booking?.trip_details?.stops}
+										connectionLocation={booking?.trip_details?.stopAirports}
+									/>
 
-									{/* Arrival */}
+									{/******** Arrival ********/}
 									<div className="text-end">
 										<BookingsSchedule
-											time={bookings[0].arrival.time}
-											date={bookings[0].arrival.date}
-											location={bookings[0].arrival.location}
+											time={booking?.trip_details?.arrivalTime}
+											date={booking?.trip_details?.arrivalDate}
+											location={booking?.trip_details?.arrivalAirport}
 										/>
 									</div>
 								</div>

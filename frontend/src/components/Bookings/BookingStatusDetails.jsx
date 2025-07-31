@@ -4,6 +4,7 @@ import { Button } from '../ui/button';
 import { formatDateTime } from '@/utils/formatDateTime';
 
 export default function BookingStatusDetails({
+	isRejected,
 	isCancelled,
 	isCompleted,
 	isPending,
@@ -23,11 +24,12 @@ export default function BookingStatusDetails({
 	return (
 		<>
 			{/*** Booking Status :: Completed/Cancelled ***/}
-			{(isCancelled || isCompleted) && (
+			{(isRejected || isCancelled || isCompleted) && (
 				<p
 					className="text-center 2xl:text-2xl text-sm font-bold text-bob-form-label-color
                     lg:pl-20 md:pl-30 pl-5"
 				>
+					{isRejected && CONST.bookings.rejectedTrip}
 					{isCancelled && CONST.bookings.cancelledTrip}
 					{isCompleted && CONST.bookings.completedTrip}
 				</p>

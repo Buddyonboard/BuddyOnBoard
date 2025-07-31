@@ -13,7 +13,8 @@ import TripSchedule from '../ServiceProvider/Dashboard-TabContent/TripSchedule';
 
 export function BookingCard({ booking }) {
 	const isActive = booking?.listingStatus === 'active';
-	const isCancelled = booking?.listingStatus === 'rejected';
+	const isRejected = booking?.listingStatus === 'rejected';
+	const isCancelled = booking?.listingStatus === 'cancelled';
 	const isCompleted = booking?.listingStatus === 'completed';
 	const isPending = booking?.listingStatus === 'pending';
 	const isAccepted = booking?.listingStatus === 'accepted';
@@ -113,9 +114,10 @@ export function BookingCard({ booking }) {
 						}`}
 					>
 						{isActive ? (
-							<BookingsActionButtons />
+							<BookingsActionButtons booking={booking} />
 						) : (
 							<BookingStatusDetails
+								isRejected={isRejected}
 								isCancelled={isCancelled}
 								isCompleted={isCompleted}
 								isPending={isPending}
