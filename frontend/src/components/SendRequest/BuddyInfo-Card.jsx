@@ -50,9 +50,12 @@ export default function BuddyInfoCard({
 					</div>
 
 					<div className="flex md:flex-row flex-col md:gap-2 gap-0">
-						{/**** Number Of Trips Completed *****/}
+						{/**** Gender *****/}
 						<ServiceCategoryTag
-							serviceType="O trips completed"
+							serviceType={
+								buddyDetails?.serviceProviderDetails?.userDetails?.gender ||
+								'No preference'
+							}
 							className="w-max font-medium"
 						/>
 

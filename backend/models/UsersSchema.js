@@ -4,7 +4,8 @@ const usersSchema = new mongoose.Schema(
 	{
 		uid: { type: String, required: true, unique: true },
 		firstName: String,
-		middleName: String,
+		// middleName: String,
+		gender: String,
 		lastName: String,
 		dateOfBirth: String,
 		phoneNumber: { type: String, unique: true, sparse: true },

@@ -7,6 +7,7 @@ import PreviousListingsTabContent from './PreviousListings-TabContent.jsx/Previo
 import LayoutPageHeader from './LayoutPageHeader';
 import API_URL from '../../../environments/Environment-dev';
 import axios from 'axios';
+import { getuserProfile } from '@/utils/localStorageHelper';
 
 export default function ServiceProviderLayout() {
 	const [activeTab, setActiveTab] = useState('dashboard');

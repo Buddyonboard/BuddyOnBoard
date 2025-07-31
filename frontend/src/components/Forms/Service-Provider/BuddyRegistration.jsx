@@ -52,7 +52,8 @@ export default function BuddyRegistrationForm() {
 	} = useForm({
 		defaultValues: {
 			firstName: '',
-			middleName: '',
+			// middleName: '',
+			gender: '',
 			lastName: '',
 			dateOfBirth: null,
 			phoneNumber: '',
@@ -113,7 +114,8 @@ export default function BuddyRegistrationForm() {
 			const userData = {
 				idToken: idToken,
 				firstName: data.firstName,
-				middleName: data.middleName,
+				// middleName: data.middleName,
+				gender: data.gender,
 				lastName: data.lastName,
 				dateOfBirth: data.dateOfBirth,
 				phoneNumber: data.phoneNumber,
@@ -312,24 +314,44 @@ export default function BuddyRegistrationForm() {
 								/>
 							</div>
 
-							{/***** Middle Name Input *****/}
+							{/********* Gender *********/}
 							<div className="flex flex-col">
 								<label
 									className="font-medium text-sm text-bob-form-label-color"
-									htmlFor="middleName"
+									htmlFor="gender"
 								>
-									{CONST.UserRegistrationForm.middleName}
+									{CONST.UserRegistrationForm.gender}
 								</label>
 								<Controller
-									name="middleName"
-									id="middleName"
+									name="gender"
+									id="gender"
 									control={control}
+									rules={{ required: true }}
 									render={({ field }) => (
-										<Input
-											className="shadow-sm"
-											placeholder="Your middle name"
-											{...field}
-										/>
+										<Select
+											onValueChange={(value) => {
+												setValue('gender', value); //Correctly set the selected value
+												field.onChange(value);
+											}}
+											value={field.value} //Ensure selected value is controlled
+										>
+											<SelectTrigger
+												className={`w-full shadow-sm data-[placeholder]:text-bob-text-placeholder-color ${
+													errors.gender?.type === 'required' &&
+													'border-2 border-bob-error-color'
+												} `}
+											>
+												<SelectValue placeholder="Choose your gender" />
+											</SelectTrigger>
+											<SelectContent className="w-full">
+												<SelectGroup>
+													<SelectLabel>Gender</SelectLabel>
+													<SelectItem value="male">Male</SelectItem>
+													<SelectItem value="female">Female</SelectItem>
+													<SelectItem value="no-preference">No preference</SelectItem>
+												</SelectGroup>
+											</SelectContent>
+										</Select>
 									)}
 								/>
 							</div>

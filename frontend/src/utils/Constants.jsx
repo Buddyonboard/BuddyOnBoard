@@ -357,7 +357,8 @@ const CONST = Object.freeze({
 	UserRegistrationForm: {
 		tellUsBitMore: 'Tell us a bit more...',
 		firstName: 'First name*',
-		middleName: 'Middle name',
+		// middleName: 'Middle name',
+		gender: 'Gender*',
 		lastName: 'Last name*',
 		dateOfBirth: 'Date of birth*',
 		phoneNumber: 'Phone number',

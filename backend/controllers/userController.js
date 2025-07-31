@@ -8,7 +8,8 @@ exports.userRegistration = async (req, res) => {
 		const {
 			idToken,
 			firstName,
-			middleName,
+			// middleName,
+			gender,
 			lastName,
 			dateOfBirth,
 			phoneNumber,
@@ -26,7 +27,8 @@ exports.userRegistration = async (req, res) => {
 		const updateData = {
 			uid,
 			firstName,
-			middleName,
+			// middleName,
+			gender,
 			lastName,
 			dateOfBirth,
 			// phoneNumber,
