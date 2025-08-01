@@ -58,8 +58,21 @@ export default function SearchResultsLayout() {
 	useEffect(() => {
 		if (!results) return;
 
-		let filteredExactMatches = results.exactMatches;
-		let filteredFlexibleMatches = results.flexibleDateMatches;
+		const today = new Date(); // today's date & time
+
+		// Filter Exact Matches
+		let filteredExactMatches = results.exactMatches.filter((item) => {
+			const departureDate =
+				item?.buddy_Listing_Details?.travel_listing?.departureDate;
+			return departureDate && new Date(departureDate) >= today;
+		});
+
+		// Filter Flexible Matches
+		let filteredFlexibleMatches = results.flexibleDateMatches.filter((item) => {
+			const departureDate =
+				item?.buddy_Listing_Details?.travel_listing?.departureDate;
+			return departureDate && new Date(departureDate) >= today;
+		});
 
 		/*********** Apply filters if active ************/
 		if (isFilterApplied) {
