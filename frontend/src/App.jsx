@@ -22,6 +22,7 @@ import {
 import FirebaseRedirectHandler from './utils/FirebaseRedirectHandler';
 import { BookingCancellationProvider } from './context/Booking-Cancellation-Context';
 import SearchRouteGuard from './utils/SearchRouteGuard';
+// import BookingSummaryPage from './components/Bookings/Booking-SummaryPage';
 // import CourierBuddyListingForm from './components/ServiceProvider/Create-Listing-Section/CourierBuddyListingForm';
 // import TravelBuddyListingForm from './components/ServiceProvider/Create-Listing-Section/TravelBuddyListingForm';
 // import CreateListingPage from './components/ServiceProvider/Create-Listing-Section/CreateListingPage';
@@ -65,6 +66,9 @@ const UserProfile = lazy(() =>
 );
 const SendRequestForm = lazy(() => import('./pages/SendRequestForm-Layout'));
 const BookingsLayout = lazy(() => import('./pages/Bookings-Layout'));
+const BookingSummaryPage = lazy(() =>
+	import('./components/Bookings/Booking-SummaryPage')
+);
 const SearchResultsLayout = lazy(() => import('./pages/Search-Results-Layout'));
 const BuddyRegistrationForm = lazy(() =>
 	import('./components/Forms/Service-Provider/BuddyRegistration')
@@ -146,6 +150,7 @@ function App() {
 														</BookingCancellationProvider>
 													}
 												/>
+												<Route path="booking-summary" element={<BookingSummaryPage />} />
 												<Route
 													path="buddy-registration"
 													element={<BuddyRegistrationForm />}

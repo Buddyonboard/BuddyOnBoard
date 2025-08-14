@@ -72,7 +72,9 @@ export default function BookingStatusDetails({
                         hover:bg-bob-color lg:w-60 md:w-42 w-33 cursor-pointer rounded-2xl lg:py-5"
 					>
 						<ReusableLink
-							to="/"
+							// to="/"
+							type="confirmPay"
+							booking={booking}
 							linkName={CONST.bookings.payBookingRequest}
 							className="text-primary-color font-bold md:text-base text-xs"
 						/>

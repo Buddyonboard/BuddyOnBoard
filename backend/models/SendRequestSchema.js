@@ -15,6 +15,12 @@ const sendRequestSchema = new mongoose.Schema(
 					listingStatus: String,
 					service_Provider_Details: mongoose.Schema.Types.Mixed,
 					passengerCount: String,
+					paymentStatus: {
+						type: String,
+						enum: ['pending', 'paid', 'failed']
+						// default: 'pending'
+					},
+					paymentDetails: Object,
 					passengers_List: [
 						{
 							age: String,
@@ -34,6 +40,12 @@ const sendRequestSchema = new mongoose.Schema(
 					service_Provider_Details: mongoose.Schema.Types.Mixed,
 					totalItems: String,
 					totalItemsWeight: String,
+					paymentStatus: {
+						type: String,
+						enum: ['pending', 'paid', 'failed']
+						// default: 'pending'
+					},
+					paymentDetails: Object,
 					courier_Items_List: [
 						{
 							itemType: String,

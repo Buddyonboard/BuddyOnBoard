@@ -467,6 +467,11 @@ const CONST = Object.freeze({
 			description:
 				"We'll now redirect you to our trusted partner, Veriff, to securely verify your identity. Don't worry, Buddy on Board will not store any of your ID	details. Your information stays safe and private with Veriff."
 		}
+	},
+	paymentStatus: {
+		failedStatusTitle: 'Payment failed!',
+		failedStatusDescription:
+			'Please try again in some time. If your money was debited from your account, it will be automatically refunded in 5-7 working days.'
 	}
 });
 

@@ -14,7 +14,9 @@ export default function BookingsTabs() {
 
 	const previousBookings = allBookings?.filter(
 		(item) =>
-			item.listingStatus === 'rejected' || item.listingStatus === 'completed'
+			item.listingStatus === 'rejected' ||
+			item.listingStatus === 'completed' ||
+			item.listingStatus === 'cancelled'
 	);
 
 	const upcomingBookings = allBookings?.filter(

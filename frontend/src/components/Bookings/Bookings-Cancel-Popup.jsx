@@ -17,6 +17,10 @@ import ServiceCategoryTag from '../ReUsable/Service-Seeker/Service-Category-Tag'
 import VerifiedBuddyName from '../ReUsable/Service-Seeker/Verified-Buddy-Name';
 import BuddyCardAvatar from '../ReUsable/Service-Seeker/Buddy-Card-Avatar';
 import FlightStopType from '../ReUsable/Service-Seeker/Flight-Stop-Type';
+import { showWarningToast } from '@/utils/toastUtils';
+import { getSeekerId } from '@/utils/localStorageHelper';
+import axios from 'axios';
+import API_URL from '../../../environments/Environment-dev';
 
 export default function BookingCancellationPopup({
 	open,
@@ -29,10 +33,39 @@ export default function BookingCancellationPopup({
 	const [step, setStep] = useState('reason');
 	const { setCancelConfirmed } = useBookingCancellation();
 
-	/*** Handle confirmation logic here ***/
-	const handleConfirm = () => {
-		setOpen(false);
-		setCancelConfirmed((prev) => !prev);
+	/******** Handle cancel confirmation logic here *********/
+	const handleConfirm = async () => {
+		try {
+			const seekerID = getSeekerId();
+
+			let cancellationReason;
+
+			if (reason == 'other') {
+				cancellationReason = customReason;
+			} else {
+				cancellationReason = reason;
+			}
+
+			const type =
+				booking?.serviceType == 'Travel Buddy'
+					? 'travel_buddy_requests'
+					: 'courier_buddy_requests';
+
+			const payloadData = {
+				seekerId: seekerID,
+				requestId: booking?._id,
+				type,
+				cancellationReason
+			};
+
+			await axios.post(`${API_URL}/cancel-booking-seeker`, payloadData);
+
+			setOpen(false);
+			setCancelConfirmed((prev) => !prev);
+		} catch (error) {
+			// console.log('error >>', error);
+			showWarningToast();
+		}
 	};
 
 	const firstName = booking?.service_Provider_Details?.userDetails?.firstName;

@@ -1,7 +1,11 @@
 import { useFirebase } from '@/context/Firebase-Context';
 import CONST from '@/utils/Constants';
+import API_URL from '../../../environments/Environment-dev';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import axios from 'axios';
+import { showWarningToast } from '@/utils/toastUtils';
+import { useState } from 'react';
 
 export default function ReusableLink({
 	to,
@@ -11,6 +15,7 @@ export default function ReusableLink({
 	serviceType,
 	booking
 }) {
+	const [loading, setLoading] = useState(false);
 	const navigate = useNavigate();
 
 	/********** To Switch to different methods based on type ***********/
@@ -22,6 +27,10 @@ export default function ReusableLink({
 			case 'editRequest':
 				event.preventDefault();
 				handleEditRequest(serviceType, booking);
+				break;
+			case 'confirmPay':
+				event.preventDefault();
+				handleCheckout(booking);
 				break;
 			default:
 				break;
@@ -52,6 +61,29 @@ export default function ReusableLink({
 			}
 		});
 	}
+
+	/************ To Handle Stripe Payment Checkout ***************/
+	const handleCheckout = async (booking) => {
+		try {
+			setLoading(true);
+			const response = await axios.post(
+				`${API_URL}/payment/create-checkout-session`,
+				{
+					bookingId: booking?._id,
+					totalPrice: booking?.totalAmount?.totalPrice,
+					serviceProviderId: booking?.service_Provider_Id
+				}
+			);
+
+			setLoading(false);
+			window.location.href = response?.data?.url;
+		} catch (error) {
+			// console.error('Checkout Error:', error);
+			showWarningToast();
+		}
+	};
+
+	if (loading) return <div>Loading....</div>;
 
 	return (
 		<Link to={to} className={className} onClick={(e) => handleClick(e)}>

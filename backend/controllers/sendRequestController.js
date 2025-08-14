@@ -240,7 +240,7 @@ exports.getBuddyRequests = async (req, res) => {
 	}
 };
 
-/****************** Update Buddy Requests Status ********************/
+/****************** Update Buddy Requests Status :: Accept/Reject Req ********************/
 exports.updateRequestStatus = async (req, res) => {
 	try {
 		const { serviceSeekerId, requestId, serviceType, action } = req.body;
@@ -295,6 +295,59 @@ exports.updateRequestStatus = async (req, res) => {
 		res.status(400).json({ message: 'Invalid action' });
 	} catch (error) {
 		console.error('Error updating request status:', error);
+		res.status(500).json({ message: 'Internal server error' });
+	}
+};
+
+/*********************** Cancel Booking By Service Seeker ****************************/
+exports.cancelBookingByServiceSeeker = async (req, res) => {
+	try {
+		const { seekerId, requestId, type, cancellationReason } = req.body;
+
+		if (!['travel_buddy_requests', 'courier_buddy_requests'].includes(type)) {
+			return res.status(400).json({ message: 'Invalid request type' });
+		}
+
+		const seekerObjectId = new mongoose.Types.ObjectId(seekerId); // service seeker ID
+		const requestObjectId = new mongoose.Types.ObjectId(requestId); // request _id
+
+		// Step 1: Find the booking that needs to be cancelled
+		const bookingDoc = await BuddyRequestModal.findOne({
+			service_Seeker_Id: seekerObjectId,
+			[`buddy_requests.${type}._id`]: requestObjectId
+		});
+
+		if (
+			!bookingDoc ||
+			!bookingDoc['buddy_requests'][type] ||
+			bookingDoc['buddy_requests'][type].length === 0
+		) {
+			return res.status(404).json({ message: 'Booking not found' });
+		}
+
+		// Extract the booking
+		const booking = bookingDoc['buddy_requests'][type][0].toObject();
+
+		// Add cancellation reason + timestamp
+		booking.cancellationReason = cancellationReason;
+		booking.cancelledAt = new Date();
+		booking.listingStatus = 'cancelled';
+
+		// Step 2: Move booking to previous_requests and remove from current list
+		await BuddyRequestModal.updateOne(
+			{
+				service_Seeker_Id: seekerObjectId,
+				[`buddy_requests.${type}._id`]: requestObjectId
+			},
+			{
+				$push: { [`buddy_requests.previous_requests`]: booking },
+				$pull: { [`buddy_requests.${type}`]: { _id: requestObjectId } }
+			}
+		);
+
+		res.status(200).json({ message: 'Booking cancelled successfully' });
+	} catch (error) {
+		console.error('Error cancelling booking:', error);
 		res.status(500).json({ message: 'Internal server error' });
 	}
 };

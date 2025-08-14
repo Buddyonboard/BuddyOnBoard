@@ -3,8 +3,17 @@ const express = require('express');
 const cors = require('cors');
 const connectDB = require('./Config/db');
 const { initGridFS } = require('./Config/gridFs');
+const { stripeWebhook } = require('./Webhooks/stripeWebhook');
 
 const app = express();
+
+// Raw body only for Stripe webhook
+app.post(
+	'/api/v1/webhook/stripe',
+	express.raw({ type: 'application/json' }),
+	stripeWebhook
+);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({ origin: '*' }));

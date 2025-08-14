@@ -27,12 +27,14 @@ const {
 	getBookingRequestsBySeekerId,
 	updateBuddyRequest,
 	getBuddyRequests,
-	updateRequestStatus
+	updateRequestStatus,
+	cancelBookingByServiceSeeker
 } = require('../controllers/sendRequestController');
 const {
 	service_request_upload,
 	buddy_request_upload
 } = require('../Middlewares/Upload');
+const { createCheckoutSession } = require('../controllers/paymentController');
 
 const router = express.Router();
 
@@ -77,5 +79,7 @@ router.post(
 	buddy_request_upload.any(),
 	updateBuddyRequest
 );
+router.post('/payment/create-checkout-session', createCheckoutSession);
+router.post('/cancel-booking-seeker', cancelBookingByServiceSeeker);
 
 module.exports = router;
