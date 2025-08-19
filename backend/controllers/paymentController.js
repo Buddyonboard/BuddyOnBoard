@@ -19,7 +19,7 @@ exports.createCheckoutSession = async (req, res) => {
 						product_data: {
 							name: 'Buddy Booking Payment'
 						},
-						unit_amount: totalPrice * 100
+						unit_amount: parseInt((totalPrice * 100).toFixed(0))
 					},
 					quantity: 1
 				}

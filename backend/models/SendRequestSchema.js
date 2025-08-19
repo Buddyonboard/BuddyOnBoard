@@ -16,8 +16,8 @@ const sendRequestSchema = new mongoose.Schema(
 					service_Provider_Details: mongoose.Schema.Types.Mixed,
 					passengerCount: String,
 					paymentStatus: {
-						type: String,
-						enum: ['pending', 'paid', 'failed']
+						type: String
+						// enum: ['pending', 'paid', 'failed']
 						// default: 'pending'
 					},
 					paymentDetails: Object,
@@ -41,8 +41,8 @@ const sendRequestSchema = new mongoose.Schema(
 					totalItems: String,
 					totalItemsWeight: String,
 					paymentStatus: {
-						type: String,
-						enum: ['pending', 'paid', 'failed']
+						type: String
+						// enum: ['pending', 'paid', 'failed']
 						// default: 'pending'
 					},
 					paymentDetails: Object,

@@ -27,6 +27,10 @@ export function showErrorToast(message, options = {}) {
 	toast.error(message, {
 		position: 'top-right',
 		closeButton: true,
+		style: {
+			backgroundColor: 'red',
+			color: 'white'
+		},
 		...options
 	});
 }

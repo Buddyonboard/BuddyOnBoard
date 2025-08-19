@@ -8,11 +8,13 @@ import LayoutPageHeader from './LayoutPageHeader';
 import API_URL from '../../../environments/Environment-dev';
 import axios from 'axios';
 import { getuserProfile } from '@/utils/localStorageHelper';
+import { showErrorToast } from '@/utils/toastUtils';
 
 export default function ServiceProviderLayout() {
 	const [activeTab, setActiveTab] = useState('dashboard');
 	const [activeListingsMain, setActiveListingsMain] = useState([]);
 	const [previousListingsMain, setPreviousListingsMain] = useState([]);
+	const [upcomingTrips, setUpcomingTrips] = useState([]);
 	const [buddyRequestsList, setBuddyRequestsList] = useState([]);
 
 	/*********************** Get latest buddy requests ****************************/
@@ -21,15 +23,36 @@ export default function ServiceProviderLayout() {
 			try {
 				const res = await axios.get(`${API_URL}/get-buddy-requests`);
 
-				const requestsList = res.data.data;
+				const requestsList = res?.data?.data;
 
 				const pendingBookings = requestsList?.filter(
 					(item) => item.listingStatus === 'pending'
 				);
 
+				const activeTrips = requestsList?.filter(
+					(item) => item.listingStatus === 'active'
+				);
+
+				/**** To retreive upcoming latest booking ****/
+				const getNextBooking = (activeTrips) => {
+					const now = new Date();
+
+					const upcoming = activeTrips
+						.map((b) => ({
+							...b,
+							departureDate: new Date(b.trip_details.departureDate)
+						})) // convert to Date
+						.filter((b) => b.departureDate > now) // only future
+						.sort((a, b) => a.departureDate - b.departureDate); // nearest first
+
+					return upcoming;
+				};
+
+				setUpcomingTrips(getNextBooking(activeTrips));
 				setBuddyRequestsList(pendingBookings);
 			} catch (err) {
 				// console.error('Failed to fetch buddy requests:', err);
+				showErrorToast('Failed to fetch buddy requests');
 			}
 		};
 
@@ -79,30 +102,6 @@ export default function ServiceProviderLayout() {
 
 		fetchActiveBuddyListings();
 	}, []);
-
-	// console.log('buddyRequestsList >', buddyRequestsList);
-
-	// Sample data for the dashboard
-	const upcomingTrip = {
-		contact: {
-			name: 'Sarah T.',
-			avatar: '/placeholder-user.jpg',
-			type: 'Courier Buddy'
-		},
-		departure: {
-			time: '08:30 AM',
-			date: '22 August, 2024',
-			location: 'LAX, USA'
-		},
-		arrival: {
-			time: '12:15 PM',
-			date: '22 August, 2024',
-			location: 'YVR, Canada'
-		}
-	};
-
-	// Toggle between populated and empty states
-	const hasData = true;
 
 	return (
 		<div className="min-h-screen">
@@ -158,10 +157,9 @@ export default function ServiceProviderLayout() {
 					{/******* Buddy Dashboard Tab Content ******/}
 					<TabsContent value="dashboard">
 						<DashboardTabContent
-							upcomingTrip={upcomingTrip}
+							upcomingTrip={upcomingTrips}
 							buddyRequests={buddyRequestsList}
 							activeListings={activeListingsMain}
-							hasData={hasData}
 							setActiveTab={setActiveTab}
 						/>
 					</TabsContent>
