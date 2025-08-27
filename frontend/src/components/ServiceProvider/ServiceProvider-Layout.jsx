@@ -8,7 +8,6 @@ import LayoutPageHeader from './LayoutPageHeader';
 import API_URL from '../../../environments/Environment-dev';
 import axios from 'axios';
 import { getuserProfile } from '@/utils/localStorageHelper';
-import { showErrorToast } from '@/utils/toastUtils';
 
 export default function ServiceProviderLayout() {
 	const [activeTab, setActiveTab] = useState('dashboard');
@@ -52,7 +51,7 @@ export default function ServiceProviderLayout() {
 				setBuddyRequestsList(pendingBookings);
 			} catch (err) {
 				// console.error('Failed to fetch buddy requests:', err);
-				showErrorToast('Failed to fetch buddy requests');
+				// showErrorToast('Failed to fetch buddy requests');
 			}
 		};
 

@@ -28,7 +28,7 @@ exports.createCheckoutSession = async (req, res) => {
 			client_reference_id: bookingId, // Pass booking ID to webhook
 			success_url: `${process.env.CLIENT_URL}/booking-summary?status=success&bookingId=${bookingId}`, // Redirect url post success payment
 			cancel_url: `${process.env.CLIENT_URL}/bookings?status=cancelled&bookingId=${bookingId}`, // Redirect url post failed payment
-			automatic_tax: { enabled: false },
+			automatic_tax: { enabled: true },
 			metadata: {
 				bookingId,
 				serviceProviderId,
@@ -37,13 +37,13 @@ exports.createCheckoutSession = async (req, res) => {
 		};
 
 		/******* If provider has a Stripe account, route payment directly to them ********/
-		if (connectedAccountId) {
-			sessionPayload.payment_intent_data = {
-				transfer_data: {
-					destination: connectedAccountId
-				}
-			};
-		}
+		// if (connectedAccountId) {
+		// 	sessionPayload.payment_intent_data = {
+		// 		transfer_data: {
+		// 			destination: connectedAccountId
+		// 		}
+		// 	};
+		// }
 
 		const session = await stripe.checkout.sessions.create(sessionPayload);
 

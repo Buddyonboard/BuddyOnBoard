@@ -410,7 +410,7 @@ export default function UserRegistrationForm() {
 											<SelectContent>
 												<SelectGroup>
 													<SelectLabel>Country Of Residence</SelectLabel>
-													{data?.data.map((item, index) => (
+													{data?.data.sort().map((item, index) => (
 														<SelectItem key={index} value={item.Country}>
 															{item.Country}
 														</SelectItem>

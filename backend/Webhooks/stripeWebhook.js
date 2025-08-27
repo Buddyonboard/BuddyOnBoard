@@ -1,5 +1,6 @@
 const Stripe = require('stripe');
 const BuddyRequestModal = require('../models/SendRequestSchema');
+const serviceProvider = require('../models/ServiceProviderSchema');
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -18,6 +19,7 @@ const stripeWebhook = async (req, res) => {
 		return res.status(400).send(`Webhook Error: ${err.message}`);
 	}
 
+	/************ Stripe Payment Checkout (Service Seeker Payment Session) ***********/
 	if (event.type === 'checkout.session.completed') {
 		try {
 			const session = await stripe.checkout.sessions.retrieve(
@@ -134,6 +136,43 @@ const stripeWebhook = async (req, res) => {
 		} catch (err) {
 			console.error('Error processing checkout.session.completed:', err);
 		}
+	}
+
+	/************* Stripe Connect (Service Provider onboarding updates) *************/
+	if (event.type === 'account.updated') {
+		const account = event.data.object;
+
+		try {
+			await serviceProvider.updateOne(
+				{ stripeConnectedAccountId: account.id },
+				{
+					$set: {
+						'userDetails.stripeConnectedAccountStatus': account.requirements
+							?.disabled_reason
+							? 'restricted'
+							: account.charges_enabled && account.payouts_enabled
+							? 'verified'
+							: 'pending',
+						'userDetails.requirements': account.requirements
+					}
+				}
+			);
+			console.log(`Stripe account ${account.id} updated in DB`);
+		} catch (err) {
+			console.error('Error updating user on account.updated: ', err);
+		}
+	}
+
+	if (event.type === 'account.external_account.created') {
+		const account = event.data.object;
+		console.log(`External account created for ${account.id}`);
+		// optional: update DB if you want to track bank accounts
+	}
+
+	if (event.type === 'account.external_account.deleted') {
+		const account = event.data.object;
+		console.log(`External account deleted for ${account.id}`);
+		// optional: handle removal in DB
 	}
 
 	res.json({ received: true });

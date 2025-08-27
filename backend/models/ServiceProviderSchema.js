@@ -10,6 +10,7 @@ const serviceProviderSchema = new mongoose.Schema(
 		isVerified: { type: Boolean, default: false },
 		verificationID: String,
 		stripeConnectedAccountId: String,
+		stripeConnectedAccountStatus: String,
 
 		createdAt: { type: Date, default: Date.now },
 		updatedAt: { type: Date, default: Date.now }

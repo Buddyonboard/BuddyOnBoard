@@ -35,6 +35,7 @@ const {
 	buddy_request_upload
 } = require('../Middlewares/Upload');
 const { createCheckoutSession } = require('../controllers/paymentController');
+const { openStripe } = require('../controllers/stripeConnectController');
 
 const router = express.Router();
 
@@ -81,5 +82,6 @@ router.post(
 );
 router.post('/payment/create-checkout-session', createCheckoutSession);
 router.post('/cancel-booking-seeker', cancelBookingByServiceSeeker);
+router.post('/open-stripe', openStripe);
 
 module.exports = router;
