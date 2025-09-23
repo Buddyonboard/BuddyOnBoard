@@ -42,6 +42,7 @@ const stripeWebhook = async (req, res) => {
 			const amountPaid = session.amount_total / 100; // in currency units
 			const currency = charge.currency;
 			const status = paymentIntent.status;
+			// const tax = session.total_details.amount_tax
 
 			// console.log('Payment successful:', {
 			// 	transactionId,
@@ -174,6 +175,26 @@ const stripeWebhook = async (req, res) => {
 		console.log(`External account deleted for ${account.id}`);
 		// optional: handle removal in DB
 	}
+
+	/*********** Stripe Payment Refund (Service Seeker Booking Cancellation) *************/
+	// if (event.type === 'charge.refunded') {
+	// 	try {
+	// 		const charge = event.data.object;
+	// 		// const booking = await BuddyRequestModal.findOne({
+	// 		// 	'paymentDetails.chargeId': charge.id
+	// 		// });
+
+	// 		// if (booking) {
+	// 		// 	booking.listingStatus = 'canceled';
+	// 		// 	booking.refundStatus = 'processed';
+	// 		// 	// booking.canceledAt = new Date();
+	// 		// 	await booking.save();
+	// 		// 	console.log(`Booking ${booking._id} marked as canceled via webhook`);
+	// 		// }
+	// 	} catch (err) {
+	// 		console.error('Webhook error (charge.refunded):', err);
+	// 	}
+	// }
 
 	res.json({ received: true });
 };

@@ -17,7 +17,7 @@ import ServiceCategoryTag from '../ReUsable/Service-Seeker/Service-Category-Tag'
 import VerifiedBuddyName from '../ReUsable/Service-Seeker/Verified-Buddy-Name';
 import BuddyCardAvatar from '../ReUsable/Service-Seeker/Buddy-Card-Avatar';
 import FlightStopType from '../ReUsable/Service-Seeker/Flight-Stop-Type';
-import { showWarningToast } from '@/utils/toastUtils';
+import { showInfoToast, showWarningToast } from '@/utils/toastUtils';
 import { getSeekerId } from '@/utils/localStorageHelper';
 import axios from 'axios';
 import API_URL from '../../../environments/Environment-dev';
@@ -63,8 +63,14 @@ export default function BookingCancellationPopup({
 			setOpen(false);
 			setCancelConfirmed((prev) => !prev);
 		} catch (error) {
-			// console.log('error >>', error);
-			showWarningToast();
+			if (
+				error?.response?.data?.message ==
+				'Cannot cancel within 48 hours of departure'
+			) {
+				showInfoToast(error.response.data.message);
+			} else {
+				showInfoToast(error.response.data.message);
+			}
 		}
 	};
 

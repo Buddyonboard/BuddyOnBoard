@@ -3,6 +3,7 @@ const Users = require('../models/UsersSchema');
 const BuddyRequestModal = require('../models/SendRequestSchema');
 const { getGridFSBucket } = require('../Config/gridFs');
 const { default: mongoose } = require('mongoose');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 /************************** Create and Send Buddy Request ******************************/
 exports.sendBuddyRequest = async (req, res) => {
@@ -311,7 +312,7 @@ exports.cancelBookingByServiceSeeker = async (req, res) => {
 		const seekerObjectId = new mongoose.Types.ObjectId(seekerId); // service seeker ID
 		const requestObjectId = new mongoose.Types.ObjectId(requestId); // request _id
 
-		// Step 1: Find the booking that needs to be cancelled
+		/********* Find the booking that needs to be cancelled **********/
 		const bookingDoc = await BuddyRequestModal.findOne({
 			service_Seeker_Id: seekerObjectId,
 			[`buddy_requests.${type}._id`]: requestObjectId
@@ -325,15 +326,58 @@ exports.cancelBookingByServiceSeeker = async (req, res) => {
 			return res.status(404).json({ message: 'Booking not found' });
 		}
 
-		// Extract the booking
-		const booking = bookingDoc['buddy_requests'][type][0].toObject();
+		/******** Locate the exact element inside the array *********/
+		const requestIndex = bookingDoc.buddy_requests[type].findIndex(
+			(r) => r._id.toString() === requestObjectId.toString()
+		);
+		if (requestIndex === -1) {
+			return res.status(404).json({ message: 'Booking not found' });
+		}
 
-		// Add cancellation reason + timestamp
+		// Extract the booking
+		const booking = bookingDoc['buddy_requests'][type][requestIndex].toObject();
+
+		/****** Check if cancellation window is valid (>=48h before departure) *****/
+		if (booking.trip_details.departureDate) {
+			const departure = new Date(booking.trip_details.departureDate);
+
+			// 48 hours in milliseconds
+			const TWO_DAYS = 48 * 60 * 60 * 1000;
+			const cutoff = new Date(departure.getTime() - TWO_DAYS);
+			const now = new Date();
+
+			if (now >= cutoff) {
+				return res
+					.status(400)
+					.json({ message: 'Cannot cancel within 48 hours of departure' });
+			}
+		}
+
+		/********** Compute refund *********/
+		const paidAmount = booking.totalAmount?.totalPrice || 0;
+		const platformFee = booking.totalAmount?.platformFee || 0;
+		const refundAmount = Math.max(paidAmount - platformFee, 0);
+
+		let refund;
+		if (refundAmount > 0 && booking.paymentDetails?.transactionId) {
+			refund = await stripe.refunds.create(
+				{
+					payment_intent: booking.paymentDetails.transactionId,
+					amount: Math.round(refundAmount * 100)
+				},
+				{ idempotencyKey: `refund-${requestId}` }
+			);
+		}
+
+		/******** Add cancellation reason + timestamp ********/
 		booking.cancellationReason = cancellationReason;
 		booking.cancelledAt = new Date();
 		booking.listingStatus = 'cancelled';
+		booking.refundAmount = Number(refundAmount.toFixed(2));
+		booking.refundId = refund?.id || null;
+		booking.refundStatus = 'processed';
 
-		// Step 2: Move booking to previous_requests and remove from current list
+		/******** Move booking to previous_requests and remove from current list ********/
 		await BuddyRequestModal.updateOne(
 			{
 				service_Seeker_Id: seekerObjectId,
@@ -345,7 +389,12 @@ exports.cancelBookingByServiceSeeker = async (req, res) => {
 			}
 		);
 
-		res.status(200).json({ message: 'Booking cancelled successfully' });
+		res.status(200).json({
+			message: 'Booking cancelled successfully',
+			refund: refund
+				? { id: refund.id, amount: refundAmount, status: refund.status }
+				: null
+		});
 	} catch (error) {
 		console.error('Error cancelling booking:', error);
 		res.status(500).json({ message: 'Internal server error' });
