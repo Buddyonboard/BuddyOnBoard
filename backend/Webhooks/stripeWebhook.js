@@ -42,7 +42,7 @@ const stripeWebhook = async (req, res) => {
 			const amountPaid = session.amount_total / 100; // in currency units
 			const currency = charge.currency;
 			const status = paymentIntent.status;
-			// const tax = session.total_details.amount_tax
+			const taxAmount = (session.total_details?.amount_tax || 0) / 100;
 
 			// console.log('Payment successful:', {
 			// 	transactionId,
@@ -59,7 +59,8 @@ const stripeWebhook = async (req, res) => {
 				paymentTime,
 				amountPaid,
 				currency,
-				status
+				status,
+				taxAmount
 			};
 
 			// Extract booking ID from metadata
@@ -85,6 +86,8 @@ const stripeWebhook = async (req, res) => {
 			let arrayPath = '';
 			let arrayBasePath = '';
 			let requestFilter = {};
+			let requestData = null;
+
 			if (
 				buddyDoc.buddy_requests.travel_buddy_requests.some(
 					(r) => r._id.toString() === bookingId
@@ -93,6 +96,9 @@ const stripeWebhook = async (req, res) => {
 				arrayPath = 'buddy_requests.travel_buddy_requests.$[elem].listingStatus';
 				arrayBasePath = 'buddy_requests.travel_buddy_requests';
 				requestFilter = { 'elem._id': bookingId };
+				requestData = buddyDoc.buddy_requests.travel_buddy_requests.find(
+					(r) => r._id.toString() === bookingId
+				);
 			} else if (
 				buddyDoc.buddy_requests.courier_buddy_requests.some(
 					(r) => r._id.toString() === bookingId
@@ -101,10 +107,18 @@ const stripeWebhook = async (req, res) => {
 				arrayPath = 'buddy_requests.courier_buddy_requests.$[elem].listingStatus';
 				arrayBasePath = 'buddy_requests.courier_buddy_requests';
 				requestFilter = { 'elem._id': bookingId };
+				requestData = buddyDoc.buddy_requests.courier_buddy_requests.find(
+					(r) => r._id.toString() === bookingId
+				);
 			}
 
 			if (!arrayPath) {
 				console.error('Service type not found for bookingId:', bookingId);
+				return res.sendStatus(200);
+			}
+
+			if (!requestData) {
+				console.error('Booking request not found for:', bookingId);
 				return res.sendStatus(200);
 			}
 
@@ -113,13 +127,20 @@ const stripeWebhook = async (req, res) => {
 			if (session.payment_status === 'paid') paymentStatus = 'succeeded';
 			else if (session.payment_status === 'unpaid') paymentStatus = 'failed';
 
+			// Compute payout scheduled date = departureDate + 15 days
+			const departureDate = new Date(requestData.trip_details?.departureDate);
+			const payoutScheduledAt = new Date(
+				departureDate.getTime() + 15 * 24 * 60 * 60 * 1000
+			);
+
 			// Build the update object with proper path
 			const fieldPath = `${arrayBasePath}.$[elem]`;
 
 			// Prepare update object
 			const updateObj = {
 				[`${fieldPath}.paymentStatus`]: paymentStatus,
-				[`${fieldPath}.paymentDetails`]: paymentDetails
+				[`${fieldPath}.paymentDetails`]: paymentDetails,
+				[`${fieldPath}.payoutScheduledAt`]: payoutScheduledAt
 			};
 
 			if (paymentStatus === 'succeeded') {
@@ -133,7 +154,7 @@ const stripeWebhook = async (req, res) => {
 				{ arrayFilters: [requestFilter] }
 			);
 
-			// console.log(`Booking ${bookingId} updated with status: ${paymentStatus}`);
+			console.log(`Booking ${bookingId} updated with status: ${paymentStatus}`);
 		} catch (err) {
 			console.error('Error processing checkout.session.completed:', err);
 		}
