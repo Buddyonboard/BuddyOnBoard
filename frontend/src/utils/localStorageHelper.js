@@ -38,6 +38,6 @@ export async function setUserProfile(apiUrl, userUid) {
 
 /***** Retrieve userProfile _id data from LocalStorage ****/
 export function getSeekerId() {
-	const seekerId = getuserProfile()._id;
+	const seekerId = getuserProfile()?._id;
 	return seekerId;
 }

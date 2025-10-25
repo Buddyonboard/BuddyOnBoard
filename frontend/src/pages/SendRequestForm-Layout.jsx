@@ -10,6 +10,7 @@ import axios from 'axios';
 import API_URL from '../../environments/Environment-dev';
 import { toast } from 'sonner';
 import { useBookings } from '@/context/API/BookingDataProvider';
+import { formatDateTime } from '@/utils/formatDateTime';
 
 export default function SendRequestForm() {
 	const [submitted, setSubmitted] = useState(false);
@@ -204,10 +205,11 @@ export default function SendRequestForm() {
 	/********* Handle Send Request Form Submission ********/
 	const handleRequestSubmit = async () => {
 		if (validateFormDetails()) {
+			const serviceSeekerProfile = getuserProfile();
 			let res;
 
 			setSubmitted(true);
-			const ServiceSeekerUserId = getuserProfile()._id;
+			const ServiceSeekerUserId = serviceSeekerProfile._id;
 			const requestId = buddyRequestDetails?._id;
 
 			const formData = new FormData();
@@ -273,6 +275,28 @@ export default function SendRequestForm() {
 					window.location.reload();
 				} else {
 					setShowSuccessDialog(true);
+
+					const listingType =
+						serviceType == 'Courier Buddy' ? 'courier_listing' : 'travel_listing';
+
+					/* Get Formatted Date and Time for Departure */
+					const { formattedDate, formattedTime } = formatDateTime(
+						buddyDetails?.buddy_Listing_Details?.[listingType]?.departureDate,
+						buddyDetails?.buddy_Listing_Details?.[listingType]?.departureTime
+					);
+
+					/********* Trigger Booking Req Email to Service Provider ********/
+					axios.post(`${API_URL}/emails/provider-booking-request`, {
+						providerEmail: buddyDetails?.serviceProviderDetails?.userDetails?.email,
+						buddyName: buddyDetails?.serviceProviderDetails?.userDetails?.firstName,
+						serviceSeekerName: serviceSeekerProfile?.firstName,
+						serviceType: serviceType,
+						fromLocation:
+							buddyDetails?.buddy_Listing_Details?.[listingType]?.departureAirport,
+						toLocation:
+							buddyDetails?.buddy_Listing_Details?.[listingType]?.arrivalAirport,
+						dateTime: `${formattedDate} at ${formattedTime}`
+					});
 				}
 				setSubmitted(false);
 			} else {

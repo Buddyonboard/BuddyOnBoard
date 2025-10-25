@@ -36,12 +36,31 @@ const FirebaseRedirectHandler = () => {
 				switch (mode) {
 					case 'verifyEmail':
 						await firebase.VerifyEmail(oobCode);
+						const idToken = await firebase?.firebaseAuth?.currentUser?.getIdToken();
+
+						const currentUser = firebase?.firebaseAuth?.currentUser;
+						if (!currentUser) throw new Error('No authenticated user found');
+
+						// collect email and name for Email Trigger
+						const email = currentUser?.email;
+						const name = currentUser?.displayName || '';
+
 						const userData = {
-							idToken: await firebase.firebaseAuth.currentUser.getIdToken(),
+							idToken: idToken,
 							emailVerified: true
 						};
+
 						/**** Send ID token + user profile data to backend ****/
 						await axios.post(`${API_URL}/user-registration`, userData);
+
+						/********* Trigger Welcome Email ********/
+						axios.post(
+							`${API_URL}/emails/welcome`,
+							{ email, name },
+							{
+								headers: { Authorization: `Bearer ${idToken}` }
+							}
+						);
 
 						/***** Set User Profile in Localstorage ****/
 						await setUserProfile(API_URL, firebase.firebaseAuth.currentUser.uid);

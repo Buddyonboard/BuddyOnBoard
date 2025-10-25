@@ -18,7 +18,7 @@ import VerifiedBuddyName from '../ReUsable/Service-Seeker/Verified-Buddy-Name';
 import BuddyCardAvatar from '../ReUsable/Service-Seeker/Buddy-Card-Avatar';
 import FlightStopType from '../ReUsable/Service-Seeker/Flight-Stop-Type';
 import { showInfoToast, showWarningToast } from '@/utils/toastUtils';
-import { getSeekerId } from '@/utils/localStorageHelper';
+import { getSeekerId, getuserProfile } from '@/utils/localStorageHelper';
 import axios from 'axios';
 import API_URL from '../../../environments/Environment-dev';
 
@@ -33,10 +33,19 @@ export default function BookingCancellationPopup({
 	const [step, setStep] = useState('reason');
 	const { setCancelConfirmed } = useBookingCancellation();
 
+	/* Retrieve Service Provider Name and Email ID */
+	const firstName = booking?.service_Provider_Details?.userDetails?.firstName;
+	const serviceProviderEmail =
+		booking?.service_Provider_Details?.userDetails?.email;
+
 	/******** Handle cancel confirmation logic here *********/
 	const handleConfirm = async () => {
 		try {
 			const seekerID = getSeekerId();
+
+			/* Retrieve Service Seeker Name and Email ID */
+			const serviceSeekerName = getuserProfile()?.firstName;
+			const serviceSeekerEmail = getuserProfile()?.email;
 
 			let cancellationReason;
 
@@ -62,6 +71,20 @@ export default function BookingCancellationPopup({
 
 			setOpen(false);
 			setCancelConfirmed((prev) => !prev);
+
+			/********* Trigger Cancellation Acknowledgement Email to Service Seeker ********/
+			axios.post(`${API_URL}/emails/seeker-cancellation`, {
+				email: serviceSeekerEmail,
+				name: serviceSeekerName,
+				bookingId: booking?._id
+			});
+
+			/********* Trigger Cancellation Acknowledgement Email to Service Provider ********/
+			axios.post(`${API_URL}/emails/provider-cancellation`, {
+				providerEmail: serviceProviderEmail,
+				providerName: firstName,
+				bookingId: booking?._id
+			});
 		} catch (error) {
 			if (
 				error?.response?.data?.message ==
@@ -73,8 +96,6 @@ export default function BookingCancellationPopup({
 			}
 		}
 	};
-
-	const firstName = booking?.service_Provider_Details?.userDetails?.firstName;
 
 	return (
 		<Dialog open={open} onOpenChange={onClose}>

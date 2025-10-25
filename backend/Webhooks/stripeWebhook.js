@@ -1,6 +1,7 @@
 const Stripe = require('stripe');
 const BuddyRequestModal = require('../models/SendRequestSchema');
 const serviceProvider = require('../models/ServiceProviderSchema');
+const { sendBookingConfirmation } = require('../controllers/emailController');
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -67,6 +68,22 @@ const stripeWebhook = async (req, res) => {
 			const bookingId = session.client_reference_id;
 			if (!bookingId) {
 				console.error('No bookingId found in session metadata');
+				return res.sendStatus(200);
+			}
+
+			// Extract Data from Session metadata
+			const {
+				serviceSeekerEmail,
+				serviceProviderName,
+				departureAirport,
+				arrivalAirport,
+				serviceType,
+				serviceSeekerName,
+				formattedDate,
+				formattedTime
+			} = session.metadata;
+			if (!serviceSeekerEmail) {
+				console.error('No booking details found in session metadata');
 				return res.sendStatus(200);
 			}
 
@@ -153,6 +170,17 @@ const stripeWebhook = async (req, res) => {
 				{ $set: updateObj },
 				{ arrayFilters: [requestFilter] }
 			);
+
+			/**** Trigger the Booking confirmation email ****/
+			await sendBookingConfirmation({
+				email: serviceSeekerEmail,
+				firstName: serviceSeekerName,
+				buddyName: serviceProviderName,
+				dateTime: `${formattedDate} at ${formattedTime}`,
+				fromLocation: departureAirport,
+				toLocation: arrivalAirport,
+				serviceType
+			});
 
 			console.log(`Booking ${bookingId} updated with status: ${paymentStatus}`);
 		} catch (err) {

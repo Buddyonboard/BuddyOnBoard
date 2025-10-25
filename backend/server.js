@@ -27,6 +27,7 @@ startServer();
 // connectDB(); // Connect MongoDB
 
 app.use('/api/v1', require('./Routes/routes'));
+app.use('/api/v1/emails', require('./Routes/emailRoutes'));
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {

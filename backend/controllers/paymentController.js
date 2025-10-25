@@ -4,7 +4,19 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 /******************* Create a Stripe Checkout Session **************************/
 exports.createCheckoutSession = async (req, res) => {
 	try {
-		const { bookingId, totalPrice, serviceProviderId } = req.body;
+		const {
+			bookingId,
+			totalPrice,
+			serviceProviderId,
+			serviceSeekerEmail,
+			serviceProviderName,
+			departureAirport,
+			arrivalAirport,
+			serviceType,
+			serviceSeekerName,
+			formattedDate,
+			formattedTime
+		} = req.body;
 
 		/*** Fetch the stripe connected account ID from your DB using serviceProviderId ***/
 		const connectedAccountId = await getConnectedAccountId(serviceProviderId);
@@ -32,7 +44,15 @@ exports.createCheckoutSession = async (req, res) => {
 			metadata: {
 				bookingId,
 				serviceProviderId,
-				connectedAccountExists: !!connectedAccountId
+				connectedAccountExists: !!connectedAccountId,
+				serviceSeekerEmail,
+				serviceSeekerName,
+				serviceProviderName,
+				departureAirport,
+				arrivalAirport,
+				serviceType,
+				formattedDate,
+				formattedTime
 			}
 		};
 

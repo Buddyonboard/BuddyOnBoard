@@ -6,6 +6,8 @@ import { toast } from 'sonner';
 import axios from 'axios';
 import { showWarningToast } from '@/utils/toastUtils';
 import { useState } from 'react';
+import { getuserProfile } from '@/utils/localStorageHelper';
+import { formatDateTime } from '@/utils/formatDateTime';
 
 export default function ReusableLink({
 	to,
@@ -66,12 +68,32 @@ export default function ReusableLink({
 	const handleCheckout = async (booking) => {
 		try {
 			setLoading(true);
+
+			/* Retrieve Service Seeker Name and Email ID */
+			const serviceSeekerName = getuserProfile()?.firstName;
+			const serviceSeekerEmail = getuserProfile()?.email;
+
+			/* Get Formatted Date and Time for Departure */
+			const { formattedDate, formattedTime } = formatDateTime(
+				booking?.trip_details?.departureDate,
+				booking?.trip_details?.departureTime
+			);
+
 			const response = await axios.post(
 				`${API_URL}/payment/create-checkout-session`,
 				{
 					bookingId: booking?._id,
 					totalPrice: booking?.totalAmount?.totalPrice,
-					serviceProviderId: booking?.service_Provider_Id
+					serviceProviderId: booking?.service_Provider_Id,
+					serviceSeekerEmail,
+					serviceSeekerName,
+					serviceProviderName:
+						booking?.service_Provider_Details?.userDetails?.firstName,
+					departureAirport: booking?.trip_details?.departureAirport,
+					arrivalAirport: booking?.trip_details?.arrivalAirport,
+					serviceType,
+					formattedDate,
+					formattedTime
 				}
 			);
 
