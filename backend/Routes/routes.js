@@ -36,6 +36,8 @@ const {
 } = require('../Middlewares/Upload');
 const { createCheckoutSession } = require('../controllers/paymentController');
 const { openStripe } = require('../controllers/stripeConnectController');
+const { handleDecision } = require('../Webhooks/veriffWebhook');
+const { startVerification } = require('../controllers/veriffController');
 
 const router = express.Router();
 
@@ -83,5 +85,14 @@ router.post(
 router.post('/payment/create-checkout-session', createCheckoutSession);
 router.post('/cancel-booking-seeker', cancelBookingByServiceSeeker);
 router.post('/open-stripe', openStripe);
+
+router.post('/veriff/webhook', handleDecision);
+router.post('/veriff/startVerification', startVerification);
+
+// Get provider (status)
+// router.get('/:id', getProvider);
+
+// (optional) endpoint to refresh status
+// router.get('/:id/veriff/status', getVerificationStatus);
 
 module.exports = router;
