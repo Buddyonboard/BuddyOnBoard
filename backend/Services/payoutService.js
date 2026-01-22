@@ -96,7 +96,7 @@ async function markRequestPayoutResult({
 }
 
 /**
- * Main worker
+ * Stripe Payout Main worker
  */
 async function processPayouts({ limit = 100 } = {}) {
 	logger.info('Payout worker: start');
@@ -272,8 +272,54 @@ async function processPayouts({ limit = 100 } = {}) {
 	return { processed };
 }
 
+/**
+ * Extract Buddy Details and Payout amount details to send to ADMIN
+ */
+function buildPayoutSummary({ request, provider }) {
+	const amountCents = computeTransferAmountCents(request);
+
+	return {
+		buddyName: provider.userDetails?.fullName || 'Unknown',
+		buddyEmail: provider.userDetails?.email,
+		amount: amountCents / 100,
+		// currency: request.paymentDetails?.currency || 'USD',
+		requestId: request._id
+	};
+}
+
+/**
+ * Collect all eligible payouts
+ */
+async function collectEligiblePayouts() {
+	const eligible = await findEligibleRequests(new Date());
+	const payoutList = [];
+
+	for (const item of eligible) {
+		const { parentDocId, request } = item;
+
+		const provider = await ServiceProvider.findById(
+			request.service_Provider_Id
+		).lean();
+
+		if (!provider || !provider.userDetails?.email) continue;
+
+		const payout = buildPayoutSummary({ request, provider });
+
+		if (payout.amount > 0) {
+			payoutList.push({
+				parentDocId,
+				requestId: request._id,
+				...payout
+			});
+		}
+	}
+
+	return payoutList;
+}
+
 module.exports = {
 	processPayouts,
 	findEligibleRequests,
-	computeTransferAmountCents
+	computeTransferAmountCents,
+	collectEligiblePayouts
 };

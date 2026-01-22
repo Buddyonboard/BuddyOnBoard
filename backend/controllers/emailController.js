@@ -5,6 +5,7 @@ const providerCancellationTemplate = require('../Utils/emailTemplates/providerCa
 const bookingConfirmationTemplate = require('../Utils/emailTemplates/bookingConfirmationTemplate');
 const cancellationAcknowledgementTemplate = require('../Utils/emailTemplates/cancellationAcknowledgementTemplate');
 const BookingRequestTemplate = require('../Utils/emailTemplates/BookingRequestTemplate');
+const payoutEmailTemplate = require('../Utils/emailTemplates/payoutEmailTemplate');
 
 /****** Url's Helpers ******/
 const logoUrl =
@@ -230,10 +231,30 @@ async function sendProviderBookingRequest(req, res) {
 	}
 }
 
+/****** Send Payout Report Email to ADMIN ******/
+async function sendPayoutReportEmail(payouts) {
+	try {
+		if (!payouts.length) return;
+
+		await notificationService.sendEmail({
+			// from: 'Payouts <payouts@yourdomain.com>',
+			to: 'hrk@buddyonboard.co',
+			subject: 'Eligible Buddy Payout Report',
+			html: payoutEmailTemplate(payouts)
+		});
+	} catch (err) {
+		console.error('sendPayoutReportEmail error:', err);
+		res
+			.status(500)
+			.json({ success: false, error: err.message || 'Internal error' });
+	}
+}
+
 module.exports = {
 	sendWelcome,
 	sendBookingConfirmation,
 	sendCancellationAcknowledgement,
 	sendProviderCancellation,
-	sendProviderBookingRequest
+	sendProviderBookingRequest,
+	sendPayoutReportEmail
 };
