@@ -11,11 +11,19 @@ const VERIFF_API_KEY = process.env.VERIFF_API_KEY; // keep secret on server
 exports.createSession = async (payload = {}, providerId) => {
 	// Build body according to Veriff docs. Only include non-empty fields to avoid 1104 error
 	const person = {};
-	if (payload.person?.first_name) person.first_name = payload.person.first_name;
-	if (payload.person?.last_name) person.last_name = payload.person.last_name;
-	if (payload.person?.email) person.email = payload.person.email;
-	if (payload.person?.phone_number)
-		person.phone_number = payload.person.phone_number;
+	const srcPerson = payload.person || {};
+	// prefer camelCase for Veriff API: firstName, lastName, email, phoneNumber
+	if (srcPerson.firstName) person.firstName = srcPerson.firstName;
+	if (srcPerson.lastName) person.lastName = srcPerson.lastName;
+	if (srcPerson.email) person.email = srcPerson.email;
+	if (srcPerson.phoneNumber) person.phoneNumber = srcPerson.phoneNumber;
+	// accept snake_case from controller as fallback
+	if (!person.firstName && srcPerson.first_name)
+		person.firstName = srcPerson.first_name;
+	if (!person.lastName && srcPerson.last_name)
+		person.lastName = srcPerson.last_name;
+	if (!person.phoneNumber && srcPerson.phone_number)
+		person.phoneNumber = srcPerson.phone_number;
 
 	const body = {
 		verification: {

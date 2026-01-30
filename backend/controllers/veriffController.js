@@ -18,12 +18,12 @@ exports.startVerification = async (req, res) => {
 
 		// Establish Payload for Veriff Create Session
 		const payload = {
-			callback_url: `${process.env.BASE_URL}/veriff/webhook`,
+			callbackUrl: `${process.env.BASE_URL}/veriff/webhook`,
 			person: {
-				first_name: provider.userDetails?.firstName,
-				last_name: provider.userDetails?.lastName,
+				firstName: provider.userDetails?.firstName,
+				lastName: provider.userDetails?.lastName,
 				email: provider.userDetails?.email,
-				phone_number: provider.userDetails?.phoneNumber
+				phoneNumber: provider.userDetails?.phoneNumber
 			}
 		};
 
