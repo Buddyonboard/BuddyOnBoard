@@ -25,7 +25,7 @@ exports.createSession = async (payload = {}, providerId) => {
 			// 	type: payload.document?.type || 'PASSPORT',
 			// 	country: payload.document?.country || 'US'
 			// },
-			vendor_data: providerId || payload.vendor_data || payload.vendorData || ''
+			vendorData: providerId || payload.vendorData || payload.vendor_data
 		}
 	};
 
