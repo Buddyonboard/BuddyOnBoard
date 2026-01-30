@@ -25,9 +25,11 @@ exports.createSession = async (payload = {}, providerId) => {
 			// 	type: payload.document?.type || 'PASSPORT',
 			// 	country: payload.document?.country || 'US'
 			// },
-			vendorData: providerId || payload.vendorData || payload.vendor_data || ''
+			vendor_data: providerId || payload.vendor_data || payload.vendorData || ''
 		}
 	};
+
+	console.log('Veriff request body:', JSON.stringify(body));
 
 	/* DO NOT DELETE */
 	// Build body according to Veriff docs. Minimum body: { verification: {} } but include metadata/vendorData
