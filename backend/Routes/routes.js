@@ -86,6 +86,11 @@ router.post('/payment/create-checkout-session', createCheckoutSession);
 router.post('/cancel-booking-seeker', cancelBookingByServiceSeeker);
 router.post('/open-stripe', openStripe);
 
+router.get('/veriff/webhook', (req, res) => {
+	// Veriff redirects user here after completion
+	// Redirect to frontend verification status page or dashboard
+	res.redirect(`${process.env.CLIENT_URL}/verification-complete?sessionId=${req.query.sessionId || ''}`);
+});
 router.post('/veriff/webhook', handleDecision);
 router.post('/veriff/startVerification', startVerification);
 
