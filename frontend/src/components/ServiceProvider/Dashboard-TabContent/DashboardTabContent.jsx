@@ -20,8 +20,8 @@ export default function DashboardTabContent({
 					{/************ Upcoming Trip Card *************/}
 					<UpcomingTripsCard upcomingTrip={upcomingTrip} />
 
-					{/************ Manage Payment Card *************/}
-					<ManagePaymentsCard />
+					{/************ FUTURE REFERENCE :: Manage Payment Card *************/}
+					{/* <ManagePaymentsCard /> */}
 				</div>
 
 				{/************* Buddy Requests Card *************/}

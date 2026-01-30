@@ -20,10 +20,10 @@ exports.startVerification = async (req, res) => {
 		const payload = {
 			callback_url: `${process.env.BASE_URL}/veriff/webhook`,
 			person: {
-				first_name: provider.userDetails?.firstName || '',
-				last_name: provider.userDetails?.lastName || '',
-				email: provider.userDetails?.email || '',
-				phone_number: provider.userDetails?.email || ''
+				first_name: provider.userDetails?.firstName,
+				last_name: provider.userDetails?.lastName,
+				email: provider.userDetails?.email,
+				phone_number: provider.userDetails?.phoneNumber
 			}
 		};
 
@@ -45,7 +45,7 @@ exports.startVerification = async (req, res) => {
 			sessionToken: veriffResp.sessionToken || null
 		});
 	} catch (err) {
-		console.error('startVerification err', err);
+		console.log('startVerification err', err);
 		return res.status(500).json({ error: 'Internal error' });
 	}
 };

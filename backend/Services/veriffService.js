@@ -9,8 +9,29 @@ const VERIFF_API_KEY = process.env.VERIFF_API_KEY; // keep secret on server
  * returns: { id, url, sessionToken, status }
  */
 exports.createSession = async (payload = {}, providerId) => {
-	// Build body according to Veriff docs. Minimum body: { verification: {} } but include metadata/vendorData
+	// Build body according to Veriff docs. Only include non-empty fields to avoid 1104 error
+	const person = {};
+	if (payload.person?.first_name) person.first_name = payload.person.first_name;
+	if (payload.person?.last_name) person.last_name = payload.person.last_name;
+	if (payload.person?.email) person.email = payload.person.email;
+	if (payload.person?.phone_number)
+		person.phone_number = payload.person.phone_number;
+
 	const body = {
+		verification: {
+			callback: payload.callback_url || payload.callbackUrl,
+			person: person,
+			// document: {
+			// 	type: payload.document?.type || 'PASSPORT',
+			// 	country: payload.document?.country || 'US'
+			// },
+			vendorData: providerId || payload.vendorData || payload.vendor_data || ''
+		}
+	};
+
+	/* DO NOT DELETE */
+	// Build body according to Veriff docs. Minimum body: { verification: {} } but include metadata/vendorData
+	/* const body = {
 		verification: {
 			callback_url: payload.callback_url || '',
 			person: {
@@ -25,7 +46,7 @@ exports.createSession = async (payload = {}, providerId) => {
 			// },
 			vendor_data: providerId || payload.vendor_data || ''
 		}
-	};
+	}; */
 
 	try {
 		const resp = await axios.post(VERIFF_API, body, {
