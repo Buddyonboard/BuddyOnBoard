@@ -18,6 +18,10 @@ export function showSuccessToast(message, options = {}) {
 	toast.success(message, {
 		position: 'top-right',
 		closeButton: true,
+		style: {
+			backgroundColor: 'green',
+			color: 'black'
+		},
 		...options
 	});
 }

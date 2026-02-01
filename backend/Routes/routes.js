@@ -86,10 +86,18 @@ router.post('/payment/create-checkout-session', createCheckoutSession);
 router.post('/cancel-booking-seeker', cancelBookingByServiceSeeker);
 router.post('/open-stripe', openStripe);
 
-router.get('/veriff/webhook', (req, res) => {
+router.get('/veriff/webhook', async (req, res) => {
 	// Veriff redirects user here after completion
-	// Redirect to frontend verification status page or dashboard
-	res.redirect(`${process.env.CLIENT_URL}/verification-complete?sessionId=${req.query.sessionId || ''}`);
+	// Check the sessionId query param if needed, or just redirect to landing page
+	// Frontend will show toast based on veriffStatus param
+	try {
+		// Optional: fetch decision from Veriff to determine status
+		// For now, assume success (user completed the flow)
+		const status = 'success'; // or 'failed' if you want to check Veriff API
+		res.redirect(`${process.env.CLIENT_URL}?veriffStatus=${status}`);
+	} catch (err) {
+		res.redirect(`${process.env.CLIENT_URL}?veriffStatus=error`);
+	}
 });
 router.post('/veriff/webhook', handleDecision);
 router.post('/veriff/startVerification', startVerification);

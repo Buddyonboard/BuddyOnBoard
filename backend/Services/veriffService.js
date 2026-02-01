@@ -77,10 +77,7 @@ exports.createSession = async (payload = {}, providerId) => {
 			status: verification.status || null
 		};
 	} catch (err) {
-		console.error(
-			'veriff createSession error',
-			err?.response?.data || err.message
-		);
+		console.log('veriff createSession error', err?.response?.data || err.message);
 		throw err;
 	}
 };
