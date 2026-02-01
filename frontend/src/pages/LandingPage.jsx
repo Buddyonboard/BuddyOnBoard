@@ -4,6 +4,7 @@ import {
 	showSuccessToast,
 	showWarningToast
 } from '@/utils/toastUtils';
+import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 export default function LandingPage() {
