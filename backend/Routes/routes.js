@@ -88,14 +88,22 @@ router.post('/open-stripe', openStripe);
 
 router.get('/veriff/webhook', async (req, res) => {
 	// Veriff redirects user here after completion
-	// Check the sessionId query param if needed, or just redirect to landing page
-	// Frontend will show toast based on veriffStatus param
+	// The sessionId is passed as a query param
+	const sessionId = req.query.sessionId;
+	let status = 'pending'; // default to pending if we can't determine
+
 	try {
-		// Optional: fetch decision from Veriff to determine status
-		// For now, assume success (user completed the flow)
-		const status = 'success'; // or 'failed' if you want to check Veriff API
+		if (sessionId) {
+			// Optional: fetch decision from Veriff API to determine actual status
+			// For now, redirect with pending status
+			// The webhook (POST) will update the provider record with actual decision later
+			status = 'pending';
+		} else {
+			status = 'failed';
+		}
 		res.redirect(`${process.env.CLIENT_URL}?veriffStatus=${status}`);
 	} catch (err) {
+		console.log('Veriff webhook GET error:', err);
 		res.redirect(`${process.env.CLIENT_URL}?veriffStatus=error`);
 	}
 });
