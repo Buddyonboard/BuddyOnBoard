@@ -155,7 +155,7 @@ function App() {
 													path="buddy-registration"
 													element={<BuddyRegistrationForm />}
 												/>
-												<Route path="buddy-dashboard" element={<ServiceProviderLayout />} />
+												{/* <Route path="buddy-dashboard" element={<ServiceProviderLayout />} /> */}
 												<Route element={<VeriffVerifiedRoute />}>
 													<Route
 														path="buddy-dashboard"

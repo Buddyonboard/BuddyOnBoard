@@ -30,9 +30,20 @@ export function getuserProfile() {
 }
 
 /***** Set userProfile data Immediately After Submit in LocalStorage ****/
-export async function setUserProfile(apiUrl, userUid) {
+export async function setUserProfile(apiUrl, userUid, veriffStatus = null) {
 	const res = await axios.get(`${apiUrl}/users/${userUid}`);
-	localStorage.setItem('userProfile', JSON.stringify(res.data));
+	// Ensure we have an object to store
+	const payload = res.data || {};
+	// If caller provided a veriffStatus, persist it into the stored profile
+	try {
+		payload.data = payload.data || payload;
+		payload.data.veriff = payload.data.veriff || {};
+		if (veriffStatus) payload.data.veriff.status = veriffStatus;
+	} catch (e) {
+		// If shaping fails, just ignore and store original response
+		console.warn('Could not attach veriffStatus to profile', e);
+	}
+	localStorage.setItem('userProfile', JSON.stringify(payload));
 	return res;
 }
 

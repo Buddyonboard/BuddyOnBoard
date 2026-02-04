@@ -19,7 +19,7 @@ export default function LandingPage() {
 		if (veriffStatus) {
 			try {
 				const raw = JSON.parse(localStorage.getItem('userProfile')) || {};
-				const profile = raw.data || getuserProfile() || {};
+				const profile = raw.data || getuserProfile();
 				const updatedProfile = {
 					...profile,
 					veriff: { ...(profile.veriff || {}), status: veriffStatus }
