@@ -2,8 +2,8 @@ import { toast } from 'sonner';
 import CONST from './Constants';
 
 /****************** Fixed Warning Toast *******************/
-export function showWarningToast() {
-	toast.warning(CONST.somethingWentWrong, {
+export function showWarningToast(message = CONST.somethingWentWrong) {
+	toast.warning(message, {
 		position: 'top-right',
 		closeButton: true,
 		style: {

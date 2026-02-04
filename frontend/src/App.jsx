@@ -17,7 +17,8 @@ import {
 	AuthRoute,
 	BlockOtherRoutesIfUnregistered,
 	PrivateRoute,
-	RegistrationRoute
+	RegistrationRoute,
+	VeriffVerifiedRoute
 } from './utils/ProtectedRoutes';
 import FirebaseRedirectHandler from './utils/FirebaseRedirectHandler';
 import { BookingCancellationProvider } from './context/Booking-Cancellation-Context';
@@ -41,53 +42,52 @@ const LandingPage = lazy(() => import('./pages/LandingPage'));
 const PrivacyPolicy = lazy(() => import('./pages/Common-pages/PrivacyPolicy'));
 const TermsOfUse = lazy(() => import('./pages/Common-pages/TermsOfUse'));
 const AboutUs = lazy(() => import('./pages/Common-pages/About-Us'));
-const HowItWorksLayout = lazy(() =>
-	import('./components/Landing/HowItWorksLayout')
+const HowItWorksLayout = lazy(
+	() => import('./components/Landing/HowItWorksLayout')
 );
 const MainLayout = lazy(() => import('./pages/MainLayout'));
 const NotFound = lazy(() => import('./pages/Common-pages/404-Not-Found'));
 const ExploreFaq = lazy(() => import('./pages/Common-pages/Explore-Faq'));
-const FeatureReqForm = lazy(() =>
-	import('./components/Forms/Feature-Req-Form')
+const FeatureReqForm = lazy(
+	() => import('./components/Forms/Feature-Req-Form')
 );
-const ReportIssueForm = lazy(() =>
-	import('./components/Forms/Report-Issue-Form')
+const ReportIssueForm = lazy(
+	() => import('./components/Forms/Report-Issue-Form')
 );
 const SignIn = lazy(() => import('./auth/Sign-in/Sign-in'));
 const SignUp = lazy(() => import('./auth/Sign-up/Sign-up'));
-const UserRegistrationForm = lazy(() =>
-	import('./components/Forms/User-Registration-Form')
+const UserRegistrationForm = lazy(
+	() => import('./components/Forms/User-Registration-Form')
 );
-const ResetPassword = lazy(() =>
-	import('./auth/Forgot-Password/Reset-Password')
+const ResetPassword = lazy(
+	() => import('./auth/Forgot-Password/Reset-Password')
 );
-const UserProfile = lazy(() =>
-	import('./components/Forms/Profile-Page/User-Profile')
+const UserProfile = lazy(
+	() => import('./components/Forms/Profile-Page/User-Profile')
 );
 const SendRequestForm = lazy(() => import('./pages/SendRequestForm-Layout'));
 const BookingsLayout = lazy(() => import('./pages/Bookings-Layout'));
-const BookingSummaryPage = lazy(() =>
-	import('./components/Bookings/Booking-SummaryPage')
+const BookingSummaryPage = lazy(
+	() => import('./components/Bookings/Booking-SummaryPage')
 );
 const SearchResultsLayout = lazy(() => import('./pages/Search-Results-Layout'));
-const BuddyRegistrationForm = lazy(() =>
-	import('./components/Forms/Service-Provider/BuddyRegistration')
+const BuddyRegistrationForm = lazy(
+	() => import('./components/Forms/Service-Provider/BuddyRegistration')
 );
-const ServiceProviderLayout = lazy(() =>
-	import('./components/ServiceProvider/ServiceProvider-Layout')
+const ServiceProviderLayout = lazy(
+	() => import('./components/ServiceProvider/ServiceProvider-Layout')
 );
-const CreateListingPage = lazy(() =>
-	import('./components/ServiceProvider/Create-Listing-Section/CreateListingPage')
+const CreateListingPage = lazy(
+	() =>
+		import('./components/ServiceProvider/Create-Listing-Section/CreateListingPage')
 );
-const TravelBuddyListingForm = lazy(() =>
-	import(
-		'./components/ServiceProvider/Create-Listing-Section/TravelBuddyListingForm'
-	)
+const TravelBuddyListingForm = lazy(
+	() =>
+		import('./components/ServiceProvider/Create-Listing-Section/TravelBuddyListingForm')
 );
-const CourierBuddyListingForm = lazy(() =>
-	import(
-		'./components/ServiceProvider/Create-Listing-Section/Courier-Listing-Form/CourierBuddyListingForm'
-	)
+const CourierBuddyListingForm = lazy(
+	() =>
+		import('./components/ServiceProvider/Create-Listing-Section/Courier-Listing-Form/CourierBuddyListingForm')
 );
 
 function App() {
@@ -156,6 +156,12 @@ function App() {
 													element={<BuddyRegistrationForm />}
 												/>
 												<Route path="buddy-dashboard" element={<ServiceProviderLayout />} />
+												<Route element={<VeriffVerifiedRoute />}>
+													<Route
+														path="buddy-dashboard"
+														element={<ServiceProviderLayout />}
+													/>
+												</Route>
 
 												{/* Create Listing Route and Sub-routes */}
 												<Route path="create-listing" element={<CreateListingPage />}>

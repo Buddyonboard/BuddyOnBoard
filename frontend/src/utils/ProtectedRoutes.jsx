@@ -36,3 +36,17 @@ export function BlockOtherRoutesIfUnregistered() {
 
 	return <Outlet />;
 }
+
+/*** Veriff Verified Route: Only service providers with approved Veriff status can access ***/
+export function VeriffVerifiedRoute() {
+	const userProfile = getuserProfile();
+	const veriffStatus = userProfile?.veriff?.status;
+
+	// Allow access only if user is logged in and Veriff status is 'approved'
+	if (getTokenDetails() && veriffStatus === 'approved') {
+		return <Outlet />;
+	}
+
+	// Otherwise redirect to buddy registration flow
+	return <Navigate to="/buddy-registration" replace />;
+}
