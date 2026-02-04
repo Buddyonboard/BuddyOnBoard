@@ -7,7 +7,8 @@ import {
 } from '@/utils/toastUtils';
 import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { getuserProfile } from '@/utils/localStorageHelper';
+import { getuserProfile, setUserProfile } from '@/utils/localStorageHelper';
+import API_URL from '@/environments/Environment-dev';
 
 export default function LandingPage() {
 	const [searchParams] = useSearchParams();
@@ -15,20 +16,14 @@ export default function LandingPage() {
 	useEffect(() => {
 		const veriffStatus = searchParams.get('veriffStatus');
 
-		// Persist veriff status into localStorage.userProfile so route guards can read it
+		// Fetch user profile from DB and persist veriff status
 		if (veriffStatus) {
-			try {
-				const raw = JSON.parse(localStorage.getItem('userProfile')) || {};
-				const profile = raw.data || getuserProfile();
-				const updatedProfile = {
-					...profile,
-					veriff: { ...(profile.veriff || {}), status: veriffStatus }
-				};
-				raw.data = updatedProfile;
-				localStorage.setItem('userProfile', JSON.stringify(raw));
-			} catch (e) {
-				showWarningToast('Failed to persist veriffStatus to localStorage');
-				// console.log('Failed to persist veriffStatus to localStorage', e);
+			const uid = getuserProfile()?._id;
+			if (uid) {
+				setUserProfile(API_URL, uid, veriffStatus).catch((e) => {
+					console.log('Failed to refresh profile with veriffStatus', e);
+					showWarningToast('Failed to update verification status');
+				});
 			}
 		}
 
