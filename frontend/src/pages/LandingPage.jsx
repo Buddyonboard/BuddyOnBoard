@@ -8,7 +8,7 @@ import {
 import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { getuserProfile, setUserProfile } from '@/utils/localStorageHelper';
-import API_URL from '@/environments/Environment-dev';
+import API_URL from '../../environments/Environment-dev';
 
 export default function LandingPage() {
 	const [searchParams] = useSearchParams();
