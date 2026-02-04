@@ -1,6 +1,7 @@
 import LandingContainer from '@/components/Landing/LandingContainer';
 import {
 	showErrorToast,
+	showInfoToast,
 	showSuccessToast,
 	showWarningToast
 } from '@/utils/toastUtils';
@@ -13,7 +14,13 @@ export default function LandingPage() {
 	useEffect(() => {
 		const veriffStatus = searchParams.get('veriffStatus');
 
-		if (veriffStatus === 'success') {
+		if (veriffStatus === 'pending') {
+			// User completed Veriff flow, waiting for decision webhook
+			showInfoToast(
+				'Verification submitted. You will be notified of the results shortly.'
+			);
+			window.history.replaceState({}, document.title, window.location.pathname);
+		} else if (veriffStatus === 'success') {
 			// Show success toast
 			showSuccessToast('Verification completed successfully!');
 			// Optionally clear the param from URL
