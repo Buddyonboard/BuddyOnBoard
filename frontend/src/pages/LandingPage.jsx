@@ -7,7 +7,7 @@ import {
 } from '@/utils/toastUtils';
 import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { getuserProfile, setUserProfile } from '@/utils/localStorageHelper';
+import { getuserProfile, setUserProfile, getFirebaseUid } from '@/utils/localStorageHelper';
 import API_URL from '../../environments/Environment-dev';
 
 export default function LandingPage() {
@@ -18,12 +18,13 @@ export default function LandingPage() {
 
 		// Fetch user profile from DB and persist veriff status
 		if (veriffStatus) {
-			const uid = getuserProfile()?._id;
-			if (uid) {
-				setUserProfile(API_URL, uid, veriffStatus).catch((e) => {
-					console.log('Failed to refresh profile with veriffStatus', e);
-					showWarningToast('Failed to update verification status');
-				});
+			const firebaseUid = getFirebaseUid();
+			if (firebaseUid) {
+				setUserProfile(API_URL, firebaseUid, veriffStatus)
+					.catch(e => {
+						console.log('Failed to refresh profile with veriffStatus', e);
+						showWarningToast('Failed to update verification status');
+					});
 			}
 		}
 
