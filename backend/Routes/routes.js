@@ -6,7 +6,8 @@ const {
 } = require('../controllers/dataFetchController');
 const {
 	userRegistration,
-	findUserData
+	findUserData,
+	getServiceProviderByUid
 } = require('../controllers/userController');
 const {
 	serviceRequestUpload,
@@ -43,6 +44,7 @@ const router = express.Router();
 
 router.get('/airportsList', getAirports);
 router.get('/users/:userUid', findUserData);
+router.get('/service-provider/:userUid', getServiceProviderByUid);
 router.get('/countriesList', getAllCountries);
 router.get('/languagesList', getAllLanguages);
 router.get('/serviceRequestsList', getServiceRequests);

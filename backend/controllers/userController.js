@@ -109,3 +109,27 @@ exports.findUserData = async (req, res) => {
 		res.status(500).json({ message: 'Server error' });
 	}
 };
+
+/****** Find Service Provider Profile based on Firebase UID ******/
+exports.getServiceProviderByUid = async (req, res) => {
+	try {
+		const { userUid } = req.params;
+
+		// Find user first by Firebase UID
+		const user = await Users.findOne({ uid: userUid });
+		if (!user) {
+			return res.status(404).json({ message: 'User not found' });
+		}
+
+		// Find service provider by user._id
+		const provider = await serviceProvider.findOne({ user_Id: user._id });
+		if (!provider) {
+			return res.status(404).json({ message: 'Service provider not found' });
+		}
+
+		res.status(200).json({ data: provider });
+	} catch (err) {
+		console.error('Error fetching service provider:', err);
+		res.status(500).json({ message: 'Server error' });
+	}
+};
