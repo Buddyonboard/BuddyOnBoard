@@ -24,7 +24,7 @@ export default function LandingPage() {
 		if (veriffStatus) {
 			const firebaseUid = getFirebaseUid();
 			if (firebaseUid) {
-				setUserProfile(API_URL, firebaseUid, veriffStatus).catch((e) => {
+				setUserProfileAfterSubmit(API_URL, firebaseUid, veriffStatus).catch((e) => {
 					console.log('Failed to refresh profile with veriffStatus', e);
 					showWarningToast('Failed to update verification status');
 				});

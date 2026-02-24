@@ -158,84 +158,91 @@ export default function BuddyCarousel() {
 	}
 
 	return (
-		<div className="relative w-full max-w-[1440px] 2xl:max-w-[100%] mx-auto px-4 bg-bob-bg-color">
-			{/* Navigation Buttons */}
-			<div className="absolute left-0 top-1/2 -translate-y-1/2 z-10 lg:flex lg:items-center lg:justify-center lg:h-52 lg:w-3/10 lg:bg-gradient-to-r lg:from-bob-bg-color lg:to-transparent lg:opacity-85">
-				<Button
-					variant="ghost"
-					size="icon"
-					className={`rounded-full bg-white shadow-xl lg:mr-28 2xl:mr-40
+		<>
+			<div className="relative">
+				{/* Background Image */}
+				<div className="absolute inset-0 bg-[url(@/assets/Landing/Features/BgFrame.svg)] bg-cover bg-center bg-no-repeat pointer-events-none"></div>
+				
+				{/* Carousel Content */}
+				<section className="relative w-full">
+				<div className="relative w-full max-w-[1440px] 2xl:max-w-[100%] mx-auto px-4">
+					{/* Navigation Buttons */}
+					<div className="absolute left-0 top-1/2 -translate-y-1/2 z-10 lg:flex lg:items-center lg:justify-center lg:h-52 lg:w-3/10 lg:bg-gradient-to-r lg:from-bob-bg-color lg:to-transparent lg:opacity-85">
+						<Button
+							variant="ghost"
+							size="icon"
+							className={`rounded-full bg-white shadow-xl lg:mr-28 2xl:mr-40
 						${!canScrollLeft ? 'cursor-not-allowed' : 'cursor-pointer'}`}
-					onClick={() => scroll('left')}
-					// disabled={!canScrollLeft}
-				>
-					<MoveLeft className="h-5 w-5" color="#000000" />
-				</Button>
-			</div>
+							onClick={() => scroll('left')}
+							// disabled={!canScrollLeft}
+						>
+							<MoveLeft className="h-5 w-5" color="#000000" />
+						</Button>
+					</div>
 
-			<div className="absolute right-0 top-1/2 -translate-y-1/2 z-10 lg:flex lg:items-center lg:justify-center lg:h-52 lg:w-3/10 lg:bg-gradient-to-l lg:from-bob-bg-color lg:to-transparent lg:opacity-85">
-				<Button
-					variant="ghost"
-					size="icon"
-					className={`rounded-full bg-white shadow-xl lg:ml-16 2xl:ml-40
+					<div className="absolute right-0 top-1/2 -translate-y-1/2 z-10 lg:flex lg:items-center lg:justify-center lg:h-52 lg:w-3/10 lg:bg-gradient-to-l lg:from-bob-bg-color lg:to-transparent lg:opacity-85">
+						<Button
+							variant="ghost"
+							size="icon"
+							className={`rounded-full bg-white shadow-xl lg:ml-16 2xl:ml-40
 						${!canScrollRight ? 'cursor-not-allowed' : 'cursor-pointer'}`}
-					onClick={() => scroll('right')}
-					// disabled={!canScrollRight}
-				>
-					<MoveRight className="h-5 w-5" color="#000000" />
-				</Button>
-			</div>
+							onClick={() => scroll('right')}
+							// disabled={!canScrollRight}
+						>
+							<MoveRight className="h-5 w-5" color="#000000" />
+						</Button>
+					</div>
 
-			{/* Scrollable Container */}
-			<div
-				ref={scrollContainerRef}
-				className="flex gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory"
-				style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-			>
-				{travelBuddies.map((buddy) => (
-					<Card className="md:min-w-[350px] min-w-[300px] max-w-[300px] snap-start shadow-none">
-						<CardContent>
-							{/* Journey Details */}
-							<div className="flex justify-between items-center mb-4">
-								<FlightSchedule
-									departureTime={buddy.departure.time}
-									departureDate={buddy.departure.date}
-									departureLocation={buddy.departure.location}
-									arrivalTime={buddy.arrival.time}
-									arrivalDate={buddy.arrival.date}
-									arrivalLocation={buddy.arrival.location}
-								/>
-							</div>
-
-							{/* Horizontal Line Separator */}
-							<img
-								className="max-w-[101%]"
-								src={DottedHorizontalLine}
-								alt="DottedHorizontalLine"
-							/>
-
-							{/* User Profile */}
-							<div className="flex flex-col gap-2">
-								<div className="flex items-center gap-3 mt-4">
-									{/* Profile Pic */}
-									<BuddyCardAvatar
-										userAvatar={buddy.avatar}
-										altAvatarName={buddy.name}
-									/>
-									<div>
-										{/* Profile Name & Verified Icon */}
-										<div className="flex items-center gap-2">
-											<span className="font-medium">{buddy.name}</span>
-
-											<img src={VerifiedIcon} alt="VerifiedIcon" className="h-6 w-6" />
-										</div>
+					{/* Scrollable Container */}
+					<div
+						ref={scrollContainerRef}
+						className="flex gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory"
+						style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+					>
+						{travelBuddies.map((buddy) => (
+							<Card className="md:min-w-[350px] min-w-[300px] max-w-[300px] snap-start shadow-none">
+								<CardContent>
+									{/* Journey Details */}
+									<div className="flex justify-between items-center mb-4">
+										<FlightSchedule
+											departureTime={buddy.departure.time}
+											departureDate={buddy.departure.date}
+											departureLocation={buddy.departure.location}
+											arrivalTime={buddy.arrival.time}
+											arrivalDate={buddy.arrival.date}
+											arrivalLocation={buddy.arrival.location}
+										/>
 									</div>
-								</div>
 
-								{/* Rating & Language */}
-								<div className="flex flex-row items-end gap-2 mt-1">
-									{/******** DO NOT DELETE :: LATER REFERENCE *******/}
-									{/* <div className="flex items-center gap-2">
+									{/* Horizontal Line Separator */}
+									<img
+										className="max-w-[101%]"
+										src={DottedHorizontalLine}
+										alt="DottedHorizontalLine"
+									/>
+
+									{/* User Profile */}
+									<div className="flex flex-col gap-2">
+										<div className="flex items-center gap-3 mt-4">
+											{/* Profile Pic */}
+											<BuddyCardAvatar
+												userAvatar={buddy.avatar}
+												altAvatarName={buddy.name}
+											/>
+											<div>
+												{/* Profile Name & Verified Icon */}
+												<div className="flex items-center gap-2">
+													<span className="font-medium">{buddy.name}</span>
+
+													<img src={VerifiedIcon} alt="VerifiedIcon" className="h-6 w-6" />
+												</div>
+											</div>
+										</div>
+
+										{/* Rating & Language */}
+										<div className="flex flex-row items-end gap-2 mt-1">
+											{/******** DO NOT DELETE :: LATER REFERENCE *******/}
+											{/* <div className="flex items-center gap-2">
 										<Badge
 											variant="secondary"
 											className="bg-bob-higher-rating-color text-white"
@@ -244,20 +251,23 @@ export default function BuddyCarousel() {
 											{buddy.rating}
 										</Badge>
 									</div> */}
-									<div className="flex flex-wrap gap-1 mt-1">
-										<Badge
-											variant="outline"
-											className="bg-bob-language-badge-color rounded-2xl"
-										>
-											Speaks {buddy.languages.join(', ')}
-										</Badge>
+											<div className="flex flex-wrap gap-1 mt-1">
+												<Badge
+													variant="outline"
+													className="bg-bob-language-badge-color rounded-2xl"
+												>
+													Speaks {buddy.languages.join(', ')}
+												</Badge>
+											</div>
+										</div>
 									</div>
-								</div>
-							</div>
-						</CardContent>
-					</Card>
-				))}
+								</CardContent>
+							</Card>
+						))}
+					</div>
+				</div>
+				</section>
 			</div>
-		</div>
+		</>
 	);
 }

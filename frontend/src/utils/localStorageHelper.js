@@ -35,8 +35,19 @@ export function getuserProfile() {
 	return userProfile;
 }
 
+/***** Set userProfile data in LocalStorage ****/
+export async function setUserProfile(apiUrl, userUid) {
+	const res = await axios.get(`${apiUrl}/users/${userUid}`);
+	localStorage.setItem('userProfile', JSON.stringify(res.data));
+	return res;
+}
+
 /***** Set userProfile data Immediately After Submit in LocalStorage ****/
-export async function setUserProfile(apiUrl, userUid, veriffStatus = null) {
+export async function setUserProfileAfterSubmit(
+	apiUrl,
+	userUid,
+	veriffStatus = null
+) {
 	const res = await axios.get(`${apiUrl}/service-provider/${userUid}`);
 	// Ensure we have an object to store
 	const payload = res.data || {};
@@ -57,13 +68,6 @@ export async function setUserProfile(apiUrl, userUid, veriffStatus = null) {
 	localStorage.setItem('userProfile', JSON.stringify(payload));
 	return res;
 }
-
-/* DO NOT DELETE */
-/* export async function setUserProfile(apiUrl, userUid) {
-	const res = await axios.get(`${apiUrl}/users/${userUid}`);
-	localStorage.setItem('userProfile', JSON.stringify(res.data));
-	return res;
-} */
 
 /***** Retrieve userProfile _id data from LocalStorage ****/
 export function getSeekerId() {
