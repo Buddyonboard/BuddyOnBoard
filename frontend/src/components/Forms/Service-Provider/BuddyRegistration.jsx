@@ -68,6 +68,8 @@ export default function BuddyRegistrationForm() {
 	const { data } = useCountries();
 	const firebase = useFirebase();
 
+	const veriffStatus = getuserProfile()?.veriff?.status;
+
 	const selectedDate = new Date();
 	const [month, setMonth] = useState(selectedDate.getMonth());
 	const [year, setYear] = useState(selectedDate.getFullYear());
@@ -464,7 +466,7 @@ export default function BuddyRegistrationForm() {
 						<div className="flex md:flex-row flex-col">
 							<ProfileSubmitButton
 								btnName="Confirm and continue"
-								disabled={isSubmitting || !isDirty}
+								disabled={isSubmitting || !isDirty || veriffStatus === 'approved'}
 								// handleProfileSubmit={handleProfileSubmit}
 							/>
 						</div>
