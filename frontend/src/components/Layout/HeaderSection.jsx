@@ -5,7 +5,7 @@ import { Menu, UserRound, X } from 'lucide-react';
 import CONST from '@/utils/constants';
 import { useFirebase } from '@/context/Firebase-Context';
 import FooterBrandImage from '@/assets/Common/FooterBrandImage.svg';
-import { getuserProfile } from '@/utils/localStorageHelper';
+import { getuserProfile, getVeriffStatus } from '@/utils/localStorageHelper';
 
 const userProfileIcon = <UserRound size={18} />;
 
@@ -17,12 +17,17 @@ export default function HeaderSection({ scrollToSection, page }) {
 
 	const userProfileData = getuserProfile();
 	const isServiceProvider = userProfileData?.role === 'serviceProvider';
+	const veriffStatus = getVeriffStatus();
 
 	/*** Set page and route name for based on user role ***/
-	const buddyPageType = isServiceProvider ? 'Buddy dashboard' : 'Become a buddy';
-	const buddyRouteType = isServiceProvider
-		? 'buddy-dashboard'
-		: 'buddy-registration';
+	const buddyPageType =
+		isServiceProvider && veriffStatus === 'approved'
+			? 'Buddy dashboard'
+			: 'Become a buddy';
+	const buddyRouteType =
+		isServiceProvider && veriffStatus === 'approved'
+			? 'buddy-dashboard'
+			: 'buddy-registration';
 
 	const toggleMenu = () => {
 		setIsMenuOpen((prev) => !prev);

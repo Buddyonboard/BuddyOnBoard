@@ -19,8 +19,11 @@ import {
 	PopoverTrigger
 } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
-import { toast } from 'sonner';
-import { getuserProfile, setUserProfile } from '@/utils/localStorageHelper';
+import {
+	getuserProfile,
+	getVeriffStatus,
+	setUserProfile
+} from '@/utils/localStorageHelper';
 import { useFirebase } from '@/context/Firebase-Context';
 import axios from 'axios';
 import API_URL from '../../../../environments/Environment-dev';
@@ -68,7 +71,7 @@ export default function BuddyRegistrationForm() {
 	const { data } = useCountries();
 	const firebase = useFirebase();
 
-	const veriffStatus = getuserProfile()?.veriff?.status;
+	const veriffStatus = getVeriffStatus();
 
 	const selectedDate = new Date();
 	const [month, setMonth] = useState(selectedDate.getMonth());

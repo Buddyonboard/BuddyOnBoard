@@ -1,5 +1,9 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
-import { getTokenDetails, getuserProfile } from './localStorageHelper';
+import {
+	getTokenDetails,
+	getuserProfile,
+	getVeriffStatus
+} from './localStorageHelper';
 
 /*** Private Route: Only Logged-in Users Can Access ***/
 export function PrivateRoute() {
@@ -39,8 +43,7 @@ export function BlockOtherRoutesIfUnregistered() {
 
 /*** Veriff Verified Route: Only service providers with approved Veriff status can access ***/
 export function VeriffVerifiedRoute() {
-	const userProfile = getuserProfile();
-	const veriffStatus = userProfile?.veriff?.status;
+	const veriffStatus = getVeriffStatus();
 
 	// Allow access only if user is logged in and Veriff status is 'approved'
 	if (getTokenDetails() && veriffStatus === 'approved') {
