@@ -103,11 +103,13 @@ router.get('/veriff/webhook', async (req, res) => {
 		} else {
 			status = 'failed';
 		}
-		// res.redirect(`${process.env.CLIENT_URL}?veriffStatus=${status}`);
-		res.redirect(`${process.env.CLIENT_URL}/?veriffStatus=${status}`);
+
+		const clientUrl = (process.env.CLIENT_URL || '').replace(/\/+$/, '');
+		res.redirect(`${clientUrl}/?veriffStatus=${status}`);
 	} catch (err) {
 		console.log('Veriff webhook GET error:', err);
-		res.redirect(`${process.env.CLIENT_URL}?veriffStatus=error`);
+		const clientUrl = (process.env.CLIENT_URL || '').replace(/\/+$/, '');
+		res.redirect(`${clientUrl}/?veriffStatus=error`);
 	}
 });
 router.post('/veriff/webhook', handleDecision);
