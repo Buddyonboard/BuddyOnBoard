@@ -469,7 +469,7 @@ export default function BuddyRegistrationForm() {
 						<div className="flex md:flex-row flex-col">
 							<ProfileSubmitButton
 								btnName="Confirm and continue"
-								disabled={isSubmitting || !isDirty || veriffStatus === 'approved'}
+								disabled={isSubmitting || (veriffStatus === 'approved' && !isDirty)}
 								// handleProfileSubmit={handleProfileSubmit}
 							/>
 						</div>
