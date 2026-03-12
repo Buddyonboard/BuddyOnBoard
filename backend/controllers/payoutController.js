@@ -1,6 +1,29 @@
 const payoutService = require('../Services/payoutService');
 const BuddyRequestModal = require('../models/SendRequestSchema');
 
+/* To trigger payouts */
+exports.triggerPayouts = async (req, res) => {
+	const cronSecret = process.env.CRON_SECRET;
+	const incomingSecret = req.header('x-cron-secret');
+
+	// console.log('CRON_SECRET', process.env.CRON_SECRET);
+	// console.log('incomingSecret', incomingSecret);
+
+	if (!cronSecret || incomingSecret !== cronSecret) {
+		return res.status(401).json({ success: false, message: 'Unauthorized' });
+	}
+
+	if (req.method === 'OPTIONS') return res.sendStatus(204);
+
+	try {
+		const result = await payoutService.processPayouts({ limit: 100 });
+		return res.json({ success: true, result });
+	} catch (error) {
+		console.log('Cron payout error', error);
+		return res.status(500).json({ success: false, message: error.message });
+	}
+};
+
 /* DO NOT DELETE :: FOR FUTURE REFERENCE */
 /**
  * Manual trigger (admin)

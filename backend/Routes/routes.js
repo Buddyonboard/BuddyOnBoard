@@ -39,6 +39,7 @@ const { createCheckoutSession } = require('../controllers/paymentController');
 const { openStripe } = require('../controllers/stripeConnectController');
 const { handleDecision } = require('../Webhooks/veriffWebhook');
 const { startVerification } = require('../controllers/veriffController');
+const { triggerPayouts } = require('../controllers/payoutController');
 
 const router = express.Router();
 
@@ -114,6 +115,8 @@ router.get('/veriff/webhook', async (req, res) => {
 });
 router.post('/veriff/webhook', handleDecision);
 router.post('/veriff/startVerification', startVerification);
+
+router.post('/cron/payout', triggerPayouts);
 
 // Get provider (status)
 // router.get('/:id', getProvider);
