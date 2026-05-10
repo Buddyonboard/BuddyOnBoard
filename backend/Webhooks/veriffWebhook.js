@@ -145,6 +145,11 @@ function verifyHmac(rawBodyBuffer, signatureFromHeader, secret) {
 exports.handleDecision = async (req, res) => {
 	const payload = req.body || {};
 
+	console.log(
+		'Veriff webhook received payload:',
+		JSON.stringify(payload, null, 2)
+	);
+
 	try {
 		const sessionId =
 			payload?.verification?.id ||
@@ -158,13 +163,29 @@ exports.handleDecision = async (req, res) => {
 			payload?.metadata?.vendorData ||
 			null;
 
+		console.log('Extracted sessionId:', sessionId, 'vendorData:', vendorData);
+
 		let provider = null;
 		if (vendorData) {
+			console.log('Trying to find provider by vendorData (_id):', vendorData);
 			provider = await serviceProvider.findById(vendorData);
+			if (provider) {
+				console.log('Found provider by vendorData');
+			} else {
+				console.log('Provider not found by vendorData, trying user_Id');
+				provider = await serviceProvider.findOne({ user_Id: vendorData });
+				if (provider) {
+					console.log('Found provider by user_Id');
+				}
+			}
 		}
 
 		if (!provider && sessionId) {
+			console.log('Trying to find provider by sessionId:', sessionId);
 			provider = await serviceProvider.findOne({ 'veriff.sessionId': sessionId });
+			if (provider) {
+				console.log('Found provider by sessionId');
+			}
 		}
 
 		if (!provider) {
