@@ -183,6 +183,13 @@ exports.getBookingRequestsBySeekerId = async (req, res) => {
 	try {
 		const { seekerId } = req.params;
 
+		if (!seekerId || seekerId === 'undefined' || seekerId === 'null') {
+			return res.status(400).json({
+				message: 'Invalid seeker ID',
+				data: null
+			});
+		}
+
 		const bookingRequests = await BuddyRequestModal.findOne({
 			service_Seeker_Id: seekerId
 		});
@@ -428,12 +435,12 @@ exports.updateBuddyRequest = async (req, res) => {
 		const setObj = {};
 
 		if (serviceType === 'Travel Buddy') {
-			(setObj[`${arrayName}.$.passengers_List`] = parsedItems.map((item) => ({
+			((setObj[`${arrayName}.$.passengers_List`] = parsedItems.map((item) => ({
 				age: item.age,
 				gender: item.gender
 			}))),
 				(setObj[`${arrayName}.$.passengerCount`] = parsedItems.length.toString()),
-				(setObj[`${arrayName}.$.totalAmount`] = JSON.parse(req.body.totalAmount));
+				(setObj[`${arrayName}.$.totalAmount`] = JSON.parse(req.body.totalAmount)));
 			setObj[`${arrayName}.$.updatedAt`] = new Date();
 		} else if (serviceType === 'Courier Buddy') {
 			const courierItems = [];
@@ -481,11 +488,11 @@ exports.updateBuddyRequest = async (req, res) => {
 					});
 				});
 
-			(setObj[`${arrayName}.$.totalItemsWeight`] = totalItemsWeight),
+			((setObj[`${arrayName}.$.totalItemsWeight`] = totalItemsWeight),
 				(setObj[`${arrayName}.$.totalItems`] = courierItems.length.toString()),
 				(setObj[`${arrayName}.$.courier_Items_List`] = courierItems),
 				(setObj[`${arrayName}.$.totalAmount`] = JSON.parse(totalAmount)),
-				(setObj[`${arrayName}.$.updatedAt`] = new Date());
+				(setObj[`${arrayName}.$.updatedAt`] = new Date()));
 		}
 
 		const updated = await BuddyRequestModal.findOneAndUpdate(

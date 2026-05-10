@@ -143,23 +143,82 @@ function verifyHmac(rawBodyBuffer, signatureFromHeader, secret) {
 
 /* In veriffWebhook.js (POST handler) */
 exports.handleDecision = async (req, res) => {
-	const { verification } = req.body;
+	const payload = req.body || {};
 
 	try {
-		const provider = await serviceProvider.findOne({
-			'veriff.sessionId': verification.id
-		});
+		const sessionId =
+			payload?.verification?.id ||
+			payload?.session?.id ||
+			payload?.sessionId ||
+			payload?.id ||
+			null;
+		const vendorData =
+			payload?.verification?.vendorData ||
+			payload?.vendorData ||
+			payload?.metadata?.vendorData ||
+			null;
 
-		if (provider) {
-			provider.veriff.status = verification.status;
-			provider.veriff.decision = verification.status;
-			provider.veriff.lastUpdated = new Date();
-			await provider.save();
+		let provider = null;
+		if (vendorData) {
+			provider = await serviceProvider.findById(vendorData);
 		}
 
-		res.json({ received: true });
+		if (!provider && sessionId) {
+			provider = await serviceProvider.findOne({ 'veriff.sessionId': sessionId });
+		}
+
+		if (!provider) {
+			console.warn('Veriff webhook: provider not found for sessionId/vendorData', {
+				sessionId,
+				vendorData
+			});
+			return res.status(200).send('ok');
+		}
+
+		const verification = payload?.verification || payload?.session || payload;
+		const status =
+			verification?.status ||
+			verification?.decision ||
+			verification?.result ||
+			null;
+		const decision =
+			verification?.decision || verification?.result || status || null;
+		const reason =
+			verification?.reason || verification?.reasons?.join?.(', ') || null;
+		const reasonCode =
+			verification?.reasonCode || verification?.reasons?.code || null;
+		const acceptanceTime =
+			verification?.acceptanceTime || verification?.submittedAt || null;
+
+		provider.veriff.sessionId = provider.veriff.sessionId || sessionId;
+		provider.veriff.status = status || provider.veriff.status;
+		provider.veriff.decision = decision || provider.veriff.decision;
+		provider.veriff.reason = reason || provider.veriff.reason;
+		provider.veriff.reasonCode = reasonCode || provider.veriff.reasonCode;
+		provider.veriff.rawWebhookPayload = payload;
+		provider.veriff.lastUpdated = new Date();
+
+		if (
+			status === 'approved' ||
+			decision === 'approved' ||
+			status === 'success'
+		) {
+			provider.veriff.verifiedAt = acceptanceTime
+				? new Date(acceptanceTime)
+				: new Date();
+			provider.isVerified = true;
+		} else if (
+			status === 'declined' ||
+			status === 'failed' ||
+			decision === 'declined'
+		) {
+			provider.isVerified = false;
+		}
+
+		await provider.save();
+		return res.status(200).send('ok');
 	} catch (err) {
 		console.log('Veriff decision webhook error:', err);
-		res.status(500).json({ error: 'Webhook processing failed' });
+		return res.status(500).json({ error: 'Webhook processing failed' });
 	}
 };

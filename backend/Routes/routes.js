@@ -90,21 +90,39 @@ router.post('/cancel-booking-seeker', cancelBookingByServiceSeeker);
 router.post('/open-stripe', openStripe);
 
 router.get('/veriff/webhook', async (req, res) => {
-	// Veriff redirects user here after completion
-	// The sessionId is passed as a query param
-	const sessionId = req.query.sessionId;
-	let status = 'pending'; // default to pending if we can't determine
+	// Veriff redirects user here after completion.
+	// The sessionId is usually passed as a query param, but Veriff may also include status metadata.
+	const sessionId =
+		req.query.sessionId || req.query.id || req.query.verificationId;
+	const rawStatus =
+		req.query.status ||
+		req.query.veriffStatus ||
+		req.query.verificationStatus ||
+		req.query.state ||
+		null;
+
+	let status = 'pending';
+
+	if (rawStatus) {
+		const normalized = rawStatus.toString().toLowerCase();
+		if (normalized === 'approved' || normalized === 'success') {
+			status = 'success';
+		} else if (
+			normalized === 'declined' ||
+			normalized === 'failed' ||
+			normalized === 'rejected'
+		) {
+			status = 'failed';
+		} else if (normalized === 'error') {
+			status = 'error';
+		} else {
+			status = normalized;
+		}
+	} else if (sessionId) {
+		status = 'pending';
+	}
 
 	try {
-		if (sessionId) {
-			// Optional: fetch decision from Veriff API to determine actual status
-			// For now, redirect with pending status
-			// The webhook (POST) will update the provider record with actual decision later
-			status = 'pending';
-		} else {
-			status = 'failed';
-		}
-
 		const clientUrl = (process.env.CLIENT_URL || '').replace(/\/+$/, '');
 		res.redirect(`${clientUrl}/?veriffStatus=${status}`);
 	} catch (err) {

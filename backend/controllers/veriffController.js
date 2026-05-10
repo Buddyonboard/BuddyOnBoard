@@ -17,8 +17,22 @@ exports.startVerification = async (req, res) => {
 		}
 
 		// Establish Payload for Veriff Create Session
+		const callbackBase = process.env.VERIFF_CALLBACK_URL || process.env.BASE_URL;
+		const callbackUrl = callbackBase
+			? `${callbackBase.toString().replace(/\/+$/, '')}/veriff/webhook`
+			: null;
+
+		if (!callbackUrl) {
+			console.log(
+				'Missing Veriff callback URL. Set VERIFF_CALLBACK_URL or BASE_URL in env.'
+			);
+			return res
+				.status(500)
+				.json({ error: 'Veriff callback configuration missing' });
+		}
+
 		const payload = {
-			callbackUrl: `${process.env.BASE_URL}/veriff/webhook`,
+			callbackUrl,
 			person: {
 				firstName: provider.userDetails?.firstName,
 				lastName: provider.userDetails?.lastName,

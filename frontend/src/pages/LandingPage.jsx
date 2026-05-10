@@ -50,24 +50,25 @@ export default function LandingPage() {
 			}
 		}
 
-		if (veriffStatus === 'pending') {
-			// User completed Veriff flow, waiting for decision webhook
+		const normalizedStatus = veriffStatus?.toString().toLowerCase();
+		let toastStatus = normalizedStatus;
+		if (normalizedStatus === 'approved') toastStatus = 'success';
+		if (normalizedStatus === 'declined') toastStatus = 'failed';
+		if (normalizedStatus === 'rejected') toastStatus = 'failed';
+
+		if (toastStatus === 'pending') {
 			showInfoToast(
 				'Verification submitted. You will be notified of the results shortly.'
 			);
 			window.history.replaceState({}, document.title, window.location.pathname);
-		} else if (veriffStatus === 'success') {
-			// Show success toast
+		} else if (toastStatus === 'success') {
 			showSuccessToast('Verification completed successfully!');
-			// Optionally clear the param from URL
 			window.history.replaceState({}, document.title, window.location.pathname);
-		} else if (veriffStatus === 'failed') {
-			// Show failure toast
+		} else if (toastStatus === 'failed') {
 			showErrorToast('Verification failed. Please try again.');
 			window.history.replaceState({}, document.title, window.location.pathname);
-		} else if (veriffStatus === 'error') {
-			// Show error toast
-			showWarningToast();
+		} else if (toastStatus === 'error') {
+			showWarningToast('Verification could not be completed. Please try again.');
 			window.history.replaceState({}, document.title, window.location.pathname);
 		}
 	}, [searchParams]);
