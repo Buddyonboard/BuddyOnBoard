@@ -41,8 +41,8 @@ exports.startVerification = async (req, res) => {
 			}
 		};
 
-		// Create Veriff Session
-		const veriffResp = await veriffService.createSession(payload, providerId);
+		// Create Veriff Session; vendorData should be the provider document _id for webhook mapping
+		const veriffResp = await veriffService.createSession(payload, provider._id);
 
 		// veriffResp expected: { id, url, sessionToken, status }
 		provider.veriff.sessionId = veriffResp.id;

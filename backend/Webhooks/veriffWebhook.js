@@ -180,13 +180,17 @@ exports.handleDecision = async (req, res) => {
 			verification?.status ||
 			verification?.decision ||
 			verification?.result ||
+			payload?.status ||
 			null;
 		const decision =
 			verification?.decision || verification?.result || status || null;
 		const reason =
 			verification?.reason || verification?.reasons?.join?.(', ') || null;
 		const reasonCode =
-			verification?.reasonCode || verification?.reasons?.code || null;
+			verification?.reasonCode ||
+			verification?.reasonCode ||
+			payload?.reasonCode ||
+			null;
 		const acceptanceTime =
 			verification?.acceptanceTime || verification?.submittedAt || null;
 

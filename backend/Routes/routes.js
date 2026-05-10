@@ -37,6 +37,7 @@ const {
 } = require('../Middlewares/Upload');
 const { createCheckoutSession } = require('../controllers/paymentController');
 const { openStripe } = require('../controllers/stripeConnectController');
+const serviceProvider = require('../models/ServiceProviderSchema');
 const { handleDecision } = require('../Webhooks/veriffWebhook');
 const { startVerification } = require('../controllers/veriffController');
 const { triggerPayouts } = require('../controllers/payoutController');
@@ -93,7 +94,7 @@ router.get('/veriff/webhook', async (req, res) => {
 	// Veriff redirects user here after completion.
 	// The sessionId is usually passed as a query param, but Veriff may also include status metadata.
 	const sessionId =
-		req.query.sessionId || req.query.id || req.query.verificationId;
+		req.query.sessionId || req.query.id || req.query.verificationId || null;
 	const rawStatus =
 		req.query.status ||
 		req.query.veriffStatus ||
@@ -102,27 +103,55 @@ router.get('/veriff/webhook', async (req, res) => {
 		null;
 
 	let status = 'pending';
+	let decision = null;
 
 	if (rawStatus) {
 		const normalized = rawStatus.toString().toLowerCase();
 		if (normalized === 'approved' || normalized === 'success') {
-			status = 'success';
+			status = 'approved';
+			decision = 'approved';
 		} else if (
 			normalized === 'declined' ||
 			normalized === 'failed' ||
 			normalized === 'rejected'
 		) {
-			status = 'failed';
+			status = 'declined';
+			decision = 'declined';
 		} else if (normalized === 'error') {
 			status = 'error';
+			decision = 'error';
 		} else {
 			status = normalized;
+			decision = normalized;
 		}
-	} else if (sessionId) {
-		status = 'pending';
 	}
 
 	try {
+		if (sessionId && rawStatus) {
+			const provider = await serviceProvider.findOne({
+				'veriff.sessionId': sessionId
+			});
+			if (provider) {
+				provider.veriff.sessionId = provider.veriff.sessionId || sessionId;
+				provider.veriff.status = status;
+				provider.veriff.decision = decision || provider.veriff.decision;
+				provider.veriff.lastUpdated = new Date();
+
+				if (status === 'approved' || status === 'success') {
+					provider.veriff.verifiedAt = new Date();
+					provider.isVerified = true;
+				} else if (
+					status === 'declined' ||
+					status === 'failed' ||
+					status === 'rejected'
+				) {
+					provider.isVerified = false;
+				}
+
+				await provider.save();
+			}
+		}
+
 		const clientUrl = (process.env.CLIENT_URL || '').replace(/\/+$/, '');
 		res.redirect(`${clientUrl}/?veriffStatus=${status}`);
 	} catch (err) {
