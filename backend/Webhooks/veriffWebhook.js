@@ -20,6 +20,31 @@ function verifyHmac(rawBodyBuffer, signatureFromHeader, secret) {
 	);
 }
 
+function normalizeVeriffStatus(payload) {
+	const rawStatus =
+		payload?.status ||
+		payload?.decision ||
+		payload?.result ||
+		payload?.action ||
+		null;
+
+	if (!rawStatus) return null;
+
+	const normalized = rawStatus.toString().trim().toLowerCase();
+
+	if (normalized === 'success') return 'approved';
+	if (normalized === 'approved') return 'approved';
+	if (normalized === 'declined') return 'declined';
+	if (normalized === 'resubmission_requested') return 'resubmission_requested';
+	if (normalized === 'expired') return 'expired';
+	if (normalized === 'abandoned') return 'abandoned';
+	if (normalized === 'review') return 'review';
+	if (normalized === 'submitted') return 'submitted';
+	if (normalized === 'created') return 'created';
+	if (normalized === 'failed') return 'declined';
+	return normalized;
+}
+
 /* DO NOT DELETE :: FUTURE REFERENCE */
 // exports.handleDecision = async (req, res) => {
 // 	try {
@@ -197,21 +222,19 @@ exports.handleDecision = async (req, res) => {
 		}
 
 		const verification = payload?.verification || payload?.session || payload;
-		const status =
+		const rawStatus =
 			verification?.status ||
 			verification?.decision ||
 			verification?.result ||
+			verification?.action ||
 			payload?.status ||
+			payload?.action ||
 			null;
-		const decision =
-			verification?.decision || verification?.result || status || null;
+		const status = normalizeVeriffStatus({ status: rawStatus });
+		const decision = status;
 		const reason =
 			verification?.reason || verification?.reasons?.join?.(', ') || null;
-		const reasonCode =
-			verification?.reasonCode ||
-			verification?.reasonCode ||
-			payload?.reasonCode ||
-			null;
+		const reasonCode = verification?.reasonCode || payload?.reasonCode || null;
 		const acceptanceTime =
 			verification?.acceptanceTime || verification?.submittedAt || null;
 
@@ -223,19 +246,15 @@ exports.handleDecision = async (req, res) => {
 		provider.veriff.rawWebhookPayload = payload;
 		provider.veriff.lastUpdated = new Date();
 
-		if (
-			status === 'approved' ||
-			decision === 'approved' ||
-			status === 'success'
-		) {
+		if (status === 'approved') {
 			provider.veriff.verifiedAt = acceptanceTime
 				? new Date(acceptanceTime)
 				: new Date();
 			provider.isVerified = true;
 		} else if (
 			status === 'declined' ||
-			status === 'failed' ||
-			decision === 'declined'
+			status === 'expired' ||
+			status === 'abandoned'
 		) {
 			provider.isVerified = false;
 		}
