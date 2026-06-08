@@ -1,6 +1,67 @@
 const serviceProvider = require('../models/ServiceProviderSchema');
 const veriffService = require('../Services/veriffService');
 
+// Poll Veriff for full-auto decision and persist it to provider record
+exports.fetchDecisionForSession = async (req, res) => {
+	const { sessionId } = req.body || req.query || {};
+
+	if (!sessionId) return res.status(400).json({ error: 'sessionId required' });
+
+	try {
+		const decisionResp = await veriffService.fetchFullAutoDecision(sessionId);
+
+		// decisionResp shape depends on Veriff response; try to extract useful info
+		const verification = decisionResp?.verification || decisionResp || {};
+		const fullAutoDecision = decisionResp?.data?.verification?.decision;
+		// decisionResp?.data?.verification?.status ||
+		// decisionResp?.data?.decision ||
+		// null;
+		const status = fullAutoDecision;
+		// verification?.status ||
+		// verification?.decision ||
+		// verification?.result ||
+		// verification?.action ||
+		// null;
+		const normalized = fullAutoDecision;
+		// ? normalizeVeriffStatus({
+		// 		data: { verification: { decision: fullAutoDecision } }
+		// 	})
+		// : normalizeVeriffStatus(decisionResp);
+
+		// find provider by sessionId
+		const provider = await serviceProvider.findOne({
+			'veriff.sessionId': sessionId
+		});
+		if (!provider)
+			return res.status(404).json({ error: 'Provider not found for sessionId' });
+
+		provider.veriff.status =
+			normalized !== null ? normalized : provider.veriff.status;
+		// removeLegacyDecisionField(provider);
+		provider.veriff.rawWebhookPayload =
+			decisionResp || provider.veriff.rawWebhookPayload;
+		provider.veriff.lastUpdated = new Date();
+
+		if (normalized === 'approved') {
+			provider.veriff.verifiedAt = new Date();
+			provider.isVerified = true;
+		} else if (['declined', 'expired', 'abandoned'].includes(normalized)) {
+			provider.isVerified = false;
+		}
+
+		await provider.save();
+		return res.json({ updated: true, status: normalized });
+	} catch (err) {
+		console.error(
+			'fetchDecisionForSession err',
+			err?.response?.data || err.message
+		);
+		return res
+			.status(500)
+			.json({ error: 'Failed to fetch decision', detail: err.message });
+	}
+};
+
 /**
  * Creates a veriff session, saves session info to provider doc, returns session.url to client
  */
@@ -12,7 +73,11 @@ exports.startVerification = async (req, res) => {
 		if (!provider) return res.status(404).json({ error: 'Provider not found' });
 
 		// If already approved, short-circuit
-		if (provider.isVerified && provider.veriff?.status === 'approved') {
+		if (
+			provider.isVerified &&
+			provider.veriff?.rawWebhookPayload?.data?.verification?.decision ===
+				'success'
+		) {
 			return res.status(200).json({ message: 'Provider is already verified' });
 		}
 
@@ -47,8 +112,11 @@ exports.startVerification = async (req, res) => {
 		// veriffResp expected: { id, url, sessionToken, status }
 		provider.veriff.sessionId = veriffResp.id;
 		provider.veriff.sessionUrl = veriffResp.url;
+		// provider.veriff.decisionUrl =
+		// 	veriffResp.decisionUrl || provider.veriff.decisionUrl || null;
 		provider.veriff.sessionToken = veriffResp.sessionToken || null;
-		provider.veriff.status = veriffResp.status || null;
+		// provider.veriff.status = veriffResp.status || provider.veriff.status || null;
+		provider.veriff.status = veriffResp.status || provider.veriff.status || null;
 		provider.veriff.lastUpdated = new Date();
 		await provider.save();
 

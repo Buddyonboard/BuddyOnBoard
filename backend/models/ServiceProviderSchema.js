@@ -5,7 +5,6 @@ const VeriffSchema = new mongoose.Schema({
 	sessionUrl: { type: String, default: null },
 	sessionToken: { type: String, default: null }, // optional
 	status: { type: String, default: 'not_started' }, // not_started | created | started | submitted | approved | declined | resubmission_requested | expired | abandoned | review
-	decision: { type: String, default: null }, // approved/declined/review/etc
 	reasonCode: { type: String, default: null },
 	reason: { type: String, default: null },
 	verifiedAt: { type: Date, default: null },

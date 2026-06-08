@@ -38,8 +38,8 @@ const {
 const { createCheckoutSession } = require('../controllers/paymentController');
 const { openStripe } = require('../controllers/stripeConnectController');
 const serviceProvider = require('../models/ServiceProviderSchema');
-const { handleDecision } = require('../Webhooks/veriffWebhook');
 const { startVerification } = require('../controllers/veriffController');
+const { fetchDecisionForSession } = require('../controllers/veriffController');
 const { triggerPayouts } = require('../controllers/payoutController');
 
 const router = express.Router();
@@ -127,30 +127,9 @@ router.get('/veriff/webhook', async (req, res) => {
 	}
 
 	try {
-		if (sessionId && rawStatus) {
-			const provider = await serviceProvider.findOne({
-				'veriff.sessionId': sessionId
-			});
-			if (provider) {
-				provider.veriff.sessionId = provider.veriff.sessionId || sessionId;
-				provider.veriff.status = status;
-				provider.veriff.decision = decision || provider.veriff.decision;
-				provider.veriff.lastUpdated = new Date();
-
-				if (status === 'approved' || status === 'success') {
-					provider.veriff.verifiedAt = new Date();
-					provider.isVerified = true;
-				} else if (
-					status === 'declined' ||
-					status === 'failed' ||
-					status === 'rejected'
-				) {
-					provider.isVerified = false;
-				}
-
-				await provider.save();
-			}
-		}
+		// DO NOT UPDATE PROVIDER HERE - the POST webhook is the source of truth.
+		// The GET redirect is only for browser redirect, not for status persistence.
+		// Veriff will send the decision via POST webhook, which is more reliable.
 
 		const clientUrl = (process.env.CLIENT_URL || '').replace(/\/+$/, '');
 		res.redirect(`${clientUrl}/?veriffStatus=${status}`);
@@ -160,8 +139,8 @@ router.get('/veriff/webhook', async (req, res) => {
 		res.redirect(`${clientUrl}/?veriffStatus=error`);
 	}
 });
-router.post('/veriff/webhook', handleDecision);
 router.post('/veriff/startVerification', startVerification);
+router.post('/veriff/fetchDecision', fetchDecisionForSession);
 
 router.post('/cron/payout', triggerPayouts);
 

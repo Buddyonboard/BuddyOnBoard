@@ -5,13 +5,14 @@ import {
 	showSuccessToast,
 	showWarningToast
 } from '@/utils/toastUtils';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
 	getuserProfile,
 	setUserProfile,
 	getFirebaseUid,
-	setUserProfileAfterSubmit
+	setUserProfileAfterSubmit,
+	getVeriffStatus
 } from '@/utils/localStorageHelper';
 import API_URL from '../../environments/Environment-dev';
 
@@ -23,7 +24,6 @@ export default function LandingPage() {
 	useEffect(() => {
 		const fetchVeriffStatus = async () => {
 			try {
-				// const firebaseUid = getFirebaseUid();
 				if (firebaseUid) {
 					await setUserProfileAfterSubmit(API_URL, firebaseUid);
 				}
@@ -33,7 +33,40 @@ export default function LandingPage() {
 		};
 
 		fetchVeriffStatus();
-	}, []);
+	}, [firebaseUid]);
+
+	useEffect(() => {
+		const pendingStates = ['created', 'started', 'submitted', 'pending'];
+		let intervalId;
+
+		const startPolling = async () => {
+			try {
+				const storedStatus = getVeriffStatus();
+				if (!firebaseUid || !pendingStates.includes(storedStatus)) return;
+
+				intervalId = setInterval(async () => {
+					try {
+						await setUserProfileAfterSubmit(API_URL, firebaseUid);
+						const latestStatus = getVeriffStatus();
+						if (!pendingStates.includes(latestStatus)) {
+							clearInterval(intervalId);
+							window.location.reload();
+						}
+					} catch (error) {
+						console.log('Polling veriff status failed:', error);
+					}
+				}, 10000);
+			} catch (error) {
+				console.log('Start polling failed:', error);
+			}
+		};
+
+		startPolling();
+
+		return () => {
+			if (intervalId) clearInterval(intervalId);
+		};
+	}, [firebaseUid]);
 
 	// This listens for veriffStatus in URL params to show appropriate toast messages and refresh localStorage profile data
 	useEffect(() => {

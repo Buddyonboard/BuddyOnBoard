@@ -4,14 +4,20 @@ const cors = require('cors');
 const connectDB = require('./Config/db');
 const { initGridFS } = require('./Config/gridFs');
 const { stripeWebhook } = require('./Webhooks/stripeWebhook');
+const { handleDecision } = require('./Webhooks/veriffWebhook');
 
 const app = express();
 
-// Raw body only for Stripe webhook
+// Raw body for Stripe & Veriff webhooks (must be before express.json())
 app.post(
 	'/api/v1/webhook/stripe',
 	express.raw({ type: 'application/json' }),
 	stripeWebhook
+);
+app.post(
+	'/api/v1/veriff/webhook',
+	express.raw({ type: 'application/json' }),
+	handleDecision
 );
 
 app.use(express.json());

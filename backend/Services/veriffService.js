@@ -29,34 +29,11 @@ exports.createSession = async (payload = {}, providerId) => {
 		verification: {
 			callback: payload.callback_url || payload.callbackUrl,
 			person: person,
-			// document: {
-			// 	type: payload.document?.type || 'PASSPORT',
-			// 	country: payload.document?.country || 'US'
-			// },
 			vendorData: providerId || payload.vendorData || payload.vendor_data
 		}
 	};
 
 	console.log('Veriff request body:', JSON.stringify(body));
-
-	/* DO NOT DELETE */
-	// Build body according to Veriff docs. Minimum body: { verification: {} } but include metadata/vendorData
-	/* const body = {
-		verification: {
-			callback_url: payload.callback_url || '',
-			person: {
-				first_name: payload.person?.first_name || '',
-				last_name: payload.person?.last_name || '',
-				email: payload.person?.email || '',
-				phone_number: payload.person?.phone_number || ''
-			},
-			// document: {
-			// 	type: payload.document?.type || 'PASSPORT',
-			// 	country: payload.document?.country || 'US'
-			// },
-			vendor_data: providerId || payload.vendor_data || ''
-		}
-	}; */
 
 	try {
 		const resp = await axios.post(VERIFF_API, body, {
@@ -70,11 +47,21 @@ exports.createSession = async (payload = {}, providerId) => {
 		// API returns verification object => { id, url, sessionToken, status }
 		const verification = resp.data?.verification || {};
 
+		// attempt to extract any decision/full-auto URL fields Veriff may include
+		// const decisionUrl =
+		// 	verification.decisionUrl ||
+		// 	verification.fullAutoUrl ||
+		// 	verification.decision_url ||
+		// 	verification.decision?.fullAutoUrl ||
+		// 	verification.decision?.url ||
+		// 	null;
+
 		return {
 			id: verification.id || null,
 			url: verification.url || null,
 			sessionToken: verification.sessionToken || null,
-			status: verification.status || null
+			status: verification.data?.verification?.decision || null,
+			// decisionUrl: decisionUrl
 		};
 	} catch (err) {
 		console.log('veriff createSession error', err?.response?.data || err.message);
@@ -82,17 +69,17 @@ exports.createSession = async (payload = {}, providerId) => {
 	}
 };
 
-/**
- * (Optional) Fetch decision via API if you want to poll server-side:
- * GET /v1/sessions/{id}/decision
- */
-// exports.fetchDecision = async (sessionId) => {
-// 	if (!sessionId) throw new Error('sessionId required');
-// 	const url = `https://api.veriff.com/v1/sessions/${sessionId}/decision`;
-// 	const resp = await axios.get(url, {
-// 		headers: {
-// 			'X-AUTH-CLIENT': VERIFF_API_KEY
-// 		}
-// 	});
-// 	return resp.data;
-// };
+// Fetch full-auto decision via Veriff API
+exports.fetchFullAutoDecision = async (sessionId) => {
+	if (!sessionId) throw new Error('sessionId required');
+
+	const url = `https://api.veriff.com/v1/sessions/${sessionId}/decision/fullauto`;
+
+	const resp = await axios.get(url, {
+		headers: {
+			'X-AUTH-CLIENT': VERIFF_API_KEY
+		}
+	});
+
+	return resp.data;
+};
