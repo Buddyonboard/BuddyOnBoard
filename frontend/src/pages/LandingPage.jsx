@@ -72,9 +72,12 @@ export default function LandingPage() {
 									showInfoToast('Verification status updated.');
 								}
 								setPollingToastShown(true);
-							}
 
-							window.location.reload();
+								// Delay reload to allow toast to display (2 seconds)
+								setTimeout(() => {
+									window.location.reload();
+								}, 2000);
+							}
 						}
 					} catch (error) {
 						console.log('Polling veriff status failed:', error);
