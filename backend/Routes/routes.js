@@ -90,48 +90,45 @@ router.post('/payment/create-checkout-session', createCheckoutSession);
 router.post('/cancel-booking-seeker', cancelBookingByServiceSeeker);
 router.post('/open-stripe', openStripe);
 
+/***
+ * Veriff redirects user here after completion
+ ***/
 router.get('/veriff/webhook', async (req, res) => {
-	// Veriff redirects user here after completion.
-	// The sessionId is usually passed as a query param, but Veriff may also include status metadata.
-	const sessionId =
-		req.query.sessionId || req.query.id || req.query.verificationId || null;
-	const rawStatus =
-		req.query.status ||
-		req.query.veriffStatus ||
-		req.query.verificationStatus ||
-		req.query.state ||
-		null;
+	// Target Veriff's explicit vSessionId and vStatus parameters
+	const sessionId = req.query.vSessionId || req.query.sessionId || null;
+	const rawStatus = req.query.vStatus || req.query.status || null;
 
 	let status = 'pending';
-	let decision = null;
+	// let decision = null;
 
 	if (rawStatus) {
 		const normalized = rawStatus.toString().toLowerCase();
+
 		if (normalized === 'approved' || normalized === 'success') {
 			status = 'approved';
-			decision = 'approved';
+			// decision = 'approved';
 		} else if (
 			normalized === 'declined' ||
 			normalized === 'failed' ||
 			normalized === 'rejected'
 		) {
 			status = 'declined';
-			decision = 'declined';
+			// decision = 'declined';
 		} else if (normalized === 'error') {
 			status = 'error';
-			decision = 'error';
+			// decision = 'error';
 		} else {
 			status = normalized;
-			decision = normalized;
+			// decision = normalized;
 		}
 	}
+
+	const clientUrl = (process.env.CLIENT_URL || '').replace(/\/+$/, '');
 
 	try {
 		// DO NOT UPDATE PROVIDER HERE - the POST webhook is the source of truth.
 		// The GET redirect is only for browser redirect, not for status persistence.
 		// Veriff will send the decision via POST webhook, which is more reliable.
-
-		const clientUrl = (process.env.CLIENT_URL || '').replace(/\/+$/, '');
 		res.redirect(`${clientUrl}/?veriffStatus=${status}`);
 	} catch (err) {
 		console.log('Veriff webhook GET error:', err);

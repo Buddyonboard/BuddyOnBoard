@@ -18,6 +18,7 @@ import API_URL from '../../environments/Environment-dev';
 
 export default function LandingPage() {
 	const [searchParams] = useSearchParams();
+	const [pollingToastShown, setPollingToastShown] = useState(false);
 	const firebaseUid = getFirebaseUid();
 
 	// This fetches service provider data including veriff status and stores it in userProfile in localStorage
@@ -48,8 +49,31 @@ export default function LandingPage() {
 					try {
 						await setUserProfileAfterSubmit(API_URL, firebaseUid);
 						const latestStatus = getVeriffStatus();
+						console.log('Polling veriff status:', latestStatus);
+
 						if (!pendingStates.includes(latestStatus)) {
 							clearInterval(intervalId);
+
+							// Show toast only once based on terminal status
+							if (!pollingToastShown) {
+								const normalizedStatus = latestStatus?.toString().toLowerCase();
+								if (normalizedStatus === 'success' || normalizedStatus === 'approved') {
+									showSuccessToast('Verification completed successfully!');
+								} else if (
+									normalizedStatus === 'declined' ||
+									normalizedStatus === 'rejected'
+								) {
+									showErrorToast('Verification failed. Please try again.');
+								} else if (normalizedStatus === 'error') {
+									showWarningToast(
+										'Verification could not be completed. Please try again.'
+									);
+								} else {
+									showInfoToast('Verification status updated.');
+								}
+								setPollingToastShown(true);
+							}
+
 							window.location.reload();
 						}
 					} catch (error) {
@@ -66,7 +90,7 @@ export default function LandingPage() {
 		return () => {
 			if (intervalId) clearInterval(intervalId);
 		};
-	}, [firebaseUid]);
+	}, [firebaseUid, pollingToastShown]);
 
 	// This listens for veriffStatus in URL params to show appropriate toast messages and refresh localStorage profile data
 	useEffect(() => {

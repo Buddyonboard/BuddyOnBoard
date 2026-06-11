@@ -85,50 +85,20 @@ exports.handleDecision = async (req, res) => {
 		try {
 			const verification = payload?.verification || payload?.session || payload;
 			const fullAutoDecision = payload?.data?.verification?.decision;
-			// payload?.data?.verification?.status ||
-			// payload?.data?.decision ||
-			// null;
-
-			const rawStatus = fullAutoDecision;
-			// verification?.status ||
-			// verification?.decision ||
-			// verification?.result ||
-			// verification?.action ||
-			// payload?.status ||
-			// payload?.action ||
-			// null;
 			status = fullAutoDecision;
-			// ? normalizeVeriffStatus({
-			// 		data: { verification: { decision: fullAutoDecision } }
-			// 	})
-			// : normalizeVeriffStatus(payload);
-			// console.log('status after normalization:', status);
 		} catch (statusErr) {
 			console.error('❌ ERROR during status extraction:');
 			console.error('Message:', statusErr.message);
 			console.error('Stack:', statusErr.stack);
 			throw statusErr;
 		}
-		// const reason =
-		// 	verification?.reason || verification?.reasons?.join?.(', ') || null;
-		// const reasonCode = verification?.reasonCode || payload?.reasonCode || null;
 		const acceptanceTime =
 			verification?.acceptanceTime || verification?.submittedAt || null;
 		provider.veriff.sessionId = provider.veriff.sessionId || sessionId;
 		provider.veriff.status = status !== null ? status : provider.veriff.status;
 
-		// persist any decision / full-auto URL sent in payload
-		// provider.veriff.decisionUrl =
-		// 	payload?.decisionUrl ||
-		// 	verification?.decisionUrl ||
-		// 	provider.veriff.decisionUrl ||
-		// 	null;
-		// provider.veriff.reason = reason || provider.veriff.reason;
-		// provider.veriff.reasonCode = reasonCode || provider.veriff.reasonCode;
 		provider.veriff.rawWebhookPayload = payload;
 		provider.veriff.lastUpdated = new Date();
-
-		// console.log(`Updating provider ${provider._id} veriff status to: ${status}`);
 
 		if (status === 'approved') {
 			provider.veriff.verifiedAt = acceptanceTime

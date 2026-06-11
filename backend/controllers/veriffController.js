@@ -1,7 +1,9 @@
 const serviceProvider = require('../models/ServiceProviderSchema');
 const veriffService = require('../Services/veriffService');
 
-// Poll Veriff for full-auto decision and persist it to provider record
+/**
+ * Poll Veriff for full-auto decision and persist it to provider record
+ */
 exports.fetchDecisionForSession = async (req, res) => {
 	const { sessionId } = req.body || req.query || {};
 
@@ -9,24 +11,10 @@ exports.fetchDecisionForSession = async (req, res) => {
 
 	try {
 		const decisionResp = await veriffService.fetchFullAutoDecision(sessionId);
-
-		// decisionResp shape depends on Veriff response; try to extract useful info
 		const verification = decisionResp?.verification || decisionResp || {};
 		const fullAutoDecision = decisionResp?.data?.verification?.decision;
-		// decisionResp?.data?.verification?.status ||
-		// decisionResp?.data?.decision ||
-		// null;
 		const status = fullAutoDecision;
-		// verification?.status ||
-		// verification?.decision ||
-		// verification?.result ||
-		// verification?.action ||
-		// null;
 		const normalized = fullAutoDecision;
-		// ? normalizeVeriffStatus({
-		// 		data: { verification: { decision: fullAutoDecision } }
-		// 	})
-		// : normalizeVeriffStatus(decisionResp);
 
 		// find provider by sessionId
 		const provider = await serviceProvider.findOne({

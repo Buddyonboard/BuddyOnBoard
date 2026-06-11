@@ -60,6 +60,16 @@ export async function setUserProfileAfterSubmit(
 		} else if (payload.data?.veriff?.status) {
 			// Extract veriff.status from service provider document (already there)
 		}
+
+		// Prefer a full-auto/decision value from the raw webhook payload when available
+		const rawDecision =
+			payload.data?.veriff?.rawWebhookPayload?.data?.verification?.decision ||
+			payload.data?.veriff?.rawWebhookPayload?.data?.decision ||
+			null;
+		if (rawDecision) {
+			payload.data.veriff.status = rawDecision;
+			localStorage.setItem('veriffDecision', JSON.stringify(rawDecision));
+		}
 	} catch (e) {
 		// If shaping fails, just ignore and store original response
 		console.log('Could not attach veriffStatus to profile', e);
