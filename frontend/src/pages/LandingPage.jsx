@@ -5,7 +5,7 @@ import {
 	showSuccessToast,
 	showWarningToast
 } from '@/utils/toastUtils';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
 	getuserProfile,
@@ -18,32 +18,20 @@ import API_URL from '../../environments/Environment-dev';
 
 export default function LandingPage() {
 	const [searchParams] = useSearchParams();
-	const [pollingToastShown, setPollingToastShown] = useState(false);
+	const pollingToastShownRef = useRef(false);
 	const firebaseUid = getFirebaseUid();
-
-	// This fetches service provider data including veriff status and stores it in userProfile in localStorage
-	useEffect(() => {
-		const fetchVeriffStatus = async () => {
-			try {
-				if (firebaseUid) {
-					await setUserProfileAfterSubmit(API_URL, firebaseUid);
-				}
-			} catch (error) {
-				console.log('Failed to fetch veriff status:', error);
-			}
-		};
-
-		fetchVeriffStatus();
-	}, [firebaseUid]);
 
 	useEffect(() => {
 		const pendingStates = ['created', 'started', 'submitted', 'pending'];
 		let intervalId;
 
-		const startPolling = async () => {
+		const initPolling = async () => {
+			if (!firebaseUid) return;
+
 			try {
+				await setUserProfileAfterSubmit(API_URL, firebaseUid);
 				const storedStatus = getVeriffStatus();
-				if (!firebaseUid || !pendingStates.includes(storedStatus)) return;
+				if (!pendingStates.includes(storedStatus)) return;
 
 				intervalId = setInterval(async () => {
 					try {
@@ -54,8 +42,7 @@ export default function LandingPage() {
 						if (!pendingStates.includes(latestStatus)) {
 							clearInterval(intervalId);
 
-							// Show toast only once based on terminal status
-							if (!pollingToastShown) {
+							if (!pollingToastShownRef.current) {
 								const normalizedStatus = latestStatus?.toString().toLowerCase();
 								if (normalizedStatus === 'success' || normalizedStatus === 'approved') {
 									showSuccessToast('Verification completed successfully!');
@@ -71,13 +58,12 @@ export default function LandingPage() {
 								} else {
 									showInfoToast('Verification status updated.');
 								}
-								setPollingToastShown(true);
-
-								// Delay reload to allow toast to display (2 seconds)
-								setTimeout(() => {
-									window.location.reload();
-								}, 2000);
+								pollingToastShownRef.current = true;
 							}
+
+							setTimeout(() => {
+								window.location.reload();
+							}, 2000);
 						}
 					} catch (error) {
 						console.log('Polling veriff status failed:', error);
@@ -88,12 +74,12 @@ export default function LandingPage() {
 			}
 		};
 
-		startPolling();
+		initPolling();
 
 		return () => {
 			if (intervalId) clearInterval(intervalId);
 		};
-	}, [firebaseUid, pollingToastShown]);
+	}, [firebaseUid]);
 
 	// This listens for veriffStatus in URL params to show appropriate toast messages and refresh localStorage profile data
 	useEffect(() => {
@@ -101,7 +87,6 @@ export default function LandingPage() {
 
 		// Fetch user profile from DB and persist veriff status
 		if (veriffStatus) {
-			// const firebaseUid = getFirebaseUid();
 			if (firebaseUid) {
 				setUserProfileAfterSubmit(API_URL, firebaseUid, veriffStatus).catch((e) => {
 					console.log('Failed to refresh profile with veriffStatus', e);
@@ -131,7 +116,7 @@ export default function LandingPage() {
 			showWarningToast('Verification could not be completed. Please try again.');
 			window.history.replaceState({}, document.title, window.location.pathname);
 		}
-	}, [searchParams]);
+	}, [searchParams, firebaseUid]);
 
 	return (
 		<>
