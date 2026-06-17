@@ -22,6 +22,7 @@ export default function LandingPage() {
 		useState(getVeriffStatus());
 	const pollingIntervalRef = useRef(null);
 	const pollingActiveRef = useRef(false);
+	const prevVeriffStatusRef = useRef(getVeriffStatus());
 	const firebaseUid = getFirebaseUid();
 	const pendingStates = ['created', 'started', 'submitted', 'pending'];
 	const toastShownKey = 'veriffToastShownStatus';
@@ -29,7 +30,19 @@ export default function LandingPage() {
 
 	const normalize = (status) => status?.toString().toLowerCase();
 
+	const clearToastKeys = () => {
+		localStorage.removeItem(toastShownKey);
+		localStorage.removeItem(pendingToastShownKey);
+		pollingActiveRef.current = false;
+	};
+
 	const showPendingToastOnce = () => {
+		const storedStatus = localStorage.getItem(toastShownKey);
+		const currentStatus = normalize(currentVeriffStatus);
+		if (pendingStates.includes(currentStatus)) {
+			localStorage.removeItem(toastShownKey);
+			localStorage.removeItem(pendingToastShownKey);
+		}
 		if (localStorage.getItem(pendingToastShownKey) === 'true') return;
 		showInfoToast(
 			'Verification submitted. You will be notified of the results shortly.'
@@ -119,14 +132,22 @@ export default function LandingPage() {
 			return;
 		}
 
-		showTerminalToastOnce(normalizedStatus);
+		const previousStatus = normalize(prevVeriffStatusRef.current);
+		const isNewTerminal = previousStatus !== normalizedStatus;
+		if (isNewTerminal) {
+			showTerminalToastOnce(normalizedStatus);
+		}
+
 		stopPolling();
+		prevVeriffStatusRef.current = currentVeriffStatus;
 	}, [currentVeriffStatus]);
 
 	useEffect(() => {
 		const run = async () => {
 			const veriffStatus = searchParams.get('veriffStatus');
 			if (!veriffStatus) return;
+
+			clearToastKeys();
 
 			if (firebaseUid) {
 				try {
