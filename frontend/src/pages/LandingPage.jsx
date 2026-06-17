@@ -147,12 +147,21 @@ export default function LandingPage() {
 			const veriffStatus = searchParams.get('veriffStatus');
 			if (!veriffStatus) return;
 
+			// Clear previous toast markers so this is treated as a fresh attempt
 			clearToastKeys();
+
+			// Show "submitted" immediately for every verification attempt
+			showPendingToastOnce();
 
 			if (firebaseUid) {
 				try {
 					await setUserProfileAfterSubmit(API_URL, firebaseUid, veriffStatus);
-					await refreshStatus();
+					const latest = await refreshStatus();
+					const norm = normalize(latest);
+					if (!pendingStates.includes(norm)) {
+						// If decision already available, show it once
+						showTerminalToastOnce(norm);
+					}
 				} catch (e) {
 					console.log('Failed to refresh profile with veriffStatus', e);
 					showWarningToast('Failed to update verification status');
