@@ -20,31 +20,59 @@ export default function LandingPage() {
 	const [searchParams] = useSearchParams();
 	const [currentVeriffStatus, setCurrentVeriffStatus] =
 		useState(getVeriffStatus());
-	const pollingToastShownRef = useRef(false);
-	const pendingToastShownRef = useRef(false);
 	const pollingIntervalRef = useRef(null);
 	const pollingActiveRef = useRef(false);
 	const firebaseUid = getFirebaseUid();
 	const pendingStates = ['created', 'started', 'submitted', 'pending'];
+	const toastShownKey = 'veriffToastShownStatus';
+	const pendingToastShownKey = 'veriffPendingToastShown';
 
-	const startPolling = async () => {
-		if (!firebaseUid || pollingActiveRef.current) return;
+	const normalize = (status) => status?.toString().toLowerCase();
 
+	const showPendingToastOnce = () => {
+		if (localStorage.getItem(pendingToastShownKey) === 'true') return;
+		showInfoToast(
+			'Verification submitted. You will be notified of the results shortly.'
+		);
+		localStorage.setItem(pendingToastShownKey, 'true');
+	};
+
+	const showTerminalToastOnce = (normalizedStatus) => {
+		const shownStatus = localStorage.getItem(toastShownKey);
+		if (shownStatus === normalizedStatus) return;
+
+		if (normalizedStatus === 'success' || normalizedStatus === 'approved') {
+			showSuccessToast('Verification completed successfully!');
+		} else if (
+			normalizedStatus === 'declined' ||
+			normalizedStatus === 'rejected'
+		) {
+			showErrorToast('Verification failed. Please try again.');
+		} else if (normalizedStatus === 'error') {
+			showWarningToast('Verification could not be completed. Please try again.');
+		} else {
+			showInfoToast('Verification status updated.');
+		}
+
+		localStorage.setItem(toastShownKey, normalizedStatus);
+	};
+
+	const refreshStatus = async () => {
+		if (!firebaseUid) return;
+		await setUserProfileAfterSubmit(API_URL, firebaseUid);
 		const storedStatus = getVeriffStatus();
-		if (!pendingStates.includes(storedStatus)) return;
+		setCurrentVeriffStatus(storedStatus);
+		return storedStatus;
+	};
 
+	const startPolling = () => {
+		if (pollingActiveRef.current) return;
 		pollingActiveRef.current = true;
 		pollingIntervalRef.current = setInterval(async () => {
 			try {
-				await setUserProfileAfterSubmit(API_URL, firebaseUid);
-				const latestStatus = getVeriffStatus();
-				console.log('Polling veriff status:', latestStatus);
-				setCurrentVeriffStatus(latestStatus);
-
-				if (!pendingStates.includes(latestStatus)) {
-					clearInterval(pollingIntervalRef.current);
-					pollingIntervalRef.current = null;
-					pollingActiveRef.current = false;
+				const latestStatus = await refreshStatus();
+				if (!pendingStates.includes(normalize(latestStatus))) {
+					stopPolling();
 				}
 			} catch (error) {
 				console.log('Polling veriff status failed:', error);
@@ -65,10 +93,8 @@ export default function LandingPage() {
 			if (!firebaseUid) return;
 
 			try {
-				await setUserProfileAfterSubmit(API_URL, firebaseUid);
-				const storedStatus = getVeriffStatus();
-				setCurrentVeriffStatus(storedStatus);
-				if (pendingStates.includes(storedStatus)) {
+				const status = await refreshStatus();
+				if (pendingStates.includes(normalize(status))) {
 					startPolling();
 				}
 			} catch (error) {
@@ -84,86 +110,35 @@ export default function LandingPage() {
 	}, [firebaseUid]);
 
 	useEffect(() => {
-		const normalizedStatus = currentVeriffStatus?.toString().toLowerCase();
+		const normalizedStatus = normalize(currentVeriffStatus);
 		if (!normalizedStatus) return;
 
 		if (pendingStates.includes(normalizedStatus)) {
-			if (!pendingToastShownRef.current) {
-				showInfoToast(
-					'Verification submitted. You will be notified of the results shortly.'
-				);
-				pendingToastShownRef.current = true;
-			}
+			showPendingToastOnce();
 			startPolling();
 			return;
 		}
 
-		if (!pollingToastShownRef.current) {
-			if (normalizedStatus === 'success' || normalizedStatus === 'approved') {
-				showSuccessToast('Verification completed successfully!');
-			} else if (
-				normalizedStatus === 'declined' ||
-				normalizedStatus === 'rejected'
-			) {
-				showErrorToast('Verification failed. Please try again.');
-			} else if (normalizedStatus === 'error') {
-				showWarningToast('Verification could not be completed. Please try again.');
-			} else {
-				showInfoToast('Verification status updated.');
-			}
-			pollingToastShownRef.current = true;
-		}
-
-		if (!pendingStates.includes(normalizedStatus)) {
-			stopPolling();
-			setTimeout(() => {
-				window.location.reload();
-			}, 2000);
-		}
+		showTerminalToastOnce(normalizedStatus);
+		stopPolling();
 	}, [currentVeriffStatus]);
 
-	// This listens for veriffStatus in URL params to show appropriate toast messages and refresh localStorage profile data
 	useEffect(() => {
 		const run = async () => {
 			const veriffStatus = searchParams.get('veriffStatus');
-
 			if (!veriffStatus) return;
 
 			if (firebaseUid) {
 				try {
 					await setUserProfileAfterSubmit(API_URL, firebaseUid, veriffStatus);
-					const latestStatus = getVeriffStatus();
-					setCurrentVeriffStatus(latestStatus);
+					await refreshStatus();
 				} catch (e) {
 					console.log('Failed to refresh profile with veriffStatus', e);
 					showWarningToast('Failed to update verification status');
 				}
 			}
 
-			const normalizedStatus = veriffStatus?.toString().toLowerCase();
-			let toastStatus = normalizedStatus;
-			if (normalizedStatus === 'approved') toastStatus = 'success';
-			if (normalizedStatus === 'declined') toastStatus = 'failed';
-			if (normalizedStatus === 'rejected') toastStatus = 'failed';
-
-			if (toastStatus === 'pending') {
-				if (!pendingToastShownRef.current) {
-					showInfoToast(
-						'Verification submitted. You will be notified of the results shortly.'
-					);
-					pendingToastShownRef.current = true;
-				}
-				window.history.replaceState({}, document.title, window.location.pathname);
-			} else if (toastStatus === 'success') {
-				showSuccessToast('Verification completed successfully!');
-				window.history.replaceState({}, document.title, window.location.pathname);
-			} else if (toastStatus === 'failed') {
-				showErrorToast('Verification failed. Please try again.');
-				window.history.replaceState({}, document.title, window.location.pathname);
-			} else if (toastStatus === 'error') {
-				showWarningToast('Verification could not be completed. Please try again.');
-				window.history.replaceState({}, document.title, window.location.pathname);
-			}
+			window.history.replaceState({}, document.title, window.location.pathname);
 		};
 
 		run();
